@@ -62,4 +62,13 @@ class Clinic extends Model
         'updated_at',
         'created_at',
     ];
+
+    /**
+     * Get the doctors associated with the clinic.
+     */
+    public function doctors()
+    {
+        return $this->hasMany(Doctor::class);
+    }
+
 }

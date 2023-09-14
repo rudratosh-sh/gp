@@ -16,6 +16,7 @@ class Doctor extends Model
      * @var array
      */
     protected $fillable = [
+        'name',
         'clinic_id',
         'speciality_id',
         'price',
@@ -46,6 +47,7 @@ class Doctor extends Model
      * @var array
      */
     protected $allowedFilters = [
+        'name',
         'clinic_id',
         'speciality_id',
         'price',
@@ -58,6 +60,7 @@ class Doctor extends Model
      * @var array
      */
     protected $allowedSorts = [
+        'name',
         'clinic_id',
         'speciality_id',
         'price',
