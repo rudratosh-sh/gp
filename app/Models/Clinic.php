@@ -37,15 +37,15 @@ class Clinic extends Model
      * @var array
      */
     protected $allowedFilters = [
-           'id'         => Where::class,
-           'name'       => Like::class,
-           'location'   => Like::class,
-           'latitude'   => Where::class,
-           'longitude'  => Where::class,
-           'status'     => Where::class,
-           'address'    => Like::class,
-           'updated_at' => WhereDateStartEnd::class,
-           'created_at' => WhereDateStartEnd::class,
+        'id'         => Where::class,
+        'name'       => Like::class,
+        'location'   => Like::class,
+        'latitude'   => Where::class,
+        'longitude'  => Where::class,
+        'status'     => Where::class,
+        'address'    => Like::class,
+        'updated_at' => WhereDateStartEnd::class,
+        'created_at' => WhereDateStartEnd::class,
     ];
 
     /**
@@ -73,4 +73,46 @@ class Clinic extends Model
         return $this->hasMany(Doctor::class);
     }
 
+    public function bannerImage()
+    {
+        return $this->hasOne(Attachment::class, 'id', 'banner_image');
+    }
+
+    public function profileIcon()
+    {
+        return $this->hasOne(Attachment::class, 'id', 'profile_icon');
+    }
+
+    /**
+     * Get the URL for the clinic's banner image.
+     *
+     * @return string|null
+     */
+    public function getBannerImageUrlAttribute()
+    {
+        if ($this->banner_image) {
+            // Assuming 'Attachment' is the model for attachments
+            $bannerImage = Attachment::find($this->banner_image); // Get the attachment by ID
+            if ($bannerImage) {
+                $basePath = 'storage/'; // Define the base path where the images are stored
+                return url($basePath . $bannerImage->path . '/' . $bannerImage->name . '.' . $bannerImage->extension);
+            }
+        }
+
+        return null;
+    }
+
+    public function getProfileIconUrlAttribute()
+    {
+        if ($this->profile_icon) {
+            // Assuming 'Attachment' is the model for attachments
+            $profileIcon = Attachment::find($this->profile_icon); // Get the attachment by ID
+            if ($profileIcon) {
+                $basePath = 'storage/'; // Define the base path where the images are stored
+                return url($basePath . $profileIcon->path . '/' . $profileIcon->name . '.' . $profileIcon->extension);
+            }
+        }
+
+        return null;
+    }
 }

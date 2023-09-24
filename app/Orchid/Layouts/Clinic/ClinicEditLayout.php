@@ -27,31 +27,29 @@ class ClinicEditLayout extends Rows
                 ->required()
                 ->title(__('Name'))
                 ->placeholder(__('Clinic Name')),
+
             Input::make('clinic.location')
                 ->type('text')
                 ->max(255)
                 ->required()
                 ->title(__('Location'))
-                ->placeholder(__('Clinic Location')),
+                ->id('clinic-location')
+                ->placeholder(__('Clinic Location'))
+                ->readonly(),
 
             Input::make('clinic.latitude')
-                ->type('text')
-                ->max(255)
-                ->required()
-                ->title(__('Latitude'))
-                ->placeholder(__('Clinic Latitude')),
+                ->id('clinic-latitude')
+                ->value('')->type('hidden'),
 
             Input::make('clinic.longitude')
-                ->type('text')
-                ->max(255)
-                ->required()
-                ->title(__('Longitude'))
-                ->placeholder(__('Clinic Longitude')),
+                ->id('clinic-longitude')
+                ->value('')->type('hidden'),
 
             Input::make('clinic.address')
                 ->type('text')
                 ->max(255)
                 ->required()
+                ->id('clinic-Address')
                 ->title(__('Address'))
                 ->placeholder(__('Clinic Address')),
 

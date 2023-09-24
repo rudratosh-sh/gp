@@ -29,8 +29,10 @@ class AppointmentController extends Controller
             // If not authenticated, return a 404 error
             abort(Response::HTTP_FORBIDDEN);
         }
+
         // Retrieve the list of unique locations from the Clinic model
-        $locations = Clinic::all();
+        $locations = Clinic::with(['bannerImage', 'profileIcon'])->get();
+
         // Retrieve the list of doctors along with their user details
         $doctors = Doctor::with('user')->get();
 
@@ -43,11 +45,14 @@ class AppointmentController extends Controller
         $locationId = $request->input('location');
         $specialistId = $request->input('specialist');
 
-        $clinics = Clinic::where('id', $locationId)->get();
+        // Fetch clinics based on the selected location
+        $clinics = Clinic::where('id', $locationId)
+            ->with(['bannerImage', 'profileIcon']) // Load banner image and profile icon relationships
+            ->get();
 
         // Fetch doctors based on the selected specialist
         $doctors = Doctor::where('id', $specialistId)
-            ->with(['clinic', 'user']) // Load both clinic and user relationships
+            ->with(['clinic', 'user', 'clinic.bannerImage', 'clinic.profileIcon']) // Load necessary relationships
             ->get();
 
         // If no doctors are found for the selected specialist, fetch doctors based on the clinic's location
@@ -55,14 +60,13 @@ class AppointmentController extends Controller
             $doctors = Doctor::whereHas('clinic', function ($query) use ($locationId) {
                 $query->where('id', $locationId);
             })
-                ->with(['user']) // Load the user relationship
+                ->with(['user', 'clinic.bannerImage', 'clinic.profileIcon']) // Load necessary relationships
                 ->get();
         }
 
         // Return the search results as JSON
         return response()->json(['clinics' => $clinics, 'doctors' => $doctors]);
     }
-
 
     public function questionnaire($doctorId)
     {

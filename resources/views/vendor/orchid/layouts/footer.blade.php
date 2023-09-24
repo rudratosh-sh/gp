@@ -1,6 +1,13 @@
 <p class="small m-n">
-    © Copyright {{date('Y')}} 
+    © Copyright {{date('Y')}}
     <a href="//example.com" target="_blank">Super GP</a>
 </p>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1R_Q4VawPY6mXA8qArh-eBUNykQODja4&libraries=places&callback=initialize"></script> --}}
 
+<script>
+$(document).ready(function() {
+    initialize();
+});
+</script>

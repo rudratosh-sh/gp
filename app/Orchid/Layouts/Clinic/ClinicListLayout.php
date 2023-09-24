@@ -12,6 +12,7 @@ use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Screen\Fields\Image as ImageField;
 use Orchid\Support\Facades\Layout;
+use App\Models\Attachment;
 
 class ClinicListLayout extends Table
 {
@@ -40,15 +41,21 @@ class ClinicListLayout extends Table
 
             TD::make('banner_image', __('Banner Image'))
                 ->render(function (Clinic $clinic) {
-                    // Check if the clinic has a banner image
+
                     if ($clinic->banner_image) {
-                        // Render the Blade component for the image preview
-                        return view('components.clinic_banner_image', ['image' => $clinic->banner_image]);
+                        // Assuming 'Attachment' is the model for attachments
+                        $bannerImage = Attachment::find($clinic->banner_image); // Get the first attachment by ID
+                        $basePath = 'storage/'; // Define the base path where the images are stored
+                        if ($bannerImage) {
+                            // Render the Blade component for the image preview
+                            return view('components.clinic_banner_image', ['image' => url($basePath.$bannerImage->path.$bannerImage->name.'.'.$bannerImage->extension)]);
+                        }
                     }
 
-                    // If there's no image, display a placeholder or empty text
+                    // If there's no image or an issue with the data, display a placeholder or empty text
                     return __('No Image');
                 }),
+
 
             TD::make('latitude', __('Latitude'))
                 ->sort()

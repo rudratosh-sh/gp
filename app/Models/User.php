@@ -8,9 +8,14 @@ use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
 use App\Models\Role; // Import the Role model from your application
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\Notifiable;
+use Orchid\Attachment\Models\Attachment;
+
 
 class User extends Authenticatable
 {
+    use Notifiable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,6 +28,7 @@ class User extends Authenticatable
         'permissions',
         'mobile',
         'country_code',
+        'avatar',
     ];
 
     /**
@@ -101,4 +107,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(SignupStatus::class, 'user_id');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
 }

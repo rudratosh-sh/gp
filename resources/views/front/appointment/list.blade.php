@@ -33,7 +33,7 @@
                 <div class="booking_container">
                     <div class="spc_btn_pg8">
                         <h1 class="booking_title_pg8">Booking Appointment</h1>
-                        <a href="page-4.html">+ Book Appointment</a>
+                        <a href="{{route('appointment.index.get')}}">+ Book Appointment</a>
                     </div>
                     <div class="book_call_container_pg8">
                         @foreach ($appointments as $appointment)

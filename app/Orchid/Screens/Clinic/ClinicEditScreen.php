@@ -162,6 +162,23 @@ class ClinicEditScreen extends Screen
             $clinicData['profile_icon'] = $profileIcon->store('clinic_images', 'public');
         }
 
+        // Check if 'banner_image' key exists before accessing it
+        if (isset($clinicData['banner_image'])) {
+            $clinicData['banner_image'] = $clinicData['banner_image'][0];
+        } else {
+            // Handle the case when 'banner_image' key is not found, for example, set it to null
+            $clinicData['banner_image'] = null; // or any other default value you prefer
+        }
+
+        // Check if 'profile_icon' key exists before accessing it
+        if (isset($clinicData['profile_icon'])) {
+            $clinicData['profile_icon'] = $clinicData['profile_icon'][0];
+        } else {
+            // Handle the case when 'profile_icon' key is not found, for example, set it to null
+            $clinicData['profile_icon'] = null; // or any other default value you prefer
+        }
+
+
         $clinic->fill($clinicData)->save();
         Toast::info(__('Clinic was saved.'));
         return redirect()->route('platform.systems.clinics');
@@ -186,19 +203,35 @@ class ClinicEditScreen extends Screen
     {
         return [
             <<<JS
-        function initialize() {
-            var input = document.getElementById('clinic-location');
-            var autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.addListener('place_changed', function () {
-                var place = autocomplete.getPlace();
-                if (!place.geometry) {
-                    return;
-                }
-                document.getElementById('clinic-latitude').value = place.geometry.location.lat();
-                document.getElementById('clinic-longitude').value = place.geometry.location.lng();
-            });
-        }
-        JS,
+            function initialize() {
+                var input = document.getElementById('clinic-Address');
+                var autocomplete = new google.maps.places.Autocomplete(input);
+                autocomplete.addListener('place_changed', function () {
+                    var place = autocomplete.getPlace();
+
+                    if (!place.geometry) {
+                        return;
+                    }
+
+                    // Fill in the latitude and longitude fields
+                    document.getElementById('clinic-latitude').value = place.geometry.location.lat();
+                    document.getElementById('clinic-longitude').value = place.geometry.location.lng();
+
+                    // Fill in the city, state, and country fields (modify as needed)
+                    for (var component of place.address_components) {
+                        if (component.types.includes('locality')) {
+                            document.getElementById('clinic-city').value = component.long_name;
+                        }
+                        if (component.types.includes('administrative_area_level_1')) {
+                            document.getElementById('clinic-state').value = component.long_name;
+                        }
+                        if (component.types.includes('country')) {
+                            document.getElementById('clinic-country').value = component.long_name;
+                        }
+                    }
+                });
+            }
+            JS,
         ];
     }
 }

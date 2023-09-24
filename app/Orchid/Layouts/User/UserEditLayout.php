@@ -36,6 +36,7 @@ class UserEditLayout extends Rows
                 ->required()
                 ->title(__('Mobile'))
                 ->placeholder(__('Mobile')),
+
         ];
     }
 }

@@ -43,6 +43,49 @@
     .pd-15 {
         margin-top: 15px;
     }
+
+    /* Update the CSS for the banner image */
+    .banner-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        width: 100%;
+    }
+
+    /* Remove the height from .first-section */
+    .first-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px !important;
+        background: #c7c7c7;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    /* Keep the rest of your CSS styles as they are */
+    .card-clinic {
+        width: 304px;
+        height: auto;
+        /* Remove fixed height */
+        background: #FFFFFF;
+        box-shadow: 0px 1px 8px #00000029;
+        border-radius: 20px;
+        margin-right: 30px;
+    }
+
+    .second-section {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    .navigate-image {
+        width: 24px;
+        height: 24px;
+    }
 </style>
 @section('content')
     <div class="container">
@@ -163,10 +206,13 @@
                         <div class="clinic_content">
                             @foreach ($locations as $location)
                                 <div class="card-clinic">
-                                    <div class="first-section"></div>
+                                    <div class="first-section">
+                                        <img src="{{ $location->banner_image_url }}" class="banner-image" />
+                                    </div>
                                     <div class="second-section">
                                         <h4 class="title">{{ $location->name }}</h4>
-                                        <img src="image.jpg" alt="Navigate" class="navigate-image" />
+                                        <img src="{{ $location->profile_icon_url }}" alt="Navigate"
+                                            class="navigate-image" />
                                     </div>
                                 </div>
                             @endforeach
@@ -217,10 +263,11 @@
                 <h1 class="gp_title">Top GP</h1><div class="parent_card_container">`
 
                     doctors.forEach(function(doctor) {
-                        var clinicName = doctor.clinic ? doctor.clinic.name : 'N/A'; // Check if clinic is defined
-            var clinicLocation = doctor.clinic ? doctor.clinic.location : 'N/A';
+                        var clinicName = doctor.clinic ? doctor.clinic.name :
+                            'N/A'; // Check if clinic is defined
+                        var clinicLocation = doctor.clinic ? doctor.clinic.location : 'N/A';
 
-            cardHtml += `
+                        cardHtml += `
                 <div class="card">
                     <div class="left-section">
                         <div class="small-image"></div>
@@ -258,16 +305,32 @@
 
                 // Loop through the clinics and create cards
                 if (clinics.length > 0) {
-                    var cardHtml = `<h1 class="click_title">Clinic</h1> <div class="clinic_content">`
+                    var cardHtml = `<h1 class="click_title">Clinic</h1> <div class="clinic_content">`;
                     clinics.forEach(function(clinic) {
+                        console.log(clinic, 'clinic');
+
+                        // Check if clinic.banner_image and clinic.profile_icon are defined
+                        if (clinic?.banner_image && clinic?.profile_icon) {
+                            // Construct the image URLs based on the response data
+                            var bannerImageUrl = 'storage/' + clinic.banner_image.path + clinic.banner_image
+                                .name + '.' + clinic.banner_image.extension;
+                            var profileIconUrl = 'storage/' + clinic.profile_icon.path + clinic.profile_icon
+                                .name + '.' + clinic.profile_icon.extension;
+                        } else {
+                            // Handle the case where banner_image or profile_icon is undefined
+                            bannerImageUrl = ''; // You can set a default URL or an empty string
+                            profileIconUrl = ''; // You can set a default URL or an empty string
+                        }
+
+                        // Now you can use bannerImageUrl and profileIconUrl in your code
+
                         cardHtml += `
                 <div class="card-clinic">
-                    <div class="first-section"></div>
+                    <div class="first-section"><img src="${bannerImageUrl}" class="banner-image" /></div>
                     <div class="second-section">
                         <h4 class="title">${clinic.name}</h4>
-                        <img src="image.jpg" alt="Navigate" class="navigate-image" />
+                        <img src="${profileIconUrl}" alt="Navigate" class="navigate-image" />
                     </div>
-                </div>
                 </div>
             `;
 
@@ -279,52 +342,53 @@
                     clinicSection.html('<p>No clinics available</p>');
                 }
             }
+
+            // Get the tabs
+            var dashboardTab = document.getElementById("dashboard-tab");
+            var bookingTab = document.getElementById("booking-tab");
+            var referralTab = document.getElementById("referral-tab");
+            var profileTab = document.getElementById("profile-tab");
+
+            // Function to handle the click event on booking tab
+            function handleBookingClick() {
+                // Remove active class from all tabs
+                var tabs = document.getElementsByTagName("li");
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove("active");
+                }
+
+                // Add active class to booking tab
+                bookingTab.classList.add("active");
+
+                // Navigate to the booking page
+                window.location.href = "#"; // Replace 'page4.html' with the path to your booking page
+            }
+
+            // Attach click event listener to booking tab
+            bookingTab.addEventListener("click", handleBookingClick);
+
+            // Function to handle the click event on referral tab
+            function handleReferralClick() {
+                // Remove active class from all tabs
+                var tabs = document.getElementsByTagName("li");
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove("active");
+                }
+
+                // Add active class to referral tab
+                referralTab.classList.add("active");
+
+                // Navigate to the referral page
+                window.location.href = "#"; // Replace 'page11.html' with the path to your referral page
+            }
+
+            // Attach click event listener to referral tab
+            referralTab.addEventListener("click", handleReferralClick);
+
+            function navigateToPage(pageURL) {
+                window.location.href = pageURL;
+            }
+
         });
-
-        // Get the tabs
-        var dashboardTab = document.getElementById("dashboard-tab");
-        var bookingTab = document.getElementById("booking-tab");
-        var referralTab = document.getElementById("referral-tab");
-        var profileTab = document.getElementById("profile-tab");
-
-        // Function to handle the click event on booking tab
-        function handleBookingClick() {
-            // Remove active class from all tabs
-            var tabs = document.getElementsByTagName("li");
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove("active");
-            }
-
-            // Add active class to booking tab
-            bookingTab.classList.add("active");
-
-            // Navigate to the booking page
-            window.location.href = "#"; // Replace 'page4.html' with the path to your booking page
-        }
-
-        // Attach click event listener to booking tab
-        bookingTab.addEventListener("click", handleBookingClick);
-
-        // Function to handle the click event on referral tab
-        function handleReferralClick() {
-            // Remove active class from all tabs
-            var tabs = document.getElementsByTagName("li");
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove("active");
-            }
-
-            // Add active class to referral tab
-            referralTab.classList.add("active");
-
-            // Navigate to the referral page
-            window.location.href = "#"; // Replace 'page11.html' with the path to your referral page
-        }
-
-        // Attach click event listener to referral tab
-        referralTab.addEventListener("click", handleReferralClick);
-
-        function navigateToPage(pageURL) {
-            window.location.href = pageURL;
-        }
     </script>
 @endsection
