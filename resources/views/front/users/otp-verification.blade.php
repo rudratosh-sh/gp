@@ -60,9 +60,7 @@
                         @error('otp')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-                        <div class="btn_pg1">
-                            <button type="submit" style="width: 100%" class="login_pg13">Proceed</button>
-                        </div>
+                        <button type="submit" style="width: 100%" class="btn_pg1">Proceed</button>
                     </form>
                 </div>
             </div>
@@ -202,9 +200,9 @@
                         if (response.success) {
                             // OTP verification successful, redirect to the dashboard route
                                 // Encode the user data as a JSON string and include it as a query parameter
-                                const userDataQueryParam = encodeURIComponent(JSON.stringify(response.user));
+                                const userDataQueryParam = encodeURIComponent(JSON.stringify(response.userData));
                                 // Redirect to the dashboard route with the user data as a query parameter
-                                window.location.href = "{{ route('dashboard.index.get') }}";
+                                window.location.href = "{{ route('user.verifyMedicare.get') }}";
                         } else {
                             // Wrong OTP entered
                             wrongAttempts++;

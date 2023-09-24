@@ -4,7 +4,9 @@
 <head>
     <link href="{{ asset('css/public.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
-    <title>Signup Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Signup</title>
 </head>
 
 <body>
@@ -18,18 +20,18 @@
                 <!-- SignIn/SignUp -->
                 <div class="form_heading_pg1">
                     <div class="login_heading_pg1">
-                        <h3 class="heading_pg1 active" onclick="setActive(this)">Sign up</h3>
-                        <h3 class="heading_pg1" onclick="setActive(this)">Sign in</h3>
+                        <a href="{{ route('user.signup.get') }}"class="heading_pg1 active">Sign up</a>
+                        <a href="{{ route('user.signin.get') }}"class="heading_pg1">Sign in</a>
                     </div>
                 </div>
                 <!-- Form Container -->
                 <div class="form_center_pg1">
-                    @if(session('error'))
+                    @if (session('error'))
                         <div class="alert alert-danger">
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form method="POST" autocomplete="off"  action="{{ route('user.signup') }}">
+                    <form method="POST" autocomplete="off" action="{{ route('user.signup') }}">
                         @csrf
 
                         <!-- First Name, Middle Name, Last Name -->
@@ -74,11 +76,12 @@
                                         <!-- Add more country code options here -->
                                     </select>
                                 </div>
-                                <input type="text" autocomplete="off" id="mobile" name="mobile" pattern="[0-9]+" placeholder="Enter Mobile Number" required />
-                                @error('mobile')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                                <input type="text" autocomplete="off" id="mobile" name="mobile" pattern="[0-9]+"
+                                    placeholder="Enter Mobile Number" required />
                             </div>
+                            @error('mobile')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
 
 
@@ -87,14 +90,12 @@
                             <label for="password">Password</label>
                             <input type="password" id="password" name="password" placeholder="Password" required />
                             @error('password')
-                            <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <!-- Submit Button -->
-                        <div class="btn_pg1">
-                            <button type="submit" style="width: 100%" class="login_pg13">Proceed</button>
-                        </div>
+                        <button type="submit" style="width: 100%" class="btn_pg1">Sign Up</button>
+
                     </form>
                 </div>
             </div>
@@ -121,5 +122,14 @@
     </div>
     <script src="{{ asset('js/public.js') }}"></script>
 </body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
 
 </html>

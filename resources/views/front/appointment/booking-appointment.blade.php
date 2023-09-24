@@ -90,7 +90,7 @@
                                     <div class="tab_circle">
                                         <span class="step-count">2</span>
                                     </div>
-                                    <a class="tab_title" href="page6.html"> Questionnaire </a>
+                                    <a class="tab_title" href="#"> Questionnaire </a>
                                 </div>
                             </div>
                             <div class="tab">
@@ -98,7 +98,7 @@
                                     <div class="tab_circle">
                                         <span class="step-count">3</span>
                                     </div>
-                                    <a class="tab_title" href="page7.html">Schedule</a>
+                                    <a class="tab_title" href="#">Schedule</a>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                             <select class="search-box2" id="doctorSelect">
                                 <option value="">Select Doctor</option>
                                 @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                                    <option value="{{ $doctor->id }}">{{ $doctor->user->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -138,7 +138,7 @@
                                         <div class="left-section">
                                             <div class="small-image"></div>
                                             <div class="doc_details">
-                                                <h2 class="title">{{ $doctor->name }}</h2>
+                                                <h2 class="title">{{ $doctor->user->name }}</h2>
                                                 <p class="click-name">{{ $doctor->clinic->name }}</p>
                                                 <div class="flx_space_btw">
                                                     <p class="direction">{{ $doctor->clinic->location }}</p>
@@ -225,7 +225,7 @@
                     <div class="left-section">
                         <div class="small-image"></div>
                         <div class="doc_details">
-                            <h2 class="title">${doctor.name}</h2>
+                            <h2 class="title">${doctor.user.name}</h2>
                             <p class="click-name">${clinicName}</p>
                             <div class="flx_space_btw">
                                 <p class="direction">${clinicLocation}</p>
@@ -299,7 +299,7 @@
             bookingTab.classList.add("active");
 
             // Navigate to the booking page
-            window.location.href = "page4.html"; // Replace 'page4.html' with the path to your booking page
+            window.location.href = "#"; // Replace 'page4.html' with the path to your booking page
         }
 
         // Attach click event listener to booking tab
@@ -317,7 +317,7 @@
             referralTab.classList.add("active");
 
             // Navigate to the referral page
-            window.location.href = "page11.html"; // Replace 'page11.html' with the path to your referral page
+            window.location.href = "#"; // Replace 'page11.html' with the path to your referral page
         }
 
         // Attach click event listener to referral tab

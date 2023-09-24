@@ -53,12 +53,19 @@ class UserPresenter extends Presenter implements Searchable, Personable
      */
     public function image(): ?string
     {
-        $hash = md5(strtolower(trim($this->entity->email)));
+        // Check if the email address is not null
+        if ($this->entity->email) {
+            $hash = md5(strtolower(trim($this->entity->email)));
 
-        $default = urlencode('https://raw.githubusercontent.com/orchidsoftware/.github/main/web/avatars/gravatar.png');
+            $default = urlencode('https://raw.githubusercontent.com/orchidsoftware/.github/main/web/avatars/gravatar.png');
 
-        return "https://www.gravatar.com/avatar/$hash?d=$default";
+            return "https://www.gravatar.com/avatar/$hash?d=$default";
+        } else {
+            // Handle the case where email is null (e.g., return a default image URL)
+            return "https://example.com/default-image.jpg"; // Replace with your default image URL
+        }
     }
+
 
     /**
      * Returns the number of models to return for a compact search result.

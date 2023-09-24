@@ -9,6 +9,7 @@ use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Layouts\Rows;
+use Orchid\Screen\Fields\Upload;
 
 class ClinicEditLayout extends Rows
 {
@@ -26,7 +27,6 @@ class ClinicEditLayout extends Rows
                 ->required()
                 ->title(__('Name'))
                 ->placeholder(__('Clinic Name')),
-
             Input::make('clinic.location')
                 ->type('text')
                 ->max(255)
@@ -60,6 +60,20 @@ class ClinicEditLayout extends Rows
                 ->value(1)
                 ->title(__('Status'))
                 ->placeholder(__('Clinic Status')),
+
+            // Add the Banner Image Upload Field
+            Upload::make('clinic.banner_image')
+                ->title(__('Banner Image'))
+                ->maxFiles(1) // Allow only one file to be uploaded
+                ->acceptedFiles('image/*') // Accept only image files
+                ->placeholder(__('Upload Clinic Banner Image')),
+
+            // Add the Profile Icon Upload Field
+            Upload::make('clinic.profile_icon')
+                ->title(__('Profile Icon'))
+                ->maxFiles(1) // Allow only one file to be uploaded
+                ->acceptedFiles('image/*') // Accept only image files
+                ->placeholder(__('Upload Clinic Profile Icon')),
         ];
     }
 }

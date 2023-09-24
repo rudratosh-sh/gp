@@ -10,6 +10,8 @@ use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
+use Orchid\Screen\Fields\Image as ImageField;
+use Orchid\Support\Facades\Layout;
 
 class ClinicListLayout extends Table
 {
@@ -35,6 +37,18 @@ class ClinicListLayout extends Table
                 ->sort()
                 ->filter(Input::make())
                 ->render(fn (Clinic $clinic) => $clinic->location),
+
+            TD::make('banner_image', __('Banner Image'))
+                ->render(function (Clinic $clinic) {
+                    // Check if the clinic has a banner image
+                    if ($clinic->banner_image) {
+                        // Render the Blade component for the image preview
+                        return view('components.clinic_banner_image', ['image' => $clinic->banner_image]);
+                    }
+
+                    // If there's no image, display a placeholder or empty text
+                    return __('No Image');
+                }),
 
             TD::make('latitude', __('Latitude'))
                 ->sort()
@@ -70,6 +84,5 @@ class ClinicListLayout extends Table
                         'id' => $clinic->id,
                     ])),
         ];
-
     }
 }

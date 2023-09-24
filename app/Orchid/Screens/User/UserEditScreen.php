@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Orchid\Access\Impersonation;
-use Orchid\Platform\Models\User;
+// use Orchid\Platform\Models\User;
+use App\Models\User;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
@@ -156,6 +157,10 @@ class UserEditScreen extends Screen
                 'required',
                 Rule::unique(User::class, 'email')->ignore($user),
             ],
+            'user.mobile' => [
+                'required',
+                Rule::unique(User::class, 'mobile')->ignore($user),
+            ],
         ]);
 
         $permissions = collect($request->get('permissions'))
@@ -169,8 +174,9 @@ class UserEditScreen extends Screen
 
         $user
             ->fill($request->collect('user')->except(['password', 'permissions', 'roles'])->toArray())
-            ->fill(['permissions' => $permissions])
+            ->fill(['permissions' => $permissions, 'mobile' => $request->input('user.mobile')]) // Include 'mobile' field
             ->save();
+
 
         $user->replaceRoles($request->input('user.roles'));
 

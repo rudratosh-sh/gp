@@ -27,6 +27,8 @@ class Clinic extends Model
         'longitude',
         'status',
         'address',
+        'banner_image',
+        'profile_icon'
     ];
 
     /**

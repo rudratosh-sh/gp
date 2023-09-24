@@ -10,6 +10,7 @@ use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Rows;
 use App\Models\Doctor;
 use App\Models\Clinic;
+use App\Models\User;
 use App\Models\Speciality;
 
 class DoctorEditLayout extends Rows
@@ -28,10 +29,10 @@ class DoctorEditLayout extends Rows
                 ->title(__('Clinic'))
                 ->placeholder(__('Select Clinic')),
 
-            Input::make('doctor.name')
-                ->type('text')
-                ->max(255)
+            Select::make('doctor.user_id')
+                ->fromModel(User::doctors()->get(), 'name', 'id')
                 ->required()
+                ->readonly()
                 ->title(__('Name'))
                 ->placeholder(__('Doctor Name')),
 

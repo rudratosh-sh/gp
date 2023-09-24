@@ -20,6 +20,8 @@ class Doctor extends Model
         'clinic_id',
         'speciality_id',
         'price',
+        'doctor_id',
+        'user_id'
         // Add other fillable attributes here
     ];
 
@@ -73,4 +75,9 @@ class Doctor extends Model
      * @var bool
      */
     public $timestamps = true;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

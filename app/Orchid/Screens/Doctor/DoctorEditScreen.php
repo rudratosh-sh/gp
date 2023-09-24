@@ -14,6 +14,9 @@ use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 use Orchid\Support\Color;
 use Orchid\Screen\Fields\Input;
+use App\Events\DoctorCreated;
+use App\Events\DoctorUpdated;
+
 
 class DoctorEditScreen extends Screen
 {
@@ -131,10 +134,17 @@ class DoctorEditScreen extends Screen
 
         $doctor->save();
 
+        if ($doctor->wasRecentlyCreated) {
+            event(new DoctorCreated($doctor, $request->user()));
+        } else {
+            event(new DoctorUpdated($doctor, $request->user()));
+        }
+
         Toast::info(__('Doctor was saved.'));
 
         return redirect()->route('platform.systems.doctors');
     }
+
 
 
     /**

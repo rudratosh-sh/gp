@@ -29,7 +29,7 @@ class DoctorListLayout extends Table
                 ->sort()
                 ->filter(Input::make())
                 ->render(function (Doctor $doctor) {
-                    return Link::make($doctor->name)
+                    return Link::make($doctor->user->name)
                         ->route('platform.systems.doctors.edit', $doctor->id)
                         ->icon('bs.pencil');
                 }),

@@ -16,6 +16,7 @@ use Orchid\Support\Color;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Screen\Layouts\Columns;
+use Orchid\Screen\Fields\Upload;
 
 
 class ClinicEditScreen extends Screen
@@ -106,37 +107,66 @@ class ClinicEditScreen extends Screen
                         ->method('save')
                 ),
 
-                // // Add Google Autocomplete input fields
-                // Layout::rows([
-                //     Input::make('clinic.location')
-                //         ->title('Location')
-                //         ->required()
-                //         ->id('clinic-location'),
-        
-                //     Input::make('clinic.latitude')
-                //         ->title('Latitude')
-                //         ->readonly()
-                //         ->id('clinic-latitude'),
-        
-                //     Input::make('clinic.longitude')
-                //         ->title('Longitude')
-                //         ->readonly()
-                //         ->id('clinic-longitude'),
-                // ]),
+            // Add Google Autocomplete input fields
+            // Layout::rows([
+            //     // Input::make('clinic.location')
+            //     //     ->title('Location')
+            //     //     ->required()
+            //     //     ->id('clinic-location'),
+
+            //     // Input::make('clinic.latitude')
+            //     //     ->title('Latitude')
+            //     //     ->readonly()
+            //     //     ->id('clinic-latitude'),
+
+            //     // Input::make('clinic.longitude')
+            //     //     ->title('Longitude')
+            //     //     ->readonly()
+            //     //     ->id('clinic-longitude'),
+
+            //     // Add the Banner Image Upload Field
+            //     // Upload::make('clinic.banner_image')
+            //     //     ->title(__('Banner Image'))
+            //     //     ->maxFiles(1) // Allow only one file to be uploaded
+            //     //     ->acceptedFiles('image/*') // Accept only image files
+            //     //     ->placeholder(__('Upload Clinic Banner Image')),
+
+            //     // // Add the Profile Icon Upload Field
+            //     // Upload::make('clinic.profile_icon')
+            //     //     ->title(__('Profile Icon'))
+            //     //     ->maxFiles(1) // Allow only one file to be uploaded
+            //     //     ->acceptedFiles('image/*') // Accept only image files
+            //     //     ->placeholder(__('Upload Clinic Profile Icon')),
+            // ]),
         ];
     }
+
+
 
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
     public function save(Clinic $clinic, Request $request)
     {
-        $clinic->fill($request->get('clinic'))->save();
+        // Fill the clinic data from the request
+        $clinicData = $request->input('clinic');
 
+        // Handle the file uploads
+        if ($request->hasFile('clinic.banner_image')) {
+            $bannerImage = $request->file('clinic.banner_image');
+            $clinicData['banner_image'] = $bannerImage->store('clinic_images', 'public');
+        }
+
+        if ($request->hasFile('clinic.profile_icon')) {
+            $profileIcon = $request->file('clinic.profile_icon');
+            $clinicData['profile_icon'] = $profileIcon->store('clinic_images', 'public');
+        }
+
+        $clinic->fill($clinicData)->save();
         Toast::info(__('Clinic was saved.'));
-
         return redirect()->route('platform.systems.clinics');
     }
+
 
     /**
      * @throws \Exception
