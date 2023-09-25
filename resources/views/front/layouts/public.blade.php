@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Public Web App</title>
+    <title>GP Web App</title>
     <link href="{{ asset('css/public.css') }}" rel="stylesheet">
     <!-- Include any other CSS files -->
 

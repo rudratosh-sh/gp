@@ -2,24 +2,8 @@
 @section('content')
     <div class="container">
         <!-- HEADER -->
-        <header>
-            <div class="header_col">
-                <div class="super_logo">
-                    <img class="site_logo" src="{{ asset('assets/logo.png') }}" alt="Logo">
-                </div>
-                <div class="user_details">
-                    <div class="notifications">
-                        <img src="{{ asset('assets/bell-notification.png') }}" alt="Notifications">
-                    </div>
-                    <div class="login_user">
-                        <div class="circle">
-                            <img src="{{ asset('assets/images/chat-profile.png') }}" alt="Profile">
-                        </div>
-                        <h4 class="user_name_txt">John Doe</h4>
-                    </div>
-                </div>
-            </div>
-        </header>
+        @include('front.includes.header')
+
         <div class="space_container">
             <!-- SIDE BAR -->
             <ul class="sidebar">
@@ -101,4 +85,5 @@
             <div class="b-menu"><img src="{{ asset('assets/images/menu5.png') }}" alt="Menu 5"></div>
         </div>
     </div>
-@endsection
+    @include('front.includes.footer')
+    @endsection

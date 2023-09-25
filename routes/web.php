@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AppointmentController;
 /*
@@ -46,4 +47,8 @@ Route::post('/scheduleStore', [AppointmentController::class, 'storeAppointment']
 Route::get('/appointment-landing', [AppointmentController::class, 'getAppointments'])->name('appointment.schedule.list');
 
 
+
+/**Doctor**/
+Route::get('/staff-signin', [DoctorController::class, 'signin'])->name('doctor.signin.get');
+Route::post('/staff-signin', [DoctorController::class, 'signInProcess'])->name('doctor.signin.post');
 
