@@ -1,6 +1,6 @@
-@extends('front.layouts.public')
-<style>
-    /* CSS styles for the updated search box */
+@extends('patient.layouts.public')
+{{-- <style>
+    CSS styles for the updated search box
     .search-container {
         display: flex;
         justify-content: space-between;
@@ -86,11 +86,11 @@
         width: 24px;
         height: 24px;
     }
-</style>
+</style> --}}
 @section('content')
     <div class="container">
         <!-- HEADER -->
-        @include('front.includes.header')
+        @include('patient.includes.header')
 
         <div class="space_container">
             <!-- SIDE BAR -->

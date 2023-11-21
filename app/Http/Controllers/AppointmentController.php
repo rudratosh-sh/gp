@@ -36,7 +36,7 @@ class AppointmentController extends Controller
         // Retrieve the list of doctors along with their user details
         $doctors = Doctor::with('user')->get();
 
-        return view('front.appointment.booking-appointment', ['user' => $user, 'locations' => $locations, 'doctors' => $doctors]);
+        return view('patient.appointment.booking-appointment', ['user' => $user, 'locations' => $locations, 'doctors' => $doctors]);
     }
 
     public function searchClinicsDoctors(Request $request)
@@ -86,7 +86,7 @@ class AppointmentController extends Controller
         // Fetch all questions with section_id = 1
         $questions = Question::where('section_id', 1)->get();
 
-        return view('front.appointment.questionnaire', compact('clinics', 'doctor', 'questions'));
+        return view('patient.appointment.questionnaire', compact('clinics', 'doctor', 'questions'));
     }
 
     public function questionnaireStore(Request $request)
@@ -121,7 +121,7 @@ class AppointmentController extends Controller
                 'end' => '2023-10-21 17:30:00',
             ];
         }
-        return view('front.appointment.schedule', ['userData' => $userData, 'events' => $events]);
+        return view('patient.appointment.schedule', ['userData' => $userData, 'events' => $events]);
     }
 
 
@@ -178,7 +178,7 @@ class AppointmentController extends Controller
         $appointments->load('doctor', 'clinic');
 
         // Return the Blade view with the appointments data
-        return view('front.appointment.list', compact('appointments'));
+        return view('patient.appointment.list', compact('appointments'));
     }
 
     // Read (Show)

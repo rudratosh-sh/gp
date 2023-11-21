@@ -8,7 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
@@ -18,11 +18,10 @@ class DashboardController extends Controller
         if (auth()->check()) {
             // If authenticated, retrieve the authenticated user's data
             $user = auth()->user();
-        }else {
+        } else {
             // If not authenticated, return a 404 error
             abort(Response::HTTP_FORBIDDEN);
         }
-
-        return view('front.dashboard.index', ['user' => $user]);
+        return view('patient.dashboard.index', ['user' => $user]);
     }
 }

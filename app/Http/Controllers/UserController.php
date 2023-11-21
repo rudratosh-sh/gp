@@ -15,13 +15,16 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\CreditCardInfo;
 use App\Rules\CreditCard;
 use App\Models\Role;
+use Stripe\Stripe;
+use Stripe\Charge;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
     // Display the sign-up form
     public function signupForm()
     {
-        return view('front.users.signup');
+        return view('patient.users.signup');
     }
 
     // Handle user registration
@@ -93,7 +96,7 @@ class UserController extends Controller
         // Calculate the OTP expiration here (you can adjust this logic as needed)
         $otpExpiration = now()->addMinutes(5); // This sets the expiration to 5 minutes from now
 
-        return view('front.users.otp-verification', compact('userData', 'otpExpiration'));
+        return view('patient.users.otp-verification', compact('userData', 'otpExpiration'));
     }
 
     // Handle OTP verification with a dummy OTP (you can replace this with actual OTP verification logic)
@@ -114,6 +117,8 @@ class UserController extends Controller
         // Check if the entered OTP matches the stored OTP (dummy OTP check)
         if ($enteredOtp === $dummyOtp) {
             $user = Auth::user();
+            // Authenticating the user via Laravel's Auth system
+            Auth::login($user);
             // After OTP verification is successful in `verifyOtp` method
             $user->signupStatus()->update(['otp_verification' => true]);
             // Return a success response with user data
@@ -134,7 +139,7 @@ class UserController extends Controller
         if (!$userData) {
             return redirect()->route('user.signup.get')->with('error', 'User data not found.');
         }
-        return view('front.users.verify-medicare', compact('userData'));
+        return view('patient.users.verify-medicare', compact('userData'));
     }
 
     public function verifyMedicare(Request $request)
@@ -218,7 +223,7 @@ class UserController extends Controller
         if (!$userData) {
             return redirect()->route('user.signup.get')->with('error', 'User data not found.');
         }
-        return view('front.users.verify-credit-card', compact('userData'));
+        return view('patient.users.verify-credit-card', compact('userData'));
     }
 
     public function verifyCreditCard(Request $request)
@@ -268,7 +273,9 @@ class UserController extends Controller
         $creditCardInfo->save();
         // After credit card verification is successful in `verifyCreditCard` method
         auth()->user()->signupStatus()->update(['card_details_verification' => true]);
-
+        $user = auth()->user();
+        // Authenticating the user via Laravel's Auth system
+        Auth::login($user);
         // Redirect to a success page or perform any other necessary actions
         return redirect()->route('dashboard.index.get');
     }
@@ -277,7 +284,7 @@ class UserController extends Controller
     // Handle user login (you can implement this)
     public function signin(Request $request)
     {
-        return view('front.users.signin');
+        return view('patient.users.signin');
     }
 
     // Handle user login (you can implement this)
@@ -289,13 +296,19 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
+        $credentials = [
+            filter_var($request->input('mobile_or_email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile' => $request->input('mobile_or_email'),
+            'password' => $request->input('password'),
+        ];
+
         // Attempt to log in the user
-        if (
-            Auth::attempt(['email' => $request->input('mobile_or_email'), 'password' => $request->input('password')]) ||
-            Auth::attempt(['mobile' => $request->input('mobile_or_email'), 'password' => $request->input('password')])
-        ) {
+        if (Auth::attempt($credentials)) {
+            // Retrieve the authenticated user
+            $user = Auth::user();
+            // Authenticating the user via Laravel's Auth system
+            Auth::login($user);
             // Check if the user has completed all steps
-            $signupStatus = auth()->user()->signupStatus;
+            $signupStatus = $user->signupStatus;
 
             if (!$signupStatus->basic_details) {
                 // Redirect to the basic details step
@@ -338,4 +351,36 @@ class UserController extends Controller
             ]
         );
     }
+
+    // public function verifyCard(Request $request)
+    // {
+    //     // Set your Stripe API key
+    //     Stripe::setApiKey(config('services.stripe.secret'));
+
+    //     // Collect card details from the form
+    //     $cardDetails = [
+    //         'number' => '4242424242424242',
+    //         'exp_month' => '09',
+    //         'exp_year' => '2024',
+    //         'cvc' => '342',
+    //     ];
+
+    //     Stripe::setApiKey('sk_test_51NuItUKowBPdmLR1YEmIsqgVaut4Up6J5ANg7LfBLRFwF4hkSZIZJZkZPGhPOonSKL2HMc9BMBy6nwGx3Y05y2pC00hwvzcu5S');
+    //     $token = 'tok_visa';
+    //     try {
+    //         // Create a test charge to verify the card
+    //        $s =  Charge::create([
+    //             'amount' => 1,  // $1.00
+    //             'currency' => 'inr',
+    //             'source' => $token,
+    //         ]);
+
+    //         dd($s);
+    //         // Card is verified, proceed accordingly
+    //         return redirect()->back()->with('success', 'Card verified successfully');
+    //     } catch (\Exception $e) {
+    //         // Card verification failed
+    //         return redirect()->back()->with('error', 'Card verification failed: ' . $e->getMessage());
+    //     }
+    // }
 }
