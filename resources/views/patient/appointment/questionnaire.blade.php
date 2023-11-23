@@ -81,7 +81,7 @@
 
                         <!-- Replace the following sections with dynamic data -->
                         <!-- You can use Blade directives to loop through data and display it -->
-                        <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
+                        <input type="hidden" name="doctor_id" value="{{ $doctor->user_id }}">
                         <div class="question_container_pg6">
                             @foreach ($questions as $question)
                                 <div class="asking_problem">

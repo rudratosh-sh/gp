@@ -660,4 +660,101 @@
             });
         }
     </script>
+
+    <!-- notification script -->
+    <script>
+        $(document).ready(function() {
+            let openCard = $(".open-card");
+            let rightMessagesBtn = $('.right-messages');
+            let headerUserProfile = $(".login_user");
+            let openNotificationModal = $("#openNotificationModal");
+
+            const activityCards = $(".activity-card");
+            openCard.each(function(index) {
+                $(this).on('click', function(event) {
+                    event.stopPropagation();
+
+                    activityCards.each(function(i) {
+                        if (i !== index) {
+                            $(this).hide();
+                        }
+                    });
+
+                    const activityCard = activityCards.eq(index);
+                    if (activityCard.css('display') === 'none' || activityCard.css('display') ===
+                        '') {
+                        activityCard.css('display', 'flex');
+                    } else {
+                        activityCard.css('display', 'none');
+                    }
+                });
+            });
+
+            $(".activity-btn").on("click", function() {
+                $(".backdrop").addClass("backdrop-open");
+                $(".model-content-activity").removeClass("hide");
+            });
+
+            $("div.close").on("click", function() {
+                $(".backdrop").removeClass("backdrop-open");
+                $(".model-content-activity").addClass("hide");
+            });
+
+            function openModalContainer(event) {
+                $(".modal-container").css('display', 'block');
+            }
+
+            rightMessagesBtn.each(function() {
+                $(this).on('click', openModalContainer);
+            });
+
+            function closeModalContainer(event) {
+                let modalContainer = $(".modal-container");
+
+                if (modalContainer.css('display') === 'block' && $(event.target).hasClass('modal-container')) {
+                    modalContainer.css('display', 'none');
+                }
+            }
+
+            $(document).on('click', closeModalContainer);
+            function handleHeaderUserProfile() {
+                let userPopup = $('.user_profile_popup');
+                let userProfileImage = $('.circles').find('img');
+                let userName = $('.user_name_txts');
+
+                if (userPopup.css('display') === 'flex') {
+                    userPopup.css('display', 'none');
+                } else {
+                    userPopup.css('display', 'flex');
+                }
+
+                $(document).on('click', function(event) {
+                    if (!$(event.target).is(userProfileImage) && !$(event.target).is(userName) && !$(event
+                            .target).is(userPopup)) {
+                        userPopup.css('display', 'none');
+                    }
+                });
+            }
+            headerUserProfile.on('click', handleHeaderUserProfile);
+            function closeNotificationModalContainer(event) {
+                let modalContainer = $(".modal-container-notification");
+
+                if (modalContainer.css('display') === 'block' && $(event.target).hasClass(
+                        'modal-container-notification')) {
+                    modalContainer.css('display', 'none');
+                }
+            }
+
+            function openNotificationModalContainer(event) {
+                $(".modal-container-notification").css('display', 'block');
+            }
+            openNotificationModal.on('click', openNotificationModalContainer);
+            $(document).on('click', closeNotificationModalContainer);
+
+            function navigateToPage(pageURL) {
+                window.location.href = pageURL;
+            }
+        });
+
+    </script>
 @endsection

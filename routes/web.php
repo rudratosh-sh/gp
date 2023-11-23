@@ -58,5 +58,7 @@ Route::get('/', function () {
     Route::post('/doctor/staff-signin', [DoctorController::class, 'signInProcess'])->name('doctor.signin.post');
 
     Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard.get');
+    Route::get('/doctor/getAppointments', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.get');
+
 
 // });

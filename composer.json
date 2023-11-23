@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "orchid/crud": "^4.0",
         "orchid/platform": "^14.0",
+        "pusher/pusher-php-server": "^7.2",
         "stripe/stripe-php": "^10.21",
         "yoeunes/toastr": "^2.3"
     },
@@ -30,7 +31,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/Helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

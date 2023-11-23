@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Orchid\Support\Facades\Toast;
 use Illuminate\Http\Response;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DoctorController extends Controller
 {
@@ -75,6 +77,29 @@ class DoctorController extends Controller
             // If not authenticated, return a 404 error
             abort(Response::HTTP_FORBIDDEN);
         }
-        return view('doctor.pages.booked-appointment', ['user' => $doctor,'appointments'=>$appointments]);
+        return view('doctor.pages.booked-appointment', ['user' => $doctor, 'appointments' => $appointments]);
     }
+    public function getAppointments(Request $request)
+    {
+        $selectedDate = $request->input('selectedDate');
+
+        // Log the selected date
+        Log::info('Selected Date: ' . $selectedDate.'id'.auth()->id());
+
+        // Retrieve appointments based on the date part of the appointment_date_time
+        $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
+            ->where('doctor_id', auth()->id()) // Assuming the current user ID is the doctor's ID
+            ->get();
+
+        // Log the generated SQL query
+        Log::info('SQL Query: ' . Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
+            ->where('doctor_id', auth()->id())->toSql());
+
+        // Load related data if necessary
+        $appointments->load('doctor', 'clinic');
+
+        // Return the appointments as JSON
+        return response()->json(['appointments' => $appointments]);
+    }
+
 }

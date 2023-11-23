@@ -1,6 +1,12 @@
 @extends('doctor.layouts.doctor-layout')
 
 @section('content')
+    <style>
+        .right-hr {
+            border-right: 1px solid black;
+            width: 45px;
+        }
+    </style>
     <!-- MESSAGES MODAL Start-->
     @include('doctor.modals.messages')
     <!-- MESSAGES MODAL end-->
@@ -50,22 +56,22 @@
         <!-- Appointment Calender End-->
 
         <!-- Appointment List Start -->
-        {{-- <div style="width:100%;">
+        <div style="width:100%;">
             <div id="test" style="display: flex; margin-top: 20px;">
-                <div class="current-months"></div>
+                <div class="current-months">{{ now()->format('d F Y') }}</div>
                 <div id="test1" style="display: flex;">
-                    <button class="prev soft-btns"
+                    <button class="prev soft-btns" id="prevBtn"
                         style="background: #F8F8F8 0% 0% no-repeat padding-box;
-                border-radius: 10px;
-                opacity: 1;"><i
+                        border-radius: 10px;
+                        opacity: 1;cursor:pointer;"><i
                             class="fas fa-chevron-left"></i></button>
-                    <div
-                        style="height: 40px; padding: 7px 20px;font-weight: 400;color: #707070;opacity: 1;font-size: 16px;background: #F8F8F8 0% 0% no-repeat padding-box;border-radius: 10px;width: 92px;margin: 0 8px;">
+                    <div class="today-btn"
+                        style="height: 40px; padding: 7px 20px;font-weight: 400;color: #707070;opacity: 1;font-size: 16px;background: #F8F8F8 0% 0% no-repeat padding-box;border-radius: 10px;width: 92px;margin: 0 8px;cursor:pointer;">
                         Today</div>
-                    <button class="next soft-btns"
+                    <button class="next soft-btns" id="nextBtn"
                         style="background: #F8F8F8 0% 0% no-repeat padding-box;
-                border-radius: 10px;
-                opacity: 1;"><i
+                        border-radius: 10px;
+                        opacity: 1;cursor:pointer;"><i
                             class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
@@ -75,72 +81,17 @@
                 </div>
                 <div class="content-status">Waiting Area…</div>
             </div>
-            <div>
-                <div style="display: flex;margin-top: 20px;">
-                    <div class="card-left">
-                        <div>10:00 AM</div>
-                    </div>
-                    <hr style="height: 700px;" />
-
-
-                    <div class="card-right">
-                        <div class="card-right-content">
-                            <div style="display: flex;gap: 10px;align-items: center;">
-                                <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
-                                    style="height: 24px;width: 24px;" />
-                                <div>
-                                    <div onclick="navigateToPage('/gp/patient-details.html')" class="card-right-name">Sean
-                                        Rada
-                                    </div>
-                                    <div class="card-right-details">
-                                        <div>Male</div>
-                                        <div>45</div>
-                                        <div>1234567890</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div class="card-right-video">
-                                    Join in:
-                                    <span class="right-video-time">12:45</span>
-                                </div>
-                                <button class="right-video-camera">
-                                    <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
-                                        style="width: 24px;height: 16px;" />
-                                    <div class="right-video-start">Join Now</div>
-                                </button>
-                                <button class="right-messages">
-                                    <img src="../assets/images/messages.svg" alt="message"
-                                        style="width: 28px;height: 28px;margin: 0 20px;">
-                                </button>
-                                <button class="open-card"
-                                    style="position: relative;border-style: none;margin-right: 20px;margin-left:18px;">
-                                    <i class='fa fa-ellipsis-v'></i>
-                                    <div class="activity-card"
-                                        style="z-index:2;position: absolute;background: #FFF;width: 138px;height: 120px;box-shadow: 0px 3px 6px #00000029;border-radius: 7px;right:0;margin-right:1rem;margin-top:-1.5rem;display:none;flex-direction: column;align-items: flex-start;row-gap: 1.5rem;padding: 1rem;">
-                                        <span>Notify</span>
-                                        <span class="activity-btn">Activity</span>
-                                    </div>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        <!-- Appointment List Start -->
-        <!-- Appointment List Start -->
-        <div style="width:100%;">
             @for ($hour = 10; $hour <= 22; $hour++)
                 @php
                     $timeSlot = sprintf('%02d:00', $hour);
-                    $foundAppointment = false;
                 @endphp
                 <div id="slot_{{ $timeSlot }}" style="display: flex; margin-top: 20px;">
                     <div class="card-left">
-                        <div>{{ $timeSlot }}</div>
+                        <div class="right-hr">{{ $timeSlot }}</div>
                     </div>
-                    <hr style="height: 700px;" />
+                    @if ($hour == 10)
+                        {{-- <hr style="height: 700px;" /> --}}
+                    @endif
                     @if (isset($appointments))
                         @foreach ($appointments as $appointment)
                             @php
@@ -208,10 +159,6 @@
             @endfor
         </div>
         <!-- Appointment list end -->
-
-        <!-- Appointment list end -->
-
-        <!-- Appointment list end -->
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -240,6 +187,7 @@
             today.setHours(0, 0, 0, 0);
             renderCalendar();
 
+
             function renderCalendar() {
                 const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
                 const totalMonthDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -256,13 +204,74 @@
                         date.setDate(day);
                         date.setHours(0, 0, 0, 0);
                         let dayClass = date.getTime() === today.getTime() ? 'current-day' : 'month-day';
-                        calendarDays.append(`<div class='${dayClass}'>${day}</div>`);
+                        let $dayElement = $(`<div class='${dayClass}'>${day}</div>`);
+
+                        // Add click event to select date
+                        $dayElement.addClass('month-day').on('click', function() {
+                            $('.current-day').removeClass('current-day');
+                            $(this).addClass('current-day');
+
+                            // Handle logic when a date is selected here...
+                            // For example, trigger an AJAX call to fetch appointments
+                        });
+
+                        calendarDays.append($dayElement);
                     } else {
                         // adding next month days
                         calendarDays.append(`<div class='padding-day'>${day - totalMonthDay}</div>`);
                     }
                 }
+
+                // Ensure current day is set on initial render
+                $('.current-day').removeClass('current-day');
+                const todayElement = $(`.month-day:contains(${today.getDate()})`);
+                if (todayElement.length > 0) {
+                    todayElement.addClass('current-day');
+                }
             }
+
+
+            // Function to change the date on the right side
+            function changeRightSideDate(selectedDate) {
+                $('.content-right .status').text(selectedDate.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+
+                $('.current-months').text(selectedDate.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+            }
+
+            $(document).on('click', '.month-day', function() {
+                let day = parseInt($(this).text());
+                let month = $('.current-month').text().split(' ')[0];
+                let year = $('.current-month').text().split(' ')[1];
+
+                // Construct the date directly with year, month, and day values
+                let selectedDate = new Date(year, monthToNumber(month) - 1, day);
+                let selectedDateAjax = `${year}-${padZero(monthToNumber(month))}-${padZero(day)}`;
+
+                changeRightSideDate(selectedDate);
+                getAppointments(selectedDateAjax);
+            });
+
+            // Helper function to convert month name to number
+            function monthToNumber(month) {
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+                    'September', 'October', 'November', 'December'
+                ];
+                return months.indexOf(month) + 1;
+            }
+
+            // Helper function to pad single-digit months or days with zero
+            function padZero(num) {
+                return num.toString().padStart(2, '0');
+            }
+
 
             $(".soft-btn").on("click", function() {
                 date = new Date(currentMonth.text());
@@ -386,5 +395,74 @@
                 window.location.href = pageURL;
             }
         });
+
+        $(document).ready(function() {
+            // Function to change the date
+            function changeDate(delta) {
+                let currentDate = new Date($('.current-months').text());
+                currentDate.setDate(currentDate.getDate() + delta);
+
+                // Update the displayed date
+                $('.current-months').text(currentDate.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+
+                // Update the date on the right side
+                $('.content-right .status').text(currentDate.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+            }
+
+            // Event listener for the "Prev" button
+            $('#prevBtn').click(function() {
+                changeDate(-1);
+            });
+
+            // Event listener for the "Next" button
+            $('#nextBtn').click(function() {
+                changeDate(1);
+            });
+
+            // Event listener for the "Today" text
+            $('.today-btn').click(function() {
+                // Set the date to the current date
+                let today = new Date();
+                $('.current-months').text(today.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+
+                // Update the date on the right side to today's date
+                $('.content-right .status').text(today.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+            });
+        });
+
+        // Function to fetch appointments via AJAX
+        function getAppointments(selectedDate) {
+            $.ajax({
+                url: "{{ route('doctor.appointments.get') }}",
+                type: "GET",
+                data: {
+                    selectedDate: selectedDate
+                },
+                success: function(response) {
+                    // Handle the response and update the appointment slots accordingly
+                    // Example: Update appointment slots based on the received data
+                    // Here you'll update the slots using the received 'appointments' data in the response
+                },
+                error: function(error) {
+                    console.error('Error fetching appointments:', error);
+                }
+            });
+        }
     </script>
 @endsection

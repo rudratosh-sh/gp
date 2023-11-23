@@ -1,8 +1,8 @@
-@extends('patient.layouts.public')
+@extends('patient.front.layouts.public')
 @section('content')
     <div class="container">
         <!-- HEADER -->
-        @include('patient.includes.header')
+        @include('patient.front.includes.header')
 
         <div class="space_container">
             <!-- SIDE BAR -->
@@ -85,5 +85,4 @@
             <div class="b-menu"><img src="{{ asset('assets/images/menu5.png') }}" alt="Menu 5"></div>
         </div>
     </div>
-    @include('patient.includes.footer')
     @endsection

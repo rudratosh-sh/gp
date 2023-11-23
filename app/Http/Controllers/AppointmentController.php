@@ -16,6 +16,8 @@ use DateTime;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\WebSocketNotification;
+use App\Events\AppointmentCreated;
 
 class AppointmentController extends Controller
 {
@@ -51,7 +53,7 @@ class AppointmentController extends Controller
             ->get();
 
         // Fetch doctors based on the selected specialist
-        $doctors = Doctor::where('id', $specialistId)
+        $doctors = Doctor::where('user_id', $specialistId)
             ->with(['clinic', 'user', 'clinic.bannerImage', 'clinic.profileIcon']) // Load necessary relationships
             ->get();
 
@@ -71,7 +73,7 @@ class AppointmentController extends Controller
     public function questionnaire($doctorId)
     {
         // Fetch the doctor information using the $doctorId
-        $doctor = Doctor::find($doctorId);
+        $doctor = Doctor::where('user_id', $doctorId)->first();
 
         if (!$doctor) {
             // Handle the case where the doctor is not found
@@ -145,7 +147,7 @@ class AppointmentController extends Controller
             return Redirect::route('appointment.schedule')->withErrors(['error' => 'Doctor not found']);
         }
         // Retrieve the Doctor model based on the doctor_id
-        $doctor = Doctor::find($doctorId);
+        $doctor = Doctor::where('user_id',$doctorId)->first();
 
         // You can extract the 'clinic_id' from the relationship if it's available in your session data
         $clinicId = $doctor->clinic_id; // Replace this with the actual clinic_id
@@ -163,6 +165,20 @@ class AppointmentController extends Controller
             'details' => $validatedData['selectedDetails'],
         ]);
 
+        if($appointment){
+            $receiverId = $request->input('receiver_id'); // Replace this with your receiver ID retrieval logic
+            $notificationData = [
+                'sender_id' => Auth::id(), // The ID of the user triggering the notification
+                'receiver_id' => $doctorId,
+                'message' => "  has been scheduled an appointment for  ",
+                'title' => 'New Appointment Scheduled',
+                'notifiable_type' => 'App\Models\User',
+                'notifiable_id' =>$doctorId,
+            ];
+            // dd($notificationData);
+
+            WebSocketNotification::create($notificationData);
+        }
         // Return a response (you can customize the response format)
         return Redirect::route('dashboard.index.get')->with('success', 'Appointment created successfully');
     }

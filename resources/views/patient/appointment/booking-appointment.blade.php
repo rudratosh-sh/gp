@@ -149,7 +149,7 @@
                             <select class="search-box2" id="doctorSelect">
                                 <option value="">Select Doctor</option>
                                 @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->id }}">{{ $doctor->user->name }}</option>
+                                    <option value="{{ $doctor->user_id }}">{{ $doctor->user->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -177,7 +177,7 @@
                                         </div>
                                         <div class="right-section">
                                             <button class="button1">Get Referral</button>
-                                            <a class="button2" href="booking/{{ $doctor->id }}">Book a Visit</a>
+                                            <a class="button2" href="booking/{{ $doctor->user_id }}">Book a Visit</a>
                                             <button class="button3">Book Video Call</button>
                                         </div>
                                     </div>
@@ -268,7 +268,7 @@
                     </div>
                     <div class="right-section">
                         <button class="button1">Get Referral</button>
-                        <a class="button2" href="booking/${doctor.id}">Book a Visit</a>
+                        <a class="button2" href="booking/${doctor.user_id}">Book a Visit</a>
                         <button class="button3">Book Video Call</button>
                     </div>
                 </div>
