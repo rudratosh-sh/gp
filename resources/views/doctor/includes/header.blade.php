@@ -20,12 +20,10 @@
         </div>
     </div>
     <div class="flex items-center ml-10">
-        <!--
         <button class="header-message-icon">
             <span class="message-icon"></span>
             <img class="mes-icon-header" src="{{ asset('assets/images/messages2.svg') }}" alt="message">
         </button>
-        -->
         <button class="header-message-icon" id="openNotificationModal">
             <span class="noti-icon"></span>
             <img class="noti-icon-header" src="{{ asset('assets/bell-notification.png') }}" alt="" />

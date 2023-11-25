@@ -16,14 +16,20 @@ use DateTime;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
-use App\Models\WebSocketNotification;
 use App\Events\AppointmentCreated;
+use App\Events\NotificationEvent;
 
 class AppointmentController extends Controller
 {
+
     // Display the Dashboard
     public function index(Request $request)
     {
+        $title = 'New Notification Title';
+        $message = 'This is a test notification message.';
+
+        event(new NotificationEvent($title, $message));
+
         if (auth()->check()) {
             // If authenticated, retrieve the authenticated user's data
             $user = auth()->user();
@@ -31,6 +37,7 @@ class AppointmentController extends Controller
             // If not authenticated, return a 404 error
             abort(Response::HTTP_FORBIDDEN);
         }
+        $user = auth()->user();
 
         // Retrieve the list of unique locations from the Clinic model
         $locations = Clinic::with(['bannerImage', 'profileIcon'])->get();
@@ -175,9 +182,6 @@ class AppointmentController extends Controller
                 'notifiable_type' => 'App\Models\User',
                 'notifiable_id' =>$doctorId,
             ];
-            // dd($notificationData);
-
-            WebSocketNotification::create($notificationData);
         }
         // Return a response (you can customize the response format)
         return Redirect::route('dashboard.index.get')->with('success', 'Appointment created successfully');

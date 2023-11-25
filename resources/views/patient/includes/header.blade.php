@@ -6,30 +6,11 @@
   <!-- Notification MODAL Start-->
   @include('patient.modals.notification')
   <!-- Notification MODAL end-->
-{{-- <header>
-    <div class="header_col">
-        <div class="super_logo">
-            <img class="site_logo" src="{{ asset('assets/MaskGP1.png') }}" />
-        </div>
-        <div class="user_details">
-            <div class="notifications">
-                <img src="{{ asset('assets/bell.svg') }}" />
-            </div>
-            <div class="login_user">
-                <div class="circle"></div>
-                <h4 class="user_name_txt">{{ auth()->user()->name  }}</h4>
-            </div>
-        </div>
-    </div>
-</header> --}}
 <header class="header flex justify-between items-center bg-white">
     <div class="flex items-center">
         <div class="logo-wrapper">
             <img class="logo" width="134px" height="35px" src="{{ asset('assets/images/logo.png') }}" alt="" />
-            {{-- <div class="flex items-center logo-text">
-                <img class="mr-15" width="24px" height="24px" src="{{ asset('assets/images/hospital-user(1).svg') }}" alt="" />
-                <p class="text-grey1 text-22 font-semibold">{{ auth()->user()->name}}</p>
-            </div> --}}
+
         </div>
         <div class="flex links-wrapper xs-header-content">
             <div class="link active" style="visibility: hidden">

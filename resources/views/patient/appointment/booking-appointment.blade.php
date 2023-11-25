@@ -1,93 +1,18 @@
 @extends('patient.layouts.public')
-{{-- <style>
-    CSS styles for the updated search box
-    .search-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    .input_container {
-        flex: 1;
-        margin-right: 20px;
-        margin-top: 17px;
-    }
-
-    .search-box {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff;
-    }
-
-    .search-box2 {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff;
-    }
-
-    .search-button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    /* Style for spacing between location and doctor selection */
-    .pd-15 {
-        margin-top: 15px;
-    }
-
-    /* Update the CSS for the banner image */
-    .banner-image {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: cover;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        width: 100%;
-    }
-
-    /* Remove the height from .first-section */
-    .first-section {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0px !important;
-        background: #c7c7c7;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-    }
-
-    /* Keep the rest of your CSS styles as they are */
-    .card-clinic {
-        width: 304px;
-        height: auto;
-        /* Remove fixed height */
-        background: #FFFFFF;
-        box-shadow: 0px 1px 8px #00000029;
-        border-radius: 20px;
-        margin-right: 30px;
-    }
-
-    .second-section {
-        display: flex;
-        justify-content: space-between;
-        padding: 20px;
-    }
-
-    .navigate-image {
-        width: 24px;
-        height: 24px;
-    }
-</style> --}}
 @section('content')
+<style>
+    .a-tab-active{
+    color: white;
+    border: none;
+    text-decoration: none;
+    }
+
+    .a-tab-inactive{
+    color: #000;
+    border: none;
+    text-decoration: none;
+    }
+</style>
     <div class="container">
         <!-- HEADER -->
         @include('patient.includes.header')
@@ -95,11 +20,12 @@
         <div class="space_container">
             <!-- SIDE BAR -->
             <ul class="sidebar">
-                <li id="dashboard-tab">Dashboard</li>
-                <li class="active" id="booking-tab">Booking Appointment</li>
-                <li id="referral-tab">Referral Letter</li>
-                <li id="profile-tab">My Profile</li>
+                <li id="dashboard-tab"><a  class="a-tab-inactive"href="{{route('appointment.schedule.list')}}">Dashboard</a></li>
+                <li class="active" id="booking-tab"><a class="a-tab-active" href="{{route('appointment.index.get')}}">Booking Appointment</a></li>
+                <li id="referral-tab"><a  class="a-tab-inactive" href="#">Referral Letter</a></li>
+                <li id="profile-tab"><a  class="a-tab-inactive" href="#">My Profile</a></li>
             </ul>
+
             <!-- Main Content -->
             <div class="dis_flx">
                 <div class="booking_container">
@@ -377,4 +303,101 @@
 
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+        let openCard = $(".open-card");
+        let rightMessagesBtn = $('.right-messages');
+        let headerUserProfile = $(".login_user");
+        let openNotificationModal = $("#openNotificationModal");
+
+        const activityCards = $(".activity-card");
+        openCard.each(function(index) {
+            $(this).on('click', function(event) {
+                event.stopPropagation();
+
+                activityCards.each(function(i) {
+                    if (i !== index) {
+                        $(this).hide();
+                    }
+                });
+
+                const activityCard = activityCards.eq(index);
+                if (activityCard.css('display') === 'none' || activityCard.css('display') ===
+                    '') {
+                    activityCard.css('display', 'flex');
+                } else {
+                    activityCard.css('display', 'none');
+                }
+            });
+        });
+
+        $(".activity-btn").on("click", function() {
+            $(".backdrop").addClass("backdrop-open");
+            $(".model-content-activity").removeClass("hide");
+        });
+
+        $("div.close").on("click", function() {
+            $(".backdrop").removeClass("backdrop-open");
+            $(".model-content-activity").addClass("hide");
+        });
+
+        function openModalContainer(event) {
+            $(".modal-container").css('display', 'block');
+        }
+
+        rightMessagesBtn.each(function() {
+            $(this).on('click', openModalContainer);
+        });
+
+        function closeModalContainer(event) {
+            let modalContainer = $(".modal-container");
+
+            if (modalContainer.css('display') === 'block' && $(event.target).hasClass('modal-container')) {
+                modalContainer.css('display', 'none');
+            }
+        }
+
+        $(document).on('click', closeModalContainer);
+
+        function handleHeaderUserProfile() {
+            let userPopup = $('.user_profile_popup');
+            let userProfileImage = $('.circles').find('img');
+            let userName = $('.user_name_txts');
+
+            if (userPopup.css('display') === 'flex') {
+                userPopup.css('display', 'none');
+            } else {
+                userPopup.css('display', 'flex');
+            }
+
+            $(document).on('click', function(event) {
+                if (!$(event.target).is(userProfileImage) && !$(event.target).is(userName) && !$(event
+                        .target).is(userPopup)) {
+                    userPopup.css('display', 'none');
+                }
+            });
+        }
+        headerUserProfile.on('click', handleHeaderUserProfile);
+
+        function closeNotificationModalContainer(event) {
+            let modalContainer = $(".modal-container-notification");
+
+            if (modalContainer.css('display') === 'block' && $(event.target).hasClass(
+                    'modal-container-notification')) {
+                modalContainer.css('display', 'none');
+            }
+        }
+
+        function openNotificationModalContainer(event) {
+            $(".modal-container-notification").css('display', 'block');
+        }
+        openNotificationModal.on('click', openNotificationModalContainer);
+        $(document).on('click', closeNotificationModalContainer);
+
+        function navigateToPage(pageURL) {
+            window.location.href = pageURL;
+        }
+    });
+</script>
 @endsection

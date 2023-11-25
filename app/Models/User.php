@@ -29,6 +29,7 @@ class User extends Authenticatable
         'mobile',
         'country_code',
         'avatar',
+        'about_me'
     ];
 
     /**

@@ -1,8 +1,8 @@
-@extends('patient.front.layouts.public')
+@extends('patient.layouts.public')
 @section('content')
     <div class="container">
         <!-- HEADER -->
-        @include('patient.front.includes.header')
+        @include('patient.includes.header')
 
         <div class="space_container">
             <!-- SIDE BAR -->

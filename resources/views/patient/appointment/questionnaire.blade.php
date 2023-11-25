@@ -89,17 +89,17 @@
                                     <div class="speak_txt_content_pg6">
                                         @if ($question->input_type === 'text')
                                             <input type="text" name="answers[{{ $question->id }}]" class="user_txt_pg6" />
+                                            <img src="{{asset('/assets/mic.png')}}" alt="">
                                         @elseif ($question->input_type === 'file')
-                                            <div class="upload_photo_pg6">
-                                                <input type="file" name="answers[{{ $question->id }}]" accept="image/*" />
-                                            </div>
+                                            <label for="uploadFile_{{ $question->id }}" class="upload_photo_pg6">
+                                                <span>Upload Photo</span>
+                                                <input type="file" name="answers[{{ $question->id }}]" id="uploadFile_{{ $question->id }}" accept="image/*" style="display: none;">
+                                            </label>
                                         @endif
-                                        <img class="image_box_pg6" alt="" />
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-
                         <!-- Schedule Btn -->
                         <div class="schedule_btn_pg6">
                             <button>Schedule</button>

@@ -18,8 +18,12 @@ use App\Models\Role;
 use Stripe\Stripe;
 use Stripe\Charge;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Google\Cloud\Speech\V1\RecognitionAudio;
+use Google\Cloud\Speech\V1\RecognitionConfig;
+use Google\Cloud\Speech\V1\SpeechClient;
 
-class UserController extends Controller
+class PatientController extends Controller
 {
     // Display the sign-up form
     public function signupForm()
@@ -351,6 +355,99 @@ class UserController extends Controller
             ]
         );
     }
+
+    // Display patient profile
+    public function profile()
+    {
+        $user = Auth::user();
+        $profileData = User::where('id', $user->id)->with('medicareDetail')->first();
+        $fields = ['name', 'about_me', 'medicare_number', 'email', 'mobile', 'address'];
+
+        return view('patient.users.profile', compact('profileData', 'fields'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'about_me' => 'nullable|string|max:1000',
+            'email' => 'required|string|email|max:255',
+            'mobile' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|max:2048', // Adjust max file size as needed
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validatedData = $validator->validated();
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $randomName = Str::random(20);
+            $avatarPath = $avatar->storeAs('avatars', $randomName . '.' . $avatar->getClientOriginalExtension(), 'public');
+
+            // Save the public path in the database
+            $user->avatar = '/storage/' . $avatarPath;
+            $user->save();
+
+            unset($validatedData['avatar']);
+        }
+
+        // Update user profile data
+        $user->update($validatedData);
+
+        // Update medicareDetail if fields exist
+        if ($request->has('medicare_number') || $request->has('address')) {
+            $medicareDetail = $user->medicareDetail;
+
+            if ($request->has('medicare_number')) {
+                $medicareDetail->medicare_number = $request->input('medicare_number');
+            }
+
+            if ($request->has('address')) {
+                $medicareDetail->address = $request->input('address');
+            }
+
+            $medicareDetail->save();
+        }
+
+        return redirect()->route('patient.profile.get')->with('success', 'Profile updated successfully.');
+    }
+
+    public function convertSpeechToText()
+    {
+        $credentialsPath = env('GOOGLE_APPLICATION_CREDENTIALS');
+
+        $speech = new SpeechClient([
+            'credentials' => $credentialsPath,
+        ]);
+
+        $filePath = public_path('audio files/output_mono.wav');
+        $content = file_get_contents($filePath);
+
+        $audio = (new RecognitionAudio())->setContent($content);
+
+        $config = (new RecognitionConfig())
+            ->setEncoding(RecognitionConfig\AudioEncoding::LINEAR16)
+            ->setSampleRateHertz(44100) // Update to 44100 for 44.1 kHz
+            ->setLanguageCode('en-US');
+
+        $response = $speech->recognize($config, $audio);
+        $results = $response->getResults();
+
+        foreach ($results as $result) {
+            foreach ($result->getAlternatives() as $alternative) {
+                echo 'Transcript: ' . $alternative->getTranscript() . PHP_EOL;
+            }
+        }
+
+        $speech->close();
+    }
+
+
 
     // public function verifyCard(Request $request)
     // {
