@@ -82,5 +82,5 @@ Route::get('/test-google-credentials', function () {
     return "Google Cloud credentials path: $credentialsPath";
 });
 
-Route::get('/speech-to-text', [PatientController::class, 'convertSpeechToText']);
+Route::post('/speech-to-text', [PatientController::class, 'convertSpeechToText']);
 

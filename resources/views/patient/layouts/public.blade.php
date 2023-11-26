@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet" />
     <!-- Include any other CSS files -->
-
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <script src="{{ asset('js/public.js') }}"></script>
     <!-- Include any other JS files -->
 </head>

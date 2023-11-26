@@ -22,6 +22,8 @@ use Illuminate\Support\Str;
 use Google\Cloud\Speech\V1\RecognitionAudio;
 use Google\Cloud\Speech\V1\RecognitionConfig;
 use Google\Cloud\Speech\V1\SpeechClient;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class PatientController extends Controller
 {
@@ -417,37 +419,81 @@ class PatientController extends Controller
         return redirect()->route('patient.profile.get')->with('success', 'Profile updated successfully.');
     }
 
-    public function convertSpeechToText()
+    public function convertSpeechToText(Request $request)
     {
-        $credentialsPath = env('GOOGLE_APPLICATION_CREDENTIALS');
+        try {
+            $credentialsPath = env('GOOGLE_APPLICATION_CREDENTIALS');
+            $speech = new SpeechClient([
+                'credentials' => $credentialsPath,
+            ]);
 
-        $speech = new SpeechClient([
-            'credentials' => $credentialsPath,
-        ]);
+            $blobInput = $request->file('audio-blob');
+            $recodingFileName = uniqid() . '.wav';
+            // Save the uploaded audio file to the public directory
+            $recodingFilePath = public_path('recordings/' . $recodingFileName);
+            move_uploaded_file($blobInput, $recodingFilePath);
 
-        $filePath = public_path('audio files/output_mono.wav');
-        $content = file_get_contents($filePath);
+            $recodingFileNameConverted = uniqid() . '.wav';
+            $recodingFilePathConverted = public_path('recordings/converted/' . $recodingFileNameConverted);
 
-        $audio = (new RecognitionAudio())->setContent($content);
+            // Use ffmpeg to convert the uploaded audio file to mono
+            exec("ffmpeg -i $recodingFilePath -ac 1 " . $recodingFilePathConverted);
 
-        $config = (new RecognitionConfig())
-            ->setEncoding(RecognitionConfig\AudioEncoding::LINEAR16)
-            ->setSampleRateHertz(44100) // Update to 44100 for 44.1 kHz
-            ->setLanguageCode('en-US');
+            // Path to the converted mono audio file
+            $monoAudioPath = $recodingFilePathConverted;
 
-        $response = $speech->recognize($config, $audio);
-        $results = $response->getResults();
+            // Read the content of the mono audio file
+            $audioContent = file_get_contents($monoAudioPath);
 
-        foreach ($results as $result) {
-            foreach ($result->getAlternatives() as $alternative) {
-                echo 'Transcript: ' . $alternative->getTranscript() . PHP_EOL;
+            // Prepare RecognitionAudio and RecognitionConfig objects
+            $audio = (new RecognitionAudio())->setContent($audioContent);
+            $config = (new RecognitionConfig())
+                ->setEncoding(RecognitionConfig\AudioEncoding::LINEAR16)
+                ->setSampleRateHertz(48000) // Adjust based on the audio sample rate
+                ->setLanguageCode('en-US');
+
+            // Log the request details for debugging
+            Log::info('Speech-to-Text API Request', [
+                'config' => $config->serializeToJsonString(),
+                'audioSize' => strlen($audioContent),
+            ]);
+
+            // Use Speech-to-Text API to transcribe audio
+            $response = $speech->recognize($config, $audio);
+            $results = $response->getResults();
+
+            // Log the API response for debugging
+            Log::info('Speech-to-Text API Response', [
+                'results' => $results,
+            ]);
+
+            $transcripts = [];
+            foreach ($results as $result) {
+                foreach ($result->getAlternatives() as $alternative) {
+                    $transcripts[] = $alternative->getTranscript();
+                }
             }
+
+            // Close Speech-to-Text client
+            $speech->close();
+
+            // Clean up temporary files if needed
+            unlink($recodingFilePath); // Remove the uploaded audio file
+            unlink($monoAudioPath); // Remove converted mono audio file
+
+            return response()->json(['transcripts' => $transcripts]);
+        } catch (\Throwable $e) {
+            // Log any exceptions or errors
+            Log::error('Speech-to-Text API Error', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Handle the error gracefully or return an error response
+            return response()->json(['error' => 'An error occurred while processing speech.']);
         }
-
-        $speech->close();
     }
-
-
 
     // public function verifyCard(Request $request)
     // {
