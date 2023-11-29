@@ -5,7 +5,7 @@
     <title>GP Web App</title>
     {{-- <link href="{{ asset('css/public.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" /> --}}
-    <link href="{{ asset('css/doctor.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/patient.css') }}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet">
@@ -20,4 +20,5 @@
     <!-- Your layout structure -->
     @yield('content')
 </body>
+@include('patient.includes.footer')
 </html>

@@ -8,7 +8,15 @@
                     <span>Sean Rada</span>
                     <span>7 July 2023</span>
                 </div>
+                @if($messages = showMessagesWithUsers())
+                @foreach ($messages as $message)
+                    <div class="each-notification">
+                        <!-- Display old notifications -->
+                    </div>
+                @endforeach
+            @endif
             </div>
+            <input type="hidden" class="current_user_id" value="{{auth()->user()->id}}"/>
             <div class="conversation-body-message">
                 <div class="right-side-conversation-message">
                     <img src="{{ asset('assets/clinic-logo.png') }}" alt="logo" height="30" width="30" style="border: 1px solid #707070;border-radius: 50%;">

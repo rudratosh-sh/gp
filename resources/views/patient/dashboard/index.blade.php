@@ -124,37 +124,35 @@
         });
 
         document.getElementById('sendNotificationBtn').addEventListener('click', function() {
-    // Send AJAX request to trigger notification
-    fetch('/send-notification')
-        .then(response => response.text())
-        .then(data => {
-            console.log('Notification sent:', data);
-        })
-        .catch(error => {
-            console.error('Error sending notification:', error);
+            // Send AJAX request to trigger notification
+            fetch('/send-notification')
+                .then(response => response.text())
+                .then(data => {
+                    console.log('Notification sent:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending notification:', error);
+                });
         });
-});
-
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<script>
-   window.onload = function() {
-    console.log('Echo instance:', Echo);
+    <script>
+        window.onload = function() {
+            console.log('Echo instance:', Echo);
 
-    Echo.channel('app-test')
-        .listen('.NotificationEvent', (data) => {
-            console.log('Received data:', data); // Ensure this line logs the data correctly
+            Echo.channel('app-test')
+                .listen('.NotificationEvent', (data) => {
+                    console.log('Received data:', data); // Ensure this line logs the data correctly
 
-            // Rest of your code to display notifications...
-        })
-        .error((error) => {
-            console.error('Echo error:', error);
-        })
-        .listenForWhisper('typing', (e) => {
-            console.log('Whisper event:', e);
-        });
-};
-
-</script>
+                    // Rest of your code to display notifications...
+                })
+                .error((error) => {
+                    console.error('Echo error:', error);
+                })
+                .listenForWhisper('typing', (e) => {
+                    console.log('Whisper event:', e);
+                });
+        };
+    </script>
 @endsection

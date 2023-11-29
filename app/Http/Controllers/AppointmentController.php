@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use App\Events\AppointmentCreated;
 use App\Events\NotificationEvent;
+use App\Models\Message;
 
 class AppointmentController extends Controller
 {
@@ -154,7 +155,7 @@ class AppointmentController extends Controller
             return Redirect::route('appointment.schedule')->withErrors(['error' => 'Doctor not found']);
         }
         // Retrieve the Doctor model based on the doctor_id
-        $doctor = Doctor::where('user_id',$doctorId)->first();
+        $doctor = Doctor::where('user_id', $doctorId)->first();
 
         // You can extract the 'clinic_id' from the relationship if it's available in your session data
         $clinicId = $doctor->clinic_id; // Replace this with the actual clinic_id
@@ -172,7 +173,7 @@ class AppointmentController extends Controller
             'details' => $validatedData['selectedDetails'],
         ]);
 
-        if($appointment){
+        if ($appointment) {
             $receiverId = $request->input('receiver_id'); // Replace this with your receiver ID retrieval logic
             $notificationData = [
                 'sender_id' => Auth::id(), // The ID of the user triggering the notification
@@ -180,7 +181,7 @@ class AppointmentController extends Controller
                 'message' => "  has been scheduled an appointment for  ",
                 'title' => 'New Appointment Scheduled',
                 'notifiable_type' => 'App\Models\User',
-                'notifiable_id' =>$doctorId,
+                'notifiable_id' => $doctorId,
             ];
         }
         // Return a response (you can customize the response format)
@@ -192,7 +193,6 @@ class AppointmentController extends Controller
     {
         // Get a list of all appointments
         $appointments = Appointment::all();
-
         // Load related data (e.g., doctor and clinic details) if necessary
         // You can eager load relationships to avoid N+1 query issues
         $appointments->load('doctor', 'clinic');

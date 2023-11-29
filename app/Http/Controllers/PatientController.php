@@ -4,26 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\UserLocation;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Rules\MedicareNumber;
 use App\Models\MedicareDetail;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Crypt;
 use App\Models\CreditCardInfo;
 use App\Rules\CreditCard;
 use App\Models\Role;
-use Stripe\Stripe;
-use Stripe\Charge;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Google\Cloud\Speech\V1\RecognitionAudio;
 use Google\Cloud\Speech\V1\RecognitionConfig;
 use Google\Cloud\Speech\V1\SpeechClient;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Message;
 
 class PatientController extends Controller
 {
@@ -283,7 +278,7 @@ class PatientController extends Controller
         // Authenticating the user via Laravel's Auth system
         Auth::login($user);
         // Redirect to a success page or perform any other necessary actions
-        return redirect()->route('dashboard.index.get');
+        return redirect()->route('appointment.patient');
     }
 
 
@@ -331,7 +326,7 @@ class PatientController extends Controller
             }
 
             // Authentication was successful
-            return redirect()->route('dashboard.index.get')->with('success', 'Login successful!');
+            return redirect()->route('appointment.patient')->with('success', 'Login successful!');
         } else {
             // Authentication failed
             return redirect()->back()->with('error', 'Invalid credentials. Please try again.');
