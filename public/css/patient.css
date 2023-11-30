@@ -407,6 +407,11 @@
     border-radius: 12px;
     color: #59519e;
     border: 1px solid #59519e;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
   }
 
   .booking_title {
@@ -1183,7 +1188,7 @@
 
   .user_txt_pg6 {
     width: 95%;
-    height: 85px;
+    height: 55px;
     border-radius: 12px;
     border: 1px solid #cecece;
   }
@@ -1226,7 +1231,7 @@
 
   .user_txt_pg6 {
     width: 95%;
-    height: 85px;
+    height: 55px;
     border-radius: 12px;
     border: 1px solid #cecece;
   }

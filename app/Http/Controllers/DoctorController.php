@@ -66,9 +66,11 @@ class DoctorController extends Controller
         // Retrieve the 'doctor' variable from the session
         $doctor = $request->session()->get('doctor');
         // Get a list of all appointments
-        $appointments = Appointment::all();
+        $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
+                        ->where('doctor_id', auth()->id()) // Assuming the current user ID is the doctor's ID
+                        ->get();
         // Load related data (e.g., doctor and clinic details) if necessary
-        $appointments->load('doctor', 'clinic');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
 
         if (auth()->check()) {
             // If authenticated, retrieve the authenticated user's data
@@ -84,7 +86,7 @@ class DoctorController extends Controller
         $selectedDate = $request->input('selectedDate');
 
         // Log the selected date
-        Log::info('Selected Date: ' . $selectedDate.'id'.auth()->id());
+        Log::info('Selected Date: ' . $selectedDate . 'id' . auth()->id());
 
         // Retrieve appointments based on the date part of the appointment_date_time
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
@@ -96,10 +98,9 @@ class DoctorController extends Controller
             ->where('doctor_id', auth()->id())->toSql());
 
         // Load related data if necessary
-        $appointments->load('doctor', 'clinic');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
 
         // Return the appointments as JSON
         return response()->json(['appointments' => $appointments]);
     }
-
 }

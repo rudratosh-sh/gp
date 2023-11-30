@@ -7,13 +7,13 @@
             width: 45px;
         }
     </style>
-    <!-- MESSAGES MODAL Start-->
+    {{-- <!-- MESSAGES MODAL Start-->
     @include('doctor.modals.messages')
     <!-- MESSAGES MODAL end-->
 
     <!-- Notification MODAL Start-->
     @include('doctor.modals.notification')
-    <!-- Notification MODAL end-->
+    <!-- Notification MODAL end--> --}}
 
     <div class="content">
         <!-- Appointment Calender Start-->
@@ -81,82 +81,67 @@
                 </div>
                 <div class="content-status">Waiting Area…</div>
             </div>
-            @for ($hour = 10; $hour <= 22; $hour++)
-                @php
-                    $timeSlot = sprintf('%02d:00', $hour);
-                @endphp
-                <div id="slot_{{ $timeSlot }}" style="display: flex; margin-top: 20px;">
-                    <div class="card-left">
-                        <div class="right-hr">{{ $timeSlot }}</div>
-                    </div>
-                    @if ($hour == 10)
-                        {{-- <hr style="height: 700px;" /> --}}
-                    @endif
-                    @if (isset($appointments))
-                        @foreach ($appointments as $appointment)
-                            @php
-                                $appointmentTime = date('H:i', strtotime($appointment->appointment_date_time));
-                            @endphp
-                            @if ($timeSlot === $appointmentTime)
-                                <!-- Render each appointment for this time slot -->
-                                <div class="card-right">
-                                    <div class="card-right-content">
-                                        <div style="display: flex;gap: 10px;align-items: center;">
-                                            <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
-                                                style="height: 24px;width: 24px;" />
-                                            <div>
-                                                <div onclick="navigateToPage('/gp/patient-details.html')"
-                                                    class="card-right-name">
-                                                    {{ $appointment->user->name }}
-                                                    <!-- Assuming user's name exists in the appointment -->
-                                                </div>
-                                                <div class="card-right-details">
-                                                    <div>{{ $appointment->user->gender }}</div>
-                                                    <!-- Example: Display user's gender -->
-                                                    <div>{{ $appointment->user->age }}</div>
-                                                    <!-- Example: Display user's age -->
-                                                    <div>{{ $appointment->user->phone }}</div>
-                                                    <!-- Example: Display user's phone -->
-                                                </div>
-                                            </div>
+            <div style="display: flex;margin-top: 20px;">
+                <div class="card-right">
+                    @foreach ($appointments as $key => $appointment)
+                        {{-- @if ($timeSlot === $appointmentTime[$key]) --}}
+                        <!-- Render each appointment for this time slot -->
+                        <div class="card-right-content">
+                            <div style="display: flex;gap: 10px;align-items: center;">
+                                @if ($appointment->booking_type == 'video')
+                                    <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
+                                        style="height: 24px;width: 24px;" />
+                                @else
+                                    <img src="../assets/images/hospital-user(1).svg" alt="video-camera"
+                                        style="height: 24px;width: 24px;">
+                                @endif
+                                <div>
+                                    <div onclick="navigateToPage('/gp/patient-details.html')" class="card-right-name">
+                                        {{ $appointment->user->name }}
+                                        <!-- Assuming user's name exists in the appointment -->
+                                    </div>
+                                    <div class="card-right-details">
+                                        <div>{{ $appointment->medicareDetail->gender }}</div>
+                                        <!-- Example: Display user's gender -->
+                                        <div>
+                                            {{ \Carbon\Carbon::parse($appointment->medicareDetail->birthdate)->age . ' Years' }}
                                         </div>
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <div class="card-right-video">
-                                                Join in: <span class="right-video-time">{{ $timeSlot }}</span>
-                                            </div>
-                                            <button class="right-video-camera">
-                                                <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
-                                                    style="width: 24px;height: 16px;" />
-                                                <div class="right-video-start">Join Now</div>
-                                            </button>
-                                            <button class="right-messages">
-                                                <img src="../assets/images/messages.svg" alt="message"
-                                                    style="width: 28px;height: 28px;margin: 0 20px;">
-                                            </button>
-                                            <button class="open-card"
-                                                style="position: relative;border-style: none;margin-right: 20px;margin-left:18px;">
-                                                <i class='fa fa-ellipsis-v'></i>
-                                                <div class="activity-card"
-                                                    style="z-index:2;position: absolute;background: #FFF;width: 138px;height: 120px;box-shadow: 0px 3px 6px #00000029;border-radius: 7px;right:0;margin-right:1rem;margin-top:-1.5rem;display:none;flex-direction: column;align-items: flex-start;row-gap: 1.5rem;padding: 1rem;">
-                                                    <span>Notify</span>
-                                                    <span class="activity-btn">Activity</span>
-                                                </div>
-                                            </button>
-                                        </div>
+                                        <!-- Example: Display user's age -->
+                                        <div>{{ $appointment->user->country_code . '-' . $appointment->user->mobile }}</div>
+                                        <!-- Example: Display user's phone -->
                                     </div>
                                 </div>
-                            @endif
-                        @endforeach
-                    @else
-                        <!-- No appointments for this time slot -->
-                        <div class="card-right">
-                            <div class="card-right-content">
-                                <div>No Appointments</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="card-right-video">
+                                    Join in: <span
+                                        class="right-video-time">{{ date('H:i', strtotime($appointment->appointment_date_time)) }}</span>
+                                </div>
+                                <button class="right-video-camera">
+                                    <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
+                                        style="width: 24px;height: 16px;" />
+                                    <div class="right-video-start">Join Now</div>
+                                </button>
+                                <button class="right-messages">
+                                    <img src="../assets/images/messages.svg" alt="message"
+                                        style="width: 28px;height: 28px;margin: 0 20px;">
+                                </button>
+                                <button class="open-card"
+                                    style="position: relative;border-style: none;margin-right: 20px;margin-left:18px;">
+                                    <i class='fa fa-ellipsis-v'></i>
+                                    <div class="activity-card"
+                                        style="z-index:2;position: absolute;background: #FFF;width: 138px;height: 120px;box-shadow: 0px 3px 6px #00000029;border-radius: 7px;right:0;margin-right:1rem;margin-top:-1.5rem;display:none;flex-direction: column;align-items: flex-start;row-gap: 1.5rem;padding: 1rem;">
+                                        <span>Notify</span>
+                                        <span class="activity-btn">Activity</span>
+                                    </div>
+                                </button>
                             </div>
                         </div>
-                    @endif
+                        {{-- @endif --}}
+                    @endforeach
                 </div>
-            @endfor
+            </div>
+
         </div>
         <!-- Appointment list end -->
     </div>
@@ -415,6 +400,15 @@
                     month: 'long',
                     year: 'numeric'
                 }));
+                // Get the year, month, and day values from the currentDate object
+                let year = currentDate.getFullYear();
+                let month = String(currentDate.getMonth() + 1).padStart(2,
+                    '0'); // Adding 1 to month because it's zero-based
+                let day = String(currentDate.getDate()).padStart(2, '0');
+
+                // Format the date as 'Y-m-d' (Year-Month-Day)
+                let formattedDate = `${year}-${month}-${day}`;
+                getAppointments(formattedDate)
             }
 
             // Event listener for the "Prev" button
@@ -443,8 +437,54 @@
                     month: 'long',
                     year: 'numeric'
                 }));
+
+                // Get the year, month, and day values from the currentDate object
+                let year = today.getFullYear();
+                let month = String(today.getMonth() + 1).padStart(2,
+                    '0'); // Adding 1 to month because it's zero-based
+                let day = String(today.getDate()).padStart(2, '0');
+
+                // Format the date as 'Y-m-d' (Year-Month-Day)
+                let formattedDate = `${year}-${month}-${day}`;
+                getAppointments(formattedDate)
             });
         });
+
+        function convertToAMPM(dateTimeString) {
+            const dateTime = new Date(dateTimeString);
+
+            // Get hours and minutes
+            let hours = dateTime.getHours();
+            const minutes = dateTime.getMinutes();
+
+            // Convert hours to AM/PM format
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours %= 12;
+            hours = hours || 12; // Handle midnight (0 hours)
+
+            // Format minutes to have leading zero if less than 10
+            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+            // Construct the formatted time string
+            const formattedTime = `${hours}:${formattedMinutes} ${ampm}`;
+
+            return formattedTime;
+        }
+
+        // Function to calculate age from birthdate
+        function calculateAge(birthdate) {
+            const today = new Date();
+            const dob = new Date(birthdate);
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+
+            // Check if the current month is before the birth month
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            return age;
+        }
 
         // Function to fetch appointments via AJAX
         function getAppointments(selectedDate) {
@@ -455,9 +495,57 @@
                     selectedDate: selectedDate
                 },
                 success: function(response) {
-                    // Handle the response and update the appointment slots accordingly
-                    // Example: Update appointment slots based on the received data
-                    // Here you'll update the slots using the received 'appointments' data in the response
+                    // Clear previous appointments
+                    $('.card-right').empty();
+
+                    // Append the newly fetched appointments
+                    response.appointments.forEach(appointment => {
+                        // Generate HTML for each appointment and append it to .card-right
+                        let imageSrc = appointment.booking_type === 'video' ?
+                            '../assets/images/video-camera-alt.svg' :
+                            '../assets/images/hospital-user(1).svg';
+
+                        let imageAlt = appointment.booking_type === 'video' ?
+                            'video-camera' :
+                            'hospital-user';
+                        // Generate HTML for each appointment and append it to .card-right
+                        $('.card-right').append(`
+                    <div class="card-right-content">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <img src="${imageSrc}" alt="${imageAlt}" style="height: 24px; width: 24px;" />
+                            <div>
+                                <div onclick="navigateToPage('/gp/patient-details.html')" class="card-right-name">${appointment.user.name}</div>
+                                <div class="card-right-details">
+                                    <div>${appointment.medicare_detail.gender}</div>
+                                    <div>${calculateAge(appointment.medicare_detail.birthdate)} Years</div>
+                                    <div>${appointment.user.country_code+'-'+appointment.user.mobile}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="card-right-video">
+                                Join in: <span class="right-video-time">${convertToAMPM(appointment.appointment_date_time)}</span>
+                            </div>
+                            <button class="right-video-camera">
+                                <img src="../assets/images/video-camera-alt.svg" alt="video-camera" style="width: 24px; height: 16px;" />
+                                <div class="right-video-start">Join Now</div>
+                            </button>
+                            <button class="right-messages">
+                                        <img src="../assets/images/messages.svg" alt="message"
+                                            style="width: 28px;height: 28px;margin: 0 20px;">
+                                    </button>
+                                    <button class="open-card"
+                                        style="position: relative;border-style: none;margin-right: 20px;margin-left:18px;">
+                                        <i class='fa fa-ellipsis-v'></i>
+                                        <div class="activity-card"
+                                            style="z-index:2;position: absolute;background: #FFF;width: 138px;height: 120px;box-shadow: 0px 3px 6px #00000029;border-radius: 7px;right:0;margin-right:1rem;margin-top:-1.5rem;display:none;flex-direction: column;align-items: flex-start;row-gap: 1.5rem;padding: 1rem;">
+                                            <span>Notify</span>
+                                            <span class="activity-btn">Activity</span>
+                                        </div>
+                                    </button>                        </div>
+                    </div>
+                `);
+                    });
                 },
                 error: function(error) {
                     console.error('Error fetching appointments:', error);

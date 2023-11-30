@@ -103,8 +103,8 @@
                                         </div>
                                         <div class="right-section">
                                             <button class="button1">Get Referral</button>
-                                            <a class="button2" href="booking/{{ $doctor->user_id }}">Book a Visit</a>
-                                            <button class="button3">Book Video Call</button>
+                                            <a class="button2" href="booking/{{ $doctor->user_id }}/visit">Book a Visit</a>
+                                            <a class="button3" href="booking/{{ $doctor->user_id }}/video">Book Video Call</a>
                                         </div>
                                     </div>
                                 @endforeach
@@ -194,8 +194,8 @@
                     </div>
                     <div class="right-section">
                         <button class="button1">Get Referral</button>
-                        <a class="button2" href="booking/${doctor.user_id}">Book a Visit</a>
-                        <button class="button3">Book Video Call</button>
+                        <a class="button2" href="booking/${doctor.user_id}/visit">Book a Visit</a>
+                        <a class="button3" href="booking/${doctor.user_id}">video</a>
                     </div>
                 </div>
             `;

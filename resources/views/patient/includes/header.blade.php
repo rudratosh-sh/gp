@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="flex items-center ml-10">
-        <button class="header-message-icon openChatModel openModalButton">
+        <button class="header-message-icon openChatModel">
             <span class="message-icon"></span>
             <img class="mes-icon-header" src="{{ asset('assets/images/messages2.svg') }}" alt="message">
         </button>

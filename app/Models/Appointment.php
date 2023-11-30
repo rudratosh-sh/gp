@@ -13,6 +13,7 @@ class Appointment extends Model
         'appointment_date_time',
         'slot',
         'details',
+        'booking_type'
     ];
 
     public function clinic()
@@ -28,5 +29,10 @@ class Appointment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function medicareDetail()
+    {
+        return $this->hasOne(MedicareDetail::class, 'user_id', 'user_id');
     }
 }

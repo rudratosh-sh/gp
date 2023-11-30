@@ -78,28 +78,28 @@ class AppointmentController extends Controller
         return response()->json(['clinics' => $clinics, 'doctors' => $doctors]);
     }
 
-    public function questionnaire($doctorId)
-    {
-        // Fetch the doctor information using the $doctorId
-        $doctor = Doctor::where('user_id', $doctorId)->first();
+        public function questionnaire($doctorId,$bookingType)
+        {
+            // Fetch the doctor information using the $doctorId
+            $doctor = Doctor::where('user_id', $doctorId)->first();
 
-        if (!$doctor) {
-            // Handle the case where the doctor is not found
-            abort(404);
+            if (!$doctor) {
+                // Handle the case where the doctor is not found
+                abort(404);
+            }
+
+            // Fetch all clinics associated with this doctor
+            $clinics = Clinic::whereHas('doctors', function ($query) use ($doctor) {
+                $query->where('id', $doctor->id);
+            })->get();
+
+            // Fetch all questions with section_id = 1
+            $questions = Question::where('section_id', 1)->get();
+
+            return view('patient.appointment.questionnaire', compact('clinics', 'doctor', 'questions','bookingType'));
         }
 
-        // Fetch all clinics associated with this doctor
-        $clinics = Clinic::whereHas('doctors', function ($query) use ($doctor) {
-            $query->where('id', $doctor->id);
-        })->get();
-
-        // Fetch all questions with section_id = 1
-        $questions = Question::where('section_id', 1)->get();
-
-        return view('patient.appointment.questionnaire', compact('clinics', 'doctor', 'questions'));
-    }
-
-    public function questionnaireStore(Request $request)
+    public function questionnaireStore(Request $request,$bookingType)
     {
         // Retrieve data from the form submission
         $doctorId = $request->input('doctor_id');
@@ -109,6 +109,7 @@ class AppointmentController extends Controller
         $userData = [
             'doctor_id' => $doctorId,
             'answers' => $answers, // Store the answers array in the session
+            'booking_type' =>$bookingType
         ];
 
         $request->session()->put('user_data', $userData);
@@ -195,7 +196,7 @@ class AppointmentController extends Controller
         $appointments = Appointment::all();
         // Load related data (e.g., doctor and clinic details) if necessary
         // You can eager load relationships to avoid N+1 query issues
-        $appointments->load('doctor', 'clinic');
+        $appointments->load('doctor', 'clinic','user');
 
         // Return the Blade view with the appointments data
         return view('patient.appointment.list', compact('appointments'));
@@ -258,7 +259,7 @@ class AppointmentController extends Controller
         }
 
         // Fetch appointments for the given date and include related data
-        $appointments = Appointment::with(['doctor', 'clinic'])
+        $appointments = Appointment::with(['doctor', 'clinic','user'])
             ->whereDate('appointment_date_time', $dateObj->format('Y-m-d'))
             ->get();
 
@@ -270,6 +271,7 @@ class AppointmentController extends Controller
                 'doctor' => $appointment->doctor->name,
                 'clinic' => $appointment->clinic->name,
                 'details' => $appointment->details,
+                'user'=>$appointment->user
             ];
         });
 

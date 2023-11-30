@@ -15,7 +15,7 @@
             </ul>
             <!-- Main Content -->
             <div class="dis_flx">
-                <form id="scheduleForm" method="POST" action="{{ route('appointment.questionnaire.store') }}"
+                <form id="scheduleForm" method="POST" action="{{ route('appointment.questionnaire.store', ['bookingType' => $bookingType]) }}"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="booking_container">
@@ -115,6 +115,7 @@
         </div>
     </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('/js/recorder.js') }}"></script>
     <script src="{{ asset('/js/patient/questionnaire.js') }}"></script>
 @endsection

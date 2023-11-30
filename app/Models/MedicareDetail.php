@@ -22,4 +22,9 @@ class MedicareDetail extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class, 'user_id', 'user_id');
+    }
 }

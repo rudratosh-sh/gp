@@ -48,22 +48,19 @@ Route::get('/patient/dashboard', [DashboardController::class, 'index'])->name('d
 Route::get('/patient', [AppointmentController::class, 'getAppointments'])->name('appointment.patient');
 Route::get('/patient/appointment', [AppointmentController::class, 'index'])->name('appointment.index.get');
 Route::post('/patient/search-clinics-doctors', [AppointmentController::class, 'searchClinicsDoctors'])->name('search.clinics.doctors');
-Route::get('/patient/booking/{doctorId}', [AppointmentController::class, 'questionnaire'])->name('appointment.questionnaire');
-Route::post('/patient/questionnaire', [AppointmentController::class, 'questionnaireStore'])->name('appointment.questionnaire.store');
+Route::get('/patient/booking/{doctorId}/{bookingType}', [AppointmentController::class, 'questionnaire'])->name('appointment.questionnaire');
+Route::post('/patient/questionnaire/{bookingType}', [AppointmentController::class, 'questionnaireStore'])->name('appointment.questionnaire.store');
 Route::get('/patient/schedule', [AppointmentController::class, 'schedule'])->name('appointment.schedule');
 Route::post('/patient/scheduleStore', [AppointmentController::class, 'storeAppointment'])->name('appointment.schedule.store');
 Route::get('/patient/appointment-landing', [AppointmentController::class, 'getAppointments'])->name('appointment.schedule.list');
 
 Route::get('/messages/{conversationId}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
-
 // Route to fetch all threads
 Route::get('/threads', [MessageController::class, 'getThreads'])->name('messages.getThreads');
-
 // Route to fetch a conversation with a specific user
 Route::get('/conversation/{userId}', [MessageController::class, 'getConversation'])->name('messages.getConversation');
-
 Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
-
+Route::post('/messages/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
 
 // });
 

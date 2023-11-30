@@ -105,4 +105,24 @@ class MessageController extends Controller
         // You can return a success response if needed
         return response()->json(['message' => 'Message sent successfully']);
     }
+
+    public function markAsRead(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            // Handle if no user is logged in, maybe redirect or return an empty response
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $receiverId = $user->id;
+        $senderId = $request->input('sender_id');
+
+        // Update messages where the receiver_id is the current user ID and sender_id matches the conversation ID
+        Message::where('receiver_id', $receiverId)
+            ->where('sender_id', $senderId)
+            ->update(['is_read' => 1]);
+
+        return response()->json(['success' => true]);
+    }
 }

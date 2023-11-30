@@ -1,3 +1,6 @@
+<!-- Notification MODAL Start-->
+@include('doctor.modals.chats')
+<!-- Notification MODAL end-->
 <!-- header.blade.php -->
 <header class="header flex justify-between items-center bg-white">
     <div class="flex items-center">
@@ -20,9 +23,9 @@
         </div>
     </div>
     <div class="flex items-center ml-10">
-        <button class="header-message-icon">
+        <button class="header-message-icon openChatModel">
             <span class="message-icon"></span>
-            <img class="mes-icon-header" src="{{ asset('assets/images/messages2.svg') }}" alt="message">
+            <img class="mes-icon-header " src="{{ asset('assets/images/messages2.svg') }}" alt="message">
         </button>
         <button class="header-message-icon" id="openNotificationModal">
             <span class="noti-icon"></span>

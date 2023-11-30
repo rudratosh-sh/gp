@@ -17,12 +17,6 @@ if (!function_exists('showNotifications')) {
     }
 }
 
-// if (!function_exists('storeNotification')) {
-//     function storeNotification($data)
-//     {
-//         \App\Models\Notification::create($data);
-//     }
-// }
 if (!function_exists('showMessagesWithUsers')) {
     function showMessagesWithUsers()
     {
@@ -33,15 +27,15 @@ if (!function_exists('showMessagesWithUsers')) {
         }
         $userId = Auth::user()->id;
 
-         $threads = DB::table('users')
-        ->select(
-            'users.name',
-            'users.id',
-            'users.avatar',
-            DB::raw('COALESCE(latest_message.message_content, "") AS latest_message_content'),
-            DB::raw('SUM(CASE WHEN m.receiver_id = ' . $userId . ' AND m.is_read = 0 THEN 1 ELSE 0 END) AS unread')
-        )
-        ->leftJoin(DB::raw('(SELECT
+        $threads = DB::table('users')
+            ->select(
+                'users.name',
+                'users.id',
+                'users.avatar',
+                DB::raw('COALESCE(latest_message.message_content, "") AS latest_message_content'),
+                DB::raw('SUM(CASE WHEN m.receiver_id = ' . $userId . ' AND m.is_read = 0 THEN 1 ELSE 0 END) AS unread')
+            )
+            ->leftJoin(DB::raw('(SELECT
                 CASE
                     WHEN sender_id = ' . $userId . ' THEN receiver_id
                     ELSE sender_id
@@ -54,21 +48,19 @@ if (!function_exists('showMessagesWithUsers')) {
                     WHEN sender_id = ' . $userId . ' THEN receiver_id
                     ELSE sender_id
                 END) AS latest_message'), 'users.id', '=', 'latest_message.user_id')
-        ->leftJoin('messages as m', function ($join) {
-            $join->on('users.id', '=', 'm.sender_id')
-                ->orWhere('users.id', '=', 'm.receiver_id');
-        })
-        ->where(function ($query) use ($userId) {
-            $query->where('m.sender_id', $userId)
-                ->orWhere('m.receiver_id', $userId);
-        })
-        ->where('users.id', '!=', $userId)
-        ->groupBy('users.id')
-        ->orderByDesc('latest_message_content')
-        ->get();
+            ->leftJoin('messages as m', function ($join) {
+                $join->on('users.id', '=', 'm.sender_id')
+                    ->orWhere('users.id', '=', 'm.receiver_id');
+            })
+            ->where(function ($query) use ($userId) {
+                $query->where('m.sender_id', $userId)
+                    ->orWhere('m.receiver_id', $userId);
+            })
+            ->where('users.id', '!=', $userId)
+            ->groupBy('users.id')
+            ->orderByDesc('id')
+            ->get();
 
-       return $threads;
+        return $threads;
     }
 }
-
-
