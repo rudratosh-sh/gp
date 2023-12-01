@@ -125,7 +125,7 @@ $(document).ready(function () {
                             conversationContainer = `<div class="right-side-conversation">`;
                             conversationContainer += `<img src="${currentSenderAvatar}" alt="logo" height="30" width="30" style="border: 1px solid #707070;border-radius: 50%;">`;
                             conversationContainer += `<div class="cards">${messageCard}</div></div>`;
-                            $('.sender-user-url').val(currentSenderAvatar);
+                            $(".sender-user-url").val(currentSenderAvatar);
                             $(".conversation-body").append(
                                 conversationContainer
                             );
@@ -163,23 +163,23 @@ $(document).ready(function () {
     }
 
     function markAsRead(conversationId) {
-        const token = $('meta[name="csrf-token"]').attr('content');
+        const token = $('meta[name="csrf-token"]').attr("content");
         $.ajax({
-            url: '/messages/mark-as-read',
-            method: 'POST',
+            url: "/messages/mark-as-read",
+            method: "POST",
             headers: {
-                'X-CSRF-TOKEN': token
+                "X-CSRF-TOKEN": token,
             },
             data: {
-                sender_id: conversationId
+                sender_id: conversationId,
             },
             success: function (response) {
-                console.log('Marked as read');
+                console.log("Marked as read");
                 // Maybe update UI after marking as read
             },
             error: function (error) {
-                console.error('Error marking as read:', error);
-            }
+                console.error("Error marking as read:", error);
+            },
         });
     }
     // Usage example - Call fetchMessages when a conversation is clicked
@@ -192,7 +192,7 @@ $(document).ready(function () {
 
 function sendMessage(receiver_id, sender_id, messageContent) {
     const token = $('meta[name="csrf-token"]').attr("content");
-    const sender_user_url = $('.sender-user-url').val();
+    const sender_user_url = $(".sender-user-url").val();
 
     $.ajax({
         url: `/messages/send`,
@@ -207,8 +207,8 @@ function sendMessage(receiver_id, sender_id, messageContent) {
         success: function (response) {
             // Handle success - maybe update UI or show a success message
             console.log("Message sent successfully");
-             $(".sender-id").val(sender_id);
-             $(".receiver-id").val(receiver_id);
+            $(".sender-id").val(sender_id);
+            $(".receiver-id").val(receiver_id);
 
             const lastConversation = $(".conversation-body").children().last();
             const messageSpan = `<div class="card_"><span>${messageContent}</span></div>`;
@@ -224,7 +224,7 @@ function sendMessage(receiver_id, sender_id, messageContent) {
                 </div>`;
                 $(".conversation-body").append(conversationContainer);
             }
-            $('.sender-user-url').val(sender_user_url);
+            $(".sender-user-url").val(sender_user_url);
         },
         error: function (error) {
             console.error("Error sending message:", error);
@@ -248,5 +248,59 @@ $(document).ready(function () {
             $(".conversation-bottom input").val("");
         }
     });
-
 });
+
+// const recipientUserId = 28; // Set the recipient user's ID here
+// const channelName = `private-user.${recipientUserId}`;
+
+// pusher.connection.bind('connected', () => {
+//     const socketId = pusher.connection.socket_id;
+//     const token = $('meta[name="csrf-token"]').attr('content');
+//     $.ajax({
+//         url: '/pusher/auth',
+//         method: 'POST',
+//         headers: {
+//             'X-CSRF-TOKEN': token,
+//         },
+//         data: {
+//             socket_id: socketId,
+//             channel_name: channelName,
+//         },
+//         success: function(response) {
+//             // Handle successful authentication
+//             console.log('Channel authenticated:', response);
+//             // Use the authentication response as needed for Pusher
+//             // const privateChannel = pusher.subscribe(channelName);
+//             // privateChannel.bind('chat', function(data) {
+//             //     console.log('Received message:', data.message);
+//             //     // Handle received message here
+//             // });
+//         },
+//         error: function(error) {
+//             // Handle authentication error
+//             console.error('Channel authentication error:', error);
+//         },
+//     });
+// });
+
+// Use the authentication response as needed for Pusher
+// Subscribe to the channel
+// const privateChannel = pusher.subscribe(channelName);
+// privateChannel.bind('pusher:subscription_succeeded', (data) => {
+//     console.log('Subscribed to private channel',data);
+// });
+
+// privateChannel.bind('chat', function(data) {
+//     console.log('data', data);
+//     $.post('/receive', {
+//         _token: $('meta[name="csrf-token"]').attr('content'),
+//         message: data.message,
+//     })
+//     .done(function(res) {
+//         $('.messages > .message').last().after(res);
+//         $(document).scrollTop($(document).height());
+//     })
+//     .fail(function(error) {
+//         console.error('Error receiving message:', error);
+//     });
+// });

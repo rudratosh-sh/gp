@@ -26,10 +26,10 @@ class AppointmentController extends Controller
     // Display the Dashboard
     public function index(Request $request)
     {
-        $title = 'New Notification Title';
-        $message = 'This is a test notification message.';
+        // $title = 'New Notification Title';
+        // $message = 'This is a test notification message.';
 
-        event(new NotificationEvent($title, $message));
+        // event(new NotificationEvent($title, $message));
 
         if (auth()->check()) {
             // If authenticated, retrieve the authenticated user's data

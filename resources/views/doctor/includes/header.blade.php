@@ -3,6 +3,7 @@
 <!-- Notification MODAL end-->
 <!-- header.blade.php -->
 <header class="header flex justify-between items-center bg-white">
+    <input type="hidden" id="receiver_id_chat" value="{{Auth::user()->id}}" />
     <div class="flex items-center">
         <div class="logo-wrapper">
             <img class="logo" width="134px" height="35px" src="{{ asset('assets/images/logo.png') }}" alt="" />

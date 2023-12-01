@@ -13,6 +13,9 @@ use Illuminate\Http\Response;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Events\PusherBroadcast;
+use App\Models\Message;
+use Pusher\Pusher;
 
 class DoctorController extends Controller
 {
@@ -67,8 +70,8 @@ class DoctorController extends Controller
         $doctor = $request->session()->get('doctor');
         // Get a list of all appointments
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
-                        ->where('doctor_id', auth()->id()) // Assuming the current user ID is the doctor's ID
-                        ->get();
+            ->where('doctor_id', auth()->id()) // Assuming the current user ID is the doctor's ID
+            ->get();
         // Load related data (e.g., doctor and clinic details) if necessary
         $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
 

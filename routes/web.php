@@ -73,7 +73,7 @@ Route::post('/doctor/staff-signin', [DoctorController::class, 'signInProcess'])-
 
 Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard.get');
 Route::get('/doctor/getAppointments', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.get');
-
+Route::post('/pusher/auth', [MessageController::class, 'authenticatePusherChannel']);
 
 // });
 Route::get('/send-notification', function () {

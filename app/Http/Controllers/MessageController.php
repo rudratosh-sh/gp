@@ -6,9 +6,36 @@ use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Pusher\Pusher;
+use App\Events\PusherBroadcast;
+use App\Models\User;
 
 class MessageController extends Controller
 {
+    public function authenticatePusherChannel(Request $request)
+    {
+        $app_key = '1a96c62d17b6395fe814';
+        $app_secret = 'ed37a3cb09cf70821d68';
+        $app_id = '1712697';
+        $app_cluster = 'ap4';
+
+        $pusher = new Pusher($app_key, $app_secret, $app_id, [
+            'cluster' => $app_cluster,
+        ]);
+
+        $socket_id = $request->input('socket_id');
+        $channel_name = $request->input('channel_name');
+
+        // Authenticate private channel
+        $auth = $pusher->authorizeChannel($channel_name, $socket_id);
+        // OR authenticate presence channel
+        // $user_id = 'USER_ID';
+        // $user_info = ['name' => 'User Name']; // Replace with actual user info
+        // $auth = $pusher->authorizePresenceChannel($channel_name, $socket_id, $user_id, $user_info);
+
+        return $auth;
+    }
+
     public function getMessages($otherUserId)
     {
         $currentUserId = Auth::id();
@@ -102,7 +129,9 @@ class MessageController extends Controller
         $message->message_content = $request->message_content;
         $message->save();
 
-        // You can return a success response if needed
+        $userDetails = User::find($request->receiver_id);
+        // Broadcast the event with message and user details
+        broadcast(new PusherBroadcast($message, $request->receiver_id, $userDetails));
         return response()->json(['message' => 'Message sent successfully']);
     }
 
