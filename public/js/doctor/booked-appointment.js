@@ -80,11 +80,12 @@ $(document).ready(function () {
         }
 
         // Ensure current day is set on initial render
-        $(".current-day").removeClass("current-day");
+        // $(".current-day").removeClass("current-day");
         const todayElement = $(`.month-day:contains(${today.getDate()})`);
-        if (todayElement.length > 0) {
-            todayElement.addClass("current-day");
-        }
+        console.log('todayElement',todayElement,'today',today)
+        // if (todayElement.length > 0) {
+        //     todayElement.addClass("current-day");
+        // }
     }
 
     // Function to change the date on the right side

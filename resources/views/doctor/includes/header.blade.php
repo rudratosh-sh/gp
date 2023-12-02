@@ -1,5 +1,9 @@
-<!-- Notification MODAL Start-->
+<!-- Chat MODAL Start-->
 @include('doctor.modals.chats')
+<!-- Chat MODAL end-->
+
+<!-- Notification MODAL Start-->
+@include('doctor.modals.notification')
 <!-- Notification MODAL end-->
 <!-- header.blade.php -->
 <header class="header flex justify-between items-center bg-white">

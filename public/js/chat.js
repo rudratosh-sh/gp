@@ -21,7 +21,7 @@ privateChannel.bind("chat", function (data) {
     // Extracting data
     const message = data.message;
     const user = data.user;
-
+    $(".message-icon").addClass('active-notification')
     // Creating the chat notification HTML structure
     const notificationHtml = `
     <div class="compact-chat-notification">

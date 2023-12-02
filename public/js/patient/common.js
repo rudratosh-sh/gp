@@ -51,6 +51,7 @@ $(document).ready(function () {
     function openModalContainer(event) {
         modalContainer.show();
         conversationWrp.hide();
+        $(".message-icon").removeClass('active-notification')
         $(".conversations-list-wrp").show();
     }
 
@@ -67,6 +68,7 @@ $(document).ready(function () {
 
     function openNotificationModalContainer() {
         modalContainerNotification.show();
+        $(".noti-icon").removeClass('active-notification')
     }
 
     tabs.on("click", function () {

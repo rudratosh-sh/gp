@@ -64,6 +64,23 @@
             font-size: 18px;
             text-decoration: none;
         }
+
+        .fc-view-harness {
+            height: 430px !important;
+            /* Adjust the height as needed */
+        }
+
+        .a-tab-active {
+            color: white;
+            border: none;
+            text-decoration: none;
+        }
+
+        .a-tab-inactive {
+            color: #000;
+            border: none;
+            text-decoration: none;
+        }
     </style>
     <div class="container">
         <!-- HEADER -->
@@ -72,10 +89,12 @@
         <div class="space_container">
             <!-- SIDE BAR -->
             <ul class="sidebar">
-                <li id="dashboard-tab">Dashboard</li>
-                <li class="active" id="booking-tab">Booking Appointment</li>
-                <li id="referral-tab">Referral Letter</li>
-                <li id="profile-tab">My Profile</li>
+                <li id="dashboard-tab"><a class="a-tab-inactive"href="{{ route('appointment.schedule.list') }}">Dashboard</a>
+                </li>
+                <li class="active" id="booking-tab"><a class="a-tab-active" href="{{ route('appointment.index.get') }}">Booking
+                        Appointment</a></li>
+                <li id="referral-tab"><a class="a-tab-inactive" href="#">Referral Letter</a></li>
+                <li id="profile-tab"><a class="a-tab-inactive" href="#">My Profile</a></li>
             </ul>
             <!-- Main Content -->
             <div class="dis_flx">
@@ -91,7 +110,7 @@
                                         <div class="tab_circle">
                                             <span class="step-count">1</span>
                                         </div>
-                                        <a href="{{ url('page4.html') }}" class="tab_title">Select Clinic</a>
+                                        <a href="{{ route('appointment.index.get') }}" class="tab_title">Select Clinic</a>
                                     </div>
                                 </div>
                                 <div class="tab">
@@ -107,7 +126,7 @@
                                         <div class="tab_circle">
                                             <span class="step-count">3</span>
                                         </div>
-                                        <a class="tab_title" href="{{ url('page7.html') }}">Schedule</a>
+                                        <a class="tab_title" href="{{ url('patient/schedule') }}">Schedule</a>
                                     </div>
                                 </div>
                             </div>
@@ -119,25 +138,33 @@
                                     <div class="left-section_pg6">
                                         <div class="small-image_pg6"></div>
                                         <div class="doc_detail_pg6">
-                                            <h2 class="title_pg6">Dr. Giana Gonzas</h2>
-                                            <p class="click-name_pg6">XYZ & More Clinic</p>
+                                            <h2 class="title_pg6">Dr. {{ $data->user->name }} </h2>
+                                            <p class="click-name_pg6">{{ $data->clinic->name }}</p>
                                             <div class="flx_space_btw">
-                                                <p class="direction_pg6">South Wales 2877 Australia</p>
+                                                <p class="direction_pg6">{{ $data->clinic->address }}</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="center_section_pg6">
                                         <div class="center_content_pg6">
-                                            <h2 class="title_pg6">Dr. Giana Gonzas</h2>
+                                            {{-- <h2 class="title_pg6">Dr. Giana Gonzas</h2> --}}
                                             <div class="flx_space_btw dis_center_pg6">
-                                                <p class="direction_pg6">South Wales 2877 Australia</p>
-                                                <p class="direction_pg6">7km</p>
+                                                {{-- <p class="direction_pg6">South Wales 2877 Australia</p> --}}
+                                                <input type="hidden" id="clinicLatitude"
+                                                    value="{{ $data->clinic->latitude }}">
+                                                <input type="hidden" id="clinicLongitude"
+                                                    value="{{ $data->clinic->longitude }}">
+                                                <p id="distance-from-clinic" class="direction_pg6"></p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="right_section_pg6">
                                         <div class="btn_booking_pg6">
-                                            <span class="btn_bt_pg6">Booking Video Call Consultation</span>
+                                            @if ($userData['booking_type'] == 'video')
+                                                <span class="btn_bt_pg6">Booking Video Call Consultation</span>
+                                            @else
+                                                <span class="btn_bt_pg6">Booking In Person Consultation</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -460,7 +487,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
+                defaultView: 'month',
+                titleFormat: function(info) {
+                    const {
+                        year,
+                        month
+                    } = info.date;
+                    const formattedDate = new Date(year, month - 1); // Month is 0-based in Date object
+
+                    return formattedDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                }
             });
             calendar.render();
 
@@ -717,6 +756,7 @@
             }
 
             $(document).on('click', closeModalContainer);
+
             function handleHeaderUserProfile() {
                 let userPopup = $('.user_profile_popup');
                 let userProfileImage = $('.circles').find('img');
@@ -736,6 +776,7 @@
                 });
             }
             headerUserProfile.on('click', handleHeaderUserProfile);
+
             function closeNotificationModalContainer(event) {
                 let modalContainer = $(".modal-container-notification");
 
@@ -755,6 +796,5 @@
                 window.location.href = pageURL;
             }
         });
-
     </script>
 @endsection

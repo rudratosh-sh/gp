@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use \App\Models\Message;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 if (!function_exists('showNotifications')) {
     function showNotifications()
@@ -12,7 +13,10 @@ if (!function_exists('showNotifications')) {
         if (!$user) {
             return collect(); // No user logged in, return an empty collection
         }
-        $notifications = $user->notifications; // Assuming you have a notifications relationship on the User model
+        // Assuming you have a $userId representing the ID of the user you want notifications for
+        $user = User::findOrFail($user->id);
+
+        $notifications = $user->receivedNotifications()->get();
         return $notifications;
     }
 }
