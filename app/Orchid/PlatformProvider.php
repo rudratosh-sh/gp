@@ -64,6 +64,12 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.systems.doctors')
                 ->permission('platform.systems.doctors.view'),
 
+            // Staff menu item
+            Menu::make(__('Staffs'))
+                ->icon('bs.building')
+                ->route('platform.systems.staffs')
+                ->permission('platform.systems.staffs.view'),
+
             // Speciality menu item
             Menu::make(__('Specialities'))
                 ->icon('bs.building')
@@ -95,7 +101,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.building')
                 ->route('platform.systems.questions')
                 ->permission('platform.systems.questions.view'),
-            
+
             // Answer option menu item
             Menu::make(__('Answer Options'))
                 ->icon('bs.building')
@@ -136,6 +142,13 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.doctors.edit', __('Edit Doctors'))
                 ->addPermission('platform.systems.doctors.delete', __('Delete Doctors')),
 
+             // Staff permissions
+             ItemPermission::group(__('Staffs'))
+             ->addPermission('platform.systems.staffs.view', __('View Staffs'))
+             ->addPermission('platform.systems.staffs.create', __('Create Staffs'))
+             ->addPermission('platform.systems.staffs.edit', __('Edit Staffs'))
+             ->addPermission('platform.systems.staffs.delete', __('Delete Staffs')),
+
             // Speciality permissions
             ItemPermission::group(__('Specialities'))
                 ->addPermission('platform.systems.specialities.view', __('View Specialities'))
@@ -170,14 +183,14 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.questions.create', __('Create Questions'))
                 ->addPermission('platform.systems.questions.edit', __('Edit Questions'))
                 ->addPermission('platform.systems.questions.delete', __('Delete Questions')),
-            
+
             // Answer option permissions
             ItemPermission::group(__('Answer Options'))
                 ->addPermission('platform.systems.answerOptions.view', __('View Answer Options'))
                 ->addPermission('platform.systems.answerOptions.create', __('Create Answer Options'))
                 ->addPermission('platform.systems.answerOptions.edit', __('Edit Answer Options'))
                 ->addPermission('platform.systems.answerOptions.delete', __('Delete Answer Options')),
-            
+
             // User response permissions
             ItemPermission::group(__('User Responses'))
                 ->addPermission('platform.systems.userResponses.view', __('View User Responses'))

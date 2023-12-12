@@ -26,6 +26,8 @@ use App\Orchid\Screens\AnswerOption\AnswerOptionEditScreen;
 use App\Orchid\Screens\AnswerOption\AnswerOptionListScreen;
 use App\Orchid\Screens\UserResponse\UserResponseEditScreen;
 use App\Orchid\Screens\UserResponse\UserResponseListScreen;
+use App\Orchid\Screens\Staff\StaffEditScreen;
+use App\Orchid\Screens\Staff\StaffListScreen;
 
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
@@ -283,3 +285,25 @@ Route::screen('userResponses', UserResponseListScreen::class)
     ->breadcrumbs(fn (Trail $trail) => $trail
         ->parent('platform.index')
         ->push(__('User Responses'), route('platform.systems.userResponses')));
+
+
+// Platform > System > Staffs > Staff
+Route::screen('staffs/{staff}/edit', StaffEditScreen::class)
+    ->name('platform.systems.staffs.edit')
+    ->breadcrumbs(fn (Trail $trail, $staff) => $trail
+        ->parent('platform.systems.staffs')
+        ->push($staff->user->name, route('platform.systems.staffs.edit', $staff)));
+
+// Platform > System > Staffs > Create
+Route::screen('staffs/create', StaffEditScreen::class)
+    ->name('platform.systems.staffs.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.systems.staffs')
+        ->push(__('Create'), route('platform.systems.staffs.create')));
+
+// Platform > System > Staffs
+Route::screen('staffs', StaffListScreen::class)
+    ->name('platform.systems.staffs')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Staffs'), route('platform.systems.staffs')));

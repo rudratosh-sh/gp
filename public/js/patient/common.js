@@ -11,7 +11,7 @@ $(document).ready(function () {
     const modalSideDrawerGray = $(".modal-side-drawer-gray");
     const userPopup = $(".user_profile_popup");
     const leftIcon = $(
-        ".conversation-header img[src='../assets/left-dark-icon.svg']"
+        ".conversation-header img[src='/assets/left-dark-icon.svg']"
     );
 
     tabs.on("click", function () {

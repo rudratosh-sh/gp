@@ -1,5 +1,4 @@
 <?php
-// Appointment.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +12,8 @@ class Appointment extends Model
         'appointment_date_time',
         'slot',
         'details',
-        'booking_type'
+        'booking_type',
+        'last_visited'
     ];
 
     public function clinic()

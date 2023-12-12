@@ -3202,7 +3202,7 @@
     display: block;
   }
 
-  header .allied-staff {
+  header .staff {
     width: 103px;
     margin-left: 25px;
   }
@@ -3683,7 +3683,7 @@
   .report .report-details {
     background-color: #fff;
     border-radius: 12px;
-    box-shadow: 0px 1px 6px #95959515;
+    box-shadow: 0px 1px 6px #9595955e;
     padding: 25px 29px;
     margin-bottom: 11px;
   }
@@ -3723,7 +3723,7 @@
     font-weight: 500;
     color: #000;
     display: inline-block;
-    padding-top: 5px;
+    padding-top: 25px;
   }
 
   .report-details input,
@@ -3734,9 +3734,9 @@
     border-radius: 12px;
     padding: 19px;
     width: calc(100% - 140px);
-    font-size: 20px;
+    font-size: 15px;
     color: #000;
-    font-weight: 600;
+    font-weight: 200;
   }
 
   .report-details .field {
@@ -4703,7 +4703,7 @@
       padding-bottom: 100px;
     }
 
-    header .allied-staff {
+    header .staff {
       display: none;
     }
 

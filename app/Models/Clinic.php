@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Staff;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Filters\Types\Like;
@@ -73,6 +74,14 @@ class Clinic extends Model
         return $this->hasMany(Doctor::class);
     }
 
+    /**
+     * Get the staffs associated with the clinic.
+     */
+    public function staffs()
+    {
+        return $this->hasMany(Staff::class);
+    }
+
     public function bannerImage()
     {
         return $this->hasOne(Attachment::class, 'id', 'banner_image');
@@ -114,5 +123,10 @@ class Clinic extends Model
         }
 
         return null;
+    }
+
+    public function selectedVitals()
+    {
+        return $this->hasMany(ClinicVitals::class, 'clinic_id');
     }
 }

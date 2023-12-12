@@ -22,7 +22,7 @@
             <div class="section header-section">
                 <header class="header-solo-m">
                     <img class="logo" src="{{ asset('assets/logo.png') }}">
-                    <img class="allied-staff allied-staff-m" src="{{ asset('assets/allied-staff.png') }}">
+                    <img class="staff staff-m" src="{{ asset('assets/staff.png') }}">
                 </header>
                 <div class="section login-section">
                     <h2 class="is-size-2 has-text-weight-semibold">Sign in</h2>

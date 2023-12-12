@@ -86,6 +86,11 @@ class User extends Authenticatable
         return $this->hasOne(Doctor::class, 'user_id');
     }
 
+    public function staff()
+    {
+        return $this->hasOne(Staff::class, 'user_id');
+    }
+
     // Define a many-to-many relationship with your custom Role model
     public function customRoles()
     {
@@ -96,6 +101,13 @@ class User extends Authenticatable
     {
         return $query->whereHas('roles', function ($query) {
             $query->where('name', 'doctor');
+        });
+    }
+
+    public function scopeStaffs(Builder $query)
+    {
+        return $query->whereHas('roles', function ($query) {
+            $query->where('name', 'staff');
         });
     }
 
@@ -132,5 +144,15 @@ class User extends Authenticatable
     public function receivedMessages()
     {
         return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    public function vitalsValues()
+    {
+        return $this->hasMany(PatientVitalsValues::class, 'user_id');
+    }
+
+    public function appointments()
+    {
+        return $this->belongsTo(Appointment::class,'user_id');
     }
 }

@@ -2579,7 +2579,7 @@
     display: block;
   }
 
-  header .allied-staff {
+  header .staff {
     width: 103px
   }
 
@@ -3093,9 +3093,9 @@
     border-radius: 12px;
     padding: 19px;
     width: calc(100% - 140px);
-    font-size: 20px;
+    font-size: 15px;
     color: #000;
-    font-weight: 600;
+    font-weight: 200;
   }
 
   .report-details .field {

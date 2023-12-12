@@ -8,7 +8,7 @@ class Message extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sender_id', 'receiver_id', 'message_content'];
+    protected $fillable = ['sender_id', 'receiver_id', 'message_content','is_read'];
 
     public function sender()
     {

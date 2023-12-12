@@ -32,6 +32,8 @@ class CheckUserRole
                 return redirect()->route('user.signin.get');
             } elseif ($role === 'doctor') {
                 return redirect()->route('doctor.signin.get');
+            } elseif ($role === 'staff') {
+                return redirect()->route('staff.signin.get');
             } else {
                 // Handle other roles as needed
                 return redirect()->route('welcome'); // Redirect to a default page for other roles
