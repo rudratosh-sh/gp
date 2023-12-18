@@ -135,4 +135,8 @@ class Clinic extends Model
         return $this->hasMany(Note::class);
     }
 
+    public function referralLetters()
+    {
+        return $this->hasMany(ReferralLetter::class);
+    }
 }

@@ -97,8 +97,8 @@
                                         style="height: 24px;width: 24px;">
                                 @endif
                                 <div>
-                                    <div onclick="navigateToPage('/gp/patient-details.html')" class="card-right-name">
-                                        {{ $appointment->user->name }}
+                                    <div class="card-right-name">
+                                        <a style="all: unset;cursor:pointer" href="{{ route('doctor.patient.details.get', ['userId' => encrypt($appointment->user->id)]) }}">{{ $appointment->user->name }}</a>
                                         <!-- Assuming user's name exists in the appointment -->
                                     </div>
                                     <div class="card-right-details">

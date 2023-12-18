@@ -11,7 +11,7 @@
             <div>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <a href="{{route("doctor.dashboard.get")}}">
+                        <a href="{{ route('doctor.dashboard.get') }}">
                             <img class="pointer" width="40px" height="40px" src="/assets/images/arrow-left-purple.svg"
                                 alt="">
                         </a>
@@ -22,17 +22,24 @@
                             class="flex items-center justify-center patient-detail-btn-green">
                             <p class="text-white text-base">Create Prescription</p>
                         </div>
-                        <div onclick="navigateToPage('/gp/other.html')"
-                            class="flex items-center justify-center patient-detail-btn ml-10">
-                            <p class="text-white text-base">Other</p>
+                        <div class="flex items-center justify-center patient-detail-btn ml-10">
+                            <a style="all:unset;cursor: pointer;"
+                                href="{{ route('doctor.create.other-info.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                <p class="text-white text-base">Create Other</p>
+                            </a>
                         </div>
-                        <div onclick="navigateToPage('/gp/note.html')"
-                            class="flex items-center justify-center patient-detail-btn ml-10">
-                            <p class="text-white text-base">Create Note</p>
+                        <div class="flex i  tems-center justify-center patient-detail-btn ml-10">
+                            <a style="all:unset;cursor: pointer;"
+                                href="{{ route('doctor.create.note.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                <p class="text-white text-base">Create Note</p>
+                            </a>
                         </div>
-                        <div onclick="navigateToPage('/gp/create-referral-letter.html')"
+                        <div
                             class="flex items-center justify-center patient-detail-btn ml-10">
+                            <a style="all:unset;cursor: pointer;"
+                            href="{{ route('doctor.create.ref-letter.get', ['userId' => encrypt($appointment->user->id)]) }}">
                             <p class="text-white text-base">Create Referral Later</p>
+                        </a>
                         </div>
                     </div>
                 </div>

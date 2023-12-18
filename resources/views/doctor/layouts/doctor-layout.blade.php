@@ -21,7 +21,7 @@
 <body>
     @include('doctor.includes.header',['active'=>$active])
 
-    <div class="container">
+    <div class="">
         @yield('content')
     </div>
 

@@ -75,10 +75,21 @@ Route::middleware(['check.user.role:doctor'])->group(function () {
     Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard.get');
     Route::get('/doctor/getAppointments', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.get');
     Route::post('/pusher/auth', [MessageController::class, 'authenticatePusherChannel']);
+
     Route::get('/doctor', [DoctorController::class, 'dashboard'])->name('doctor.index');
     Route::get('/doctor/history', [DoctorController::class, 'history'])->name('doctor.history.index');
+
     Route::get('/doctor/getHistory', [DoctorController::class, 'getHistory'])->name('doctor.history.get');
     Route::get('/doctor/patientDetails/{userId}', [DoctorController::class, 'getPatientDetails'])->name('doctor.patient.details.get');
+
+    Route::get('/doctor/createNote/{userId}', [DoctorController::class, 'createNote'])->name('doctor.create.note.get');
+    Route::post('/doctor/createNotePost', [DoctorController::class, 'createNotePost'])->name('doctor.create.note.post');
+
+    Route::get('/doctor/createOtherInfo/{userId}', [DoctorController::class, 'createOtherInfo'])->name('doctor.create.other-info.get');
+    Route::post('/doctor/createOtherInfoPost', [DoctorController::class, 'createOtherInfoPost'])->name('doctor.create.other-info.post');
+
+    Route::get('/doctor/createRefLetter/{userId}', [DoctorController::class, 'createRefLetter'])->name('doctor.create.ref-letter.get');
+    Route::post('/doctor/createRefLetterPost', [DoctorController::class, 'createRefLetterPost'])->name('doctor.create.ref-letter.post');
 });
 
 /**Staff**/

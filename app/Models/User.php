@@ -153,11 +153,16 @@ class User extends Authenticatable
 
     public function appointments()
     {
-        return $this->belongsTo(Appointment::class,'user_id');
+        return $this->belongsTo(Appointment::class, 'user_id');
     }
 
     public function notes()
     {
         return $this->hasMany(Note::class);
+    }
+
+    public function referralLetters()
+    {
+        return $this->hasMany(ReferralLetter::class);
     }
 }

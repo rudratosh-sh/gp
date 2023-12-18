@@ -22,7 +22,6 @@ class Doctor extends Model
         'price',
         'doctor_id',
         'user_id'
-        // Add other fillable attributes here
     ];
 
     /**
@@ -84,5 +83,10 @@ class Doctor extends Model
     public function notes()
     {
         return $this->hasMany(Note::class);
+    }
+
+    public function referralLetters()
+    {
+        return $this->hasMany(ReferralLetter::class);
     }
 }

@@ -4232,13 +4232,13 @@
   }
 
   .patient-detail-wrapper .vital-first {
-    width: 37%;
+    width: 29%;
     border-right: 1px solid #707070;
     padding-right: 6px;
   }
 
   .patient-detail-wrapper .vital-second {
-    width: 26%;
+    width: 36%;
     border-right: 1px solid #707070;
     padding-left: 6px;
     padding-right: 6px;

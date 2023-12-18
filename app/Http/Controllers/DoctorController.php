@@ -19,6 +19,10 @@ use Pusher\Pusher;
 use App\Models\ClinicVitals;
 use App\Models\PatientVitalsValues;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\Note;
+use App\Models\Attachment;
+use App\Models\OtherInfo;
+use App\Models\ReferralLetter;
 
 class DoctorController extends Controller
 {
@@ -118,7 +122,7 @@ class DoctorController extends Controller
         ]);
     }
 
-    public function getPatientDetails(Request $request,$userId)
+    public function getPatientDetails(Request $request, $userId)
     {
         $userId = Crypt::decrypt($userId);
         $doctor = $request->session()->get('doctor');
@@ -126,12 +130,264 @@ class DoctorController extends Controller
             ->first();
 
         $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues');
+        if (auth()->check()) {
+            $user = auth()->user();
+        } else {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('doctor.pages.patient-details', ['user' => $doctor, 'appointment' => $appointment]);
+    }
+
+    public function createNote(Request $request, $userId)
+    {
+        $userId = Crypt::decrypt($userId);
+        $doctor = $request->session()->get('doctor');
+        $appointment = Appointment::where('user_id', $userId)
+            ->first();
+
+        $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'notes');
+
+        if ($appointment->notes !== null && $appointment->notes->attachments != null) {
+            $attachmentIds = json_decode($appointment->notes->attachments, true);
+
+            $attachments = Attachment::whereIn('id', $attachmentIds)->get();
+        } else {
+            $attachments = collect();
+        }
 
         if (auth()->check()) {
             $user = auth()->user();
         } else {
             abort(Response::HTTP_FORBIDDEN);
         }
-        return view('doctor.pages.patient-details', ['user' => $doctor,'appointment' => $appointment]);
+        return view('doctor.pages.create-note', ['user' => $doctor, 'appointment' => $appointment, 'attachments' => $attachments]);
+    }
+
+    public function createNotePost(Request $request)
+    {
+        $userId = decrypt($request->input('note_user_id'));
+        $clinicId = decrypt($request->input('note_clinic_id'));
+        $doctorId = decrypt($request->input('note_doctor_id'));
+
+        $data = $request->except(['note_user_id', 'note_clinic_id', 'note_doctor_id']);
+        $data['user_id'] = $userId;
+        $data['clinic_id'] = $clinicId;
+        $data['doctor_id'] = $doctorId;
+
+        $note = Note::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'clinic_id' => $clinicId,
+                'doctor_id' => $doctorId,
+            ],
+            $data
+        );
+        try {
+            $attachmentIds = [];
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $attachment) {
+                    $path = $attachment->store('attachments');
+
+                    $attachmentData = [
+                        'name' => $attachment->getClientOriginalName(),
+                        'original_name' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getClientMimeType(),
+                        'extension' => $attachment->getClientOriginalExtension(),
+                        'size' => $attachment->getSize(),
+                        'sort' => 0,
+                        'path' => $path,
+                        'description' => '',
+                        'alt' => '',
+                        'hash' => '',
+                        'disk' => 'public',
+                        'user_id' => $userId,
+                        'group' => '',
+                    ];
+                    $attachment = Attachment::create($attachmentData);
+                    $attachmentIds[] = $attachment->id; // Collect attachment IDs
+                }
+            }
+            if (count($attachmentIds) > 0)
+                Note::where('id', $note->id)->update([
+                    'attachments' => json_encode($attachmentIds),
+                ]);
+
+            $message = $note->wasRecentlyCreated ? 'Note created successfully.' : 'Note updated successfully.';
+            return back()->with('success', $message);
+        } catch (\Exception $e) {
+            // Log or handle the exception
+            \Illuminate\Support\Facades\Log::error($e->getMessage());
+            return back()->with('error', 'An error occurred during file upload.');
+        }
+        $message = $note->wasRecentlyCreated ? 'Note created successfully.' : 'Note updated successfully.';
+        return back()->with('success', $message);
+    }
+
+
+    public function createOtherInfo(Request $request, $userId)
+    {
+        $userId = Crypt::decrypt($userId);
+        $doctor = $request->session()->get('doctor');
+        $appointment = Appointment::where('user_id', $userId)
+            ->first();
+
+        $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'otherInfo');
+        if ($appointment->otherInfo !== null && $appointment->otherInfo->attachments != null) {
+            $attachmentIds = json_decode($appointment->otherInfo->attachments, true);
+            $attachments = Attachment::whereIn('id', $attachmentIds)->get();
+        } else {
+            $attachments = collect();
+        }
+
+        if (auth()->check()) {
+            $user = auth()->user();
+        } else {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('doctor.pages.create-other-info', ['user' => $doctor, 'appointment' => $appointment, 'attachments' => $attachments]);
+    }
+
+    public function createOtherInfoPost(Request $request)
+    {
+        $userId = decrypt($request->input('other_user_id'));
+        $clinicId = decrypt($request->input('other_clinic_id'));
+        $doctorId = decrypt($request->input('other_doctor_id'));
+
+        $data = $request->except(['other_user_id', 'other_clinic_id', 'other_doctor_id']);
+        $data['user_id'] = $userId;
+        $data['clinic_id'] = $clinicId;
+        $data['doctor_id'] = $doctorId;
+
+        $otherInfo = OtherInfo::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'clinic_id' => $clinicId,
+                'doctor_id' => $doctorId,
+            ],
+            $data
+        );
+        try {
+            $attachmentIds = [];
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $attachment) {
+                    $path = $attachment->store('attachments');
+
+                    $attachmentData = [
+                        'name' => $attachment->getClientOriginalName(),
+                        'original_name' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getClientMimeType(),
+                        'extension' => $attachment->getClientOriginalExtension(),
+                        'size' => $attachment->getSize(),
+                        'sort' => 0,
+                        'path' => $path,
+                        'description' => '',
+                        'alt' => '',
+                        'hash' => '',
+                        'disk' => 'public',
+                        'user_id' => $userId,
+                        'group' => '',
+                    ];
+                    $attachment = Attachment::create($attachmentData);
+                    $attachmentIds[] = $attachment->id; // Collect attachment IDs
+                }
+            }
+            if (count($attachmentIds) > 0)
+                OtherInfo::where('id', $otherInfo->id)->update([
+                    'attachments' => json_encode($attachmentIds),
+                ]);
+
+            $message = $otherInfo->wasRecentlyCreated ? 'Other Info created successfully.' : 'Other Info updated successfully.';
+            return back()->with('success', $message);
+        } catch (\Exception $e) {
+            // Log or handle the exception
+            \Illuminate\Support\Facades\Log::error($e->getMessage());
+            return back()->with('error', 'An error occurred during file upload.');
+        }
+        $message = $otherInfo->wasRecentlyCreated ? 'Other Info created successfully.' : 'Other Info updated successfully.';
+        return back()->with('success', $message);
+    }
+
+    public function createRefLetter(Request $request, $userId)
+    {
+        $userId = Crypt::decrypt($userId);
+        $doctor = $request->session()->get('doctor');
+        $appointment = Appointment::where('user_id', $userId)
+            ->first();
+
+        $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'refLetter');
+
+        if ($appointment->refLetter !== null && $appointment->refLetter->attachments !== null) {
+            $attachmentIds = json_decode($appointment->refLetter->attachments, true);
+            $attachments = Attachment::whereIn('id', $attachmentIds)->get();
+        } else {
+            $attachments = collect(); // or null or any other default value you prefer
+        }
+
+        if (auth()->check()) {
+            $user = auth()->user();
+        } else {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('doctor.pages.create-referral-letter', ['user' => $doctor, 'appointment' => $appointment, 'attachments' => $attachments]);
+    }
+
+    public function createRefLetterPost(Request $request)
+    {
+        $userId = decrypt($request->input('ref_user_id'));
+        $clinicId = decrypt($request->input('ref_clinic_id'));
+        $doctorId = decrypt($request->input('ref_doctor_id'));
+
+        $data = $request->except(['ref_user_id', 'ref_clinic_id', 'ref_doctor_id']);
+        $data['user_id'] = $userId;
+        $data['clinic_id'] = $clinicId;
+        $data['doctor_id'] = $doctorId;
+
+        $refLetter = ReferralLetter::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'clinic_id' => $clinicId,
+                'doctor_id' => $doctorId,
+            ],
+            $data
+        );
+        try {
+            $attachmentIds = [];
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $attachment) {
+                    $path = $attachment->store('attachments');
+
+                    $attachmentData = [
+                        'name' => $attachment->getClientOriginalName(),
+                        'original_name' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getClientMimeType(),
+                        'extension' => $attachment->getClientOriginalExtension(),
+                        'size' => $attachment->getSize(),
+                        'sort' => 0,
+                        'path' => $path,
+                        'description' => '',
+                        'alt' => '',
+                        'hash' => '',
+                        'disk' => 'public',
+                        'user_id' => $userId,
+                        'group' => '',
+                    ];
+                    $attachment = Attachment::create($attachmentData);
+                    $attachmentIds[] = $attachment->id; // Collect attachment IDs
+                }
+            }
+            if (count($attachmentIds) > 0)
+                ReferralLetter::where('id', $refLetter->id)->update([
+                    'attachments' => json_encode($attachmentIds),
+                ]);
+
+            $message = $refLetter->wasRecentlyCreated ? 'Referral Letter created successfully.' : 'Referral Letter updated successfully.';
+            return back()->with('success', $message);
+        } catch (\Exception $e) {
+            // Log or handle the exception
+            \Illuminate\Support\Facades\Log::error($e->getMessage());
+            return back()->with('error', 'An error occurred during file upload.');
+        }
+        $message = $refLetter->wasRecentlyCreated ? 'Referral Letter created successfully.' : 'Referral Letter updated successfully.';
+        return back()->with('success', $message);
     }
 }

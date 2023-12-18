@@ -20,6 +20,7 @@ class Note extends Model
         'user_id',
         'clinic_id',
         'doctor_id',
+        'attachments'
     ];
 
     public function user()
@@ -35,5 +36,15 @@ class Note extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class, 'user_id', 'user_id');
     }
 }

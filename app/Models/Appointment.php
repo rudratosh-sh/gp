@@ -41,4 +41,19 @@ class Appointment extends Model
     {
         return $this->hasMany(PatientVitalsValues::class, 'user_id', 'user_id');
     }
+
+    public function notes()
+    {
+        return $this->hasOne(Note::class, 'user_id', 'user_id');
+    }
+
+    public function otherInfo()
+    {
+        return $this->hasOne(OtherInfo::class, 'user_id', 'user_id');
+    }
+
+    public function refLetter()
+    {
+        return $this->hasOne(ReferralLetter::class, 'user_id', 'user_id');
+    }
 }
