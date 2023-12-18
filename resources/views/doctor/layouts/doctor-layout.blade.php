@@ -19,7 +19,7 @@
 </head>
 
 <body>
-    @include('doctor.includes.header')
+    @include('doctor.includes.header',['active'=>$active])
 
     <div class="container">
         @yield('content')

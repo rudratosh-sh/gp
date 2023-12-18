@@ -82,7 +82,7 @@ $(document).ready(function () {
         // Ensure current day is set on initial render
         // $(".current-day").removeClass("current-day");
         const todayElement = $(`.month-day:contains(${today.getDate()})`);
-        console.log('todayElement',todayElement,'today',today)
+        console.log("todayElement", todayElement, "today", today);
         // if (todayElement.length > 0) {
         //     todayElement.addClass("current-day");
         // }
@@ -119,7 +119,7 @@ $(document).ready(function () {
         )}-${padZero(day)}`;
 
         changeRightSideDate(selectedDate);
-        getAppointments(selectedDateAjax);
+        getHistory(selectedDateAjax);
     });
 
     // Helper function to convert month name to number
@@ -313,7 +313,7 @@ $(document).ready(function () {
 
         // Format the date as 'Y-m-d' (Year-Month-Day)
         let formattedDate = `${year}-${month}-${day}`;
-        getAppointments(formattedDate);
+        getHistory(formattedDate);
     }
 
     // Event listener for the "Prev" button
@@ -354,7 +354,7 @@ $(document).ready(function () {
 
         // Format the date as 'Y-m-d' (Year-Month-Day)
         let formattedDate = `${year}-${month}-${day}`;
-        getAppointments(formattedDate);
+        getHistory(formattedDate);
     });
 });
 
@@ -395,9 +395,9 @@ function calculateAge(birthdate) {
 }
 
 // Function to fetch appointments via AJAX
-function getAppointments(selectedDate) {
+function getHistory(selectedDate) {
     $.ajax({
-        url: "/doctor/getAppointments",
+        url: "/doctor/getHistory",
         type: "GET",
         data: {
             selectedDate: selectedDate,
@@ -474,3 +474,42 @@ function getAppointments(selectedDate) {
         },
     });
 }
+
+$(document).ready(function () {
+    function setupModal(btnClass, contentClass) {
+        const btns = $(`button.${btnClass}`);
+        const modelBackdrop = $(".backdrop");
+        const modelContent = $(`.${contentClass}`);
+
+        btns.each(function () {
+            $(this).on("click", function () {
+                modelBackdrop.addClass("backdrop-open");
+                modelContent.removeClass("hide");
+            });
+        });
+
+        const closeBtn = $("div.close");
+        closeBtn.on("click", function () {
+            modelBackdrop.removeClass("backdrop-open");
+            modelContent.addClass("hide");
+        });
+    }
+
+    setupModal("right-ref", "model-content");
+    setupModal("right-note", "model-content-note");
+    setupModal("right-other", "model-content-other");
+
+    // Function to open the modal container
+    function openModalContainer(event) {
+        const modalContainer = $(".modal-container");
+        const conversationWrap = $(".conversation-wrp").eq(0);
+
+        // Display the modal container
+        modalContainer.css("display", "block");
+    }
+
+    const rightMessagesBtn = $(".right-messages-btn");
+    rightMessagesBtn.each(function () {
+        $(this).on("click", openModalContainer);
+    });
+});

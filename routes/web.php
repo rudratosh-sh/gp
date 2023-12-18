@@ -29,8 +29,8 @@ Route::post('/patient/signup', [PatientController::class, 'signUp'])->name('user
 Route::get('/patient/signin', [PatientController::class, 'signin'])->name('user.signin.get');
 Route::post('/patient/signin', [PatientController::class, 'login'])->name('user.signin.post');
 
-Route::get('/doctor/staff-signin', [DoctorController::class, 'signin'])->name('doctor.signin.get');
-Route::post('/doctor/staff-signin', [DoctorController::class, 'signInProcess'])->name('doctor.signin.post');
+Route::get('/doctor/signin', [DoctorController::class, 'signin'])->name('doctor.signin.get');
+Route::post('/doctor/signin', [DoctorController::class, 'signInProcess'])->name('doctor.signin.post');
 
 Route::get('/staff/signin', [StaffController::class, 'signin'])->name('staff.signin.get');
 Route::post('/staff/signin', [StaffController::class, 'signInProcess'])->name('staff.signin.post');
@@ -76,7 +76,9 @@ Route::middleware(['check.user.role:doctor'])->group(function () {
     Route::get('/doctor/getAppointments', [DoctorController::class, 'getAppointments'])->name('doctor.appointments.get');
     Route::post('/pusher/auth', [MessageController::class, 'authenticatePusherChannel']);
     Route::get('/doctor', [DoctorController::class, 'dashboard'])->name('doctor.index');
-
+    Route::get('/doctor/history', [DoctorController::class, 'history'])->name('doctor.history.index');
+    Route::get('/doctor/getHistory', [DoctorController::class, 'getHistory'])->name('doctor.history.get');
+    Route::get('/doctor/patientDetails/{userId}', [DoctorController::class, 'getPatientDetails'])->name('doctor.patient.details.get');
 });
 
 /**Staff**/
@@ -87,6 +89,8 @@ Route::middleware(['check.user.role:staff'])->group(function () {
     Route::get('/staff', [StaffController::class, 'dashboard'])->name('staff.index');
     Route::get('/staff/{userId}/vitals', [StaffController::class, 'showPatientVitals'])->name('staff.patient.vitals');
     Route::post('/staff/save-patient-vitals/{userId}', [StaffController::class, 'savePatientVitals'])->name('staff.save.patient.vitals');
+    Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.profile.get');
+    Route::post('/staff/profile/update', [StaffController::class, 'profileUpdate'])->name('staff.profile.update');
 });
 
 

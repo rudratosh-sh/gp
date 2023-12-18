@@ -16,12 +16,14 @@ use Illuminate\Support\Facades\Log;
 use App\Events\PusherBroadcast;
 use App\Models\Message;
 use Pusher\Pusher;
+use App\Models\ClinicVitals;
+use App\Models\PatientVitalsValues;
+use Illuminate\Support\Facades\Crypt;
 
 class DoctorController extends Controller
 {
     public function signin(Request $request)
     {
-        // Auth::logout();
         return view('doctor.users.signin');
     }
 
@@ -51,59 +53,85 @@ class DoctorController extends Controller
             ->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            // Invalid credentials, redirect back to login page
             Toast::info(__('Invalid login credentials.'));
             return redirect()->route('doctor.signin.get')->with('error', 'Invalid login credentials.');
         }
-        // Authenticating the user via Laravel's Auth system
         Auth::login($user);
-        // Authentication successful, store user data in session
         $request->session()->put('doctor', $user);
 
-        // Redirect to the doctor's dashboard or any desired route
         return redirect()->route('doctor.dashboard.get');
     }
 
     public function dashboard(Request $request)
     {
-        // Retrieve the 'doctor' variable from the session
         $doctor = $request->session()->get('doctor');
-        // Get a list of all appointments
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
-            ->where('doctor_id', auth()->id()) // Assuming the current user ID is the doctor's ID
+            ->where('doctor_id', auth()->id())
             ->get();
-        // Load related data (e.g., doctor and clinic details) if necessary
         $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
 
         if (auth()->check()) {
-            // If authenticated, retrieve the authenticated user's data
             $user = auth()->user();
         } else {
-            // If not authenticated, return a 404 error
             abort(Response::HTTP_FORBIDDEN);
         }
         return view('doctor.pages.booked-appointment', ['user' => $doctor, 'appointments' => $appointments]);
     }
+
     public function getAppointments(Request $request)
     {
         $selectedDate = $request->input('selectedDate');
-
-        // Log the selected date
-        Log::info('Selected Date: ' . $selectedDate . 'id' . auth()->id());
-
-        // Retrieve appointments based on the date part of the appointment_date_time
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
-            ->where('doctor_id', auth()->id()) // Assuming the current user ID is the doctor's ID
+            ->where('doctor_id', auth()->id())
             ->get();
 
-        // Log the generated SQL query
-        Log::info('SQL Query: ' . Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
-            ->where('doctor_id', auth()->id())->toSql());
-
-        // Load related data if necessary
         $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
-
-        // Return the appointments as JSON
         return response()->json(['appointments' => $appointments]);
+    }
+
+    public function history(Request $request)
+    {
+        $doctor = $request->session()->get('doctor');
+        $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
+            ->where('doctor_id', auth()->id())
+            ->get();
+
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues');
+
+        if (auth()->check()) {
+            $user = auth()->user();
+        } else {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('doctor.pages.history', ['user' => $doctor, 'appointments' => $appointments]);
+    }
+
+    public function getHistory(Request $request)
+    {
+        $selectedDate = $request->input('selectedDate');
+        $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
+            ->where('doctor_id', auth()->id())
+            ->get();
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues');
+        return response()->json([
+            'appointments' => $appointments
+        ]);
+    }
+
+    public function getPatientDetails(Request $request,$userId)
+    {
+        $userId = Crypt::decrypt($userId);
+        $doctor = $request->session()->get('doctor');
+        $appointment = Appointment::where('user_id', $userId)
+            ->first();
+
+        $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues');
+
+        if (auth()->check()) {
+            $user = auth()->user();
+        } else {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('doctor.pages.patient-details', ['user' => $doctor,'appointment' => $appointment]);
     }
 }

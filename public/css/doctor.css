@@ -133,6 +133,7 @@
     flex-direction: column;
     padding: 1rem 1.5rem;
     row-gap: 1rem;
+    z-index: 9999999;
   }
 
   .user_profile_popup > span:first-child {

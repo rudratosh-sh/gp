@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout',['active'=>'appointment'])
+@extends('doctor.layouts.doctor-layout',['active'=>'history'])
 
 @section('content')
     <style>
@@ -7,13 +7,6 @@
             width: 45px;
         }
     </style>
-    {{-- <!-- MESSAGES MODAL Start-->
-    @include('doctor.modals.messages')
-    <!-- MESSAGES MODAL end-->
-
-    <!-- Notification MODAL Start-->
-    @include('doctor.modals.notification')
-    <!-- Notification MODAL end--> --}}
 
     <div class="content">
         <!-- Appointment Calender Start-->
@@ -84,7 +77,15 @@
             <div style="display: flex;margin-top: 20px;">
                 <div class="card-right">
                     @foreach ($appointments as $key => $appointment)
-                        {{-- @if ($timeSlot === $appointmentTime[$key]) --}}
+                        <!-- Other Info MODAL Start-->
+                        @include('doctor.modals.other-info', [
+                            'vitals' => $appointment->patientVitalValues,
+                            'medicareDetail' => $appointment->medicareDetail,
+                            'user' => $appointment->user,
+                            'appointment'=>$appointment
+                        ])
+                        <!-- Other Info MODAL end-->
+                        <div class="backdrop close"></div>
                         <!-- Render each appointment for this time slot -->
                         <div class="card-right-content">
                             <div style="display: flex;gap: 10px;align-items: center;">
@@ -96,8 +97,8 @@
                                         style="height: 24px;width: 24px;">
                                 @endif
                                 <div>
-                                    <div class="card-right-name">
-                                       <a style="all: unset;cursor:pointer" href="{{ route('doctor.patient.details.get', ['userId' => encrypt($appointment->user->id)]) }}">{{ $appointment->user->name }}</a>
+                                    <div onclick="navigateToPage('/gp/patient-details.html')" class="card-right-name">
+                                        {{ $appointment->user->name }}
                                         <!-- Assuming user's name exists in the appointment -->
                                     </div>
                                     <div class="card-right-details">
@@ -112,19 +113,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div class="card-right-video">
-                                    Join in: <span
-                                        class="right-video-time">{{ date('H:i', strtotime($appointment->appointment_date_time)) }}</span>
-                                </div>
-                                <button class="right-video-camera">
-                                    <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
-                                        style="width: 24px;height: 16px;" />
-                                    <div class="right-video-start">Join Now</div>
+                            <div style="display: flex; align-items: center; gap: 10px">
+                                <button class="right-other">
+                                    <img src="../assets/images/description_black_24dp.svg" alt="video-camera"
+                                        style="width: 24px; height: 16px" />
+                                    <div class="right-video-start">Other</div>
+                                </button>
+                                <button class="right-note">
+                                    <img src="../assets/images/history_edu_black_24dp.svg" alt="video-camera"
+                                        style="width: 24px; height: 16px" />
+                                    <div class="right-video-start">Note</div>
+                                </button>
+                                <button class="right-ref">
+                                    <img src="../assets/images/email_black_24dp.svg" alt="video-camera"
+                                        style="width: 24px; height: 16px" />
+                                    <div class="right-video-start">Referral Letter</div>
                                 </button>
                                 <button class="right-messages">
                                     <img src="../assets/images/messages.svg" alt="message"
-                                        style="width: 28px;height: 28px;margin: 0 20px;">
+                                        style="width: 28px; height: 28px; margin: 0 20px;" />
                                 </button>
                                 <button class="open-card"
                                     style="position: relative;border-style: none;margin-right: 20px;margin-left:18px;">
@@ -141,10 +148,9 @@
                     @endforeach
                 </div>
             </div>
-
         </div>
         <!-- Appointment list end -->
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('/js/doctor/booked-appointment.js') }}"></script>
+    <script src="{{ asset('/js/doctor/history.js') }}"></script>
 @endsection

@@ -24,9 +24,7 @@
 <body>
     @include('staff.includes.header')
 
-    <div class="container">
         @yield('content')
-    </div>
 
     @include('staff.includes.footer')
 

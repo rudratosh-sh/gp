@@ -17,12 +17,12 @@
             </div>
         </div>
         <div class="flex links-wrapper xs-header-content">
-            <div class="link active">
-                <a href="/gp/booked-appointments.html" class="bg-red-500">Booked Appointment</a>
+            <div class="link {{$active=='appointment' ? 'active' : ''}}">
+                <a href="{{route('doctor.dashboard.get')}}" class="bg-red-500">Booked Appointment</a>
                 <div class="bottom-line"></div>
             </div>
-            <div class="link">
-                <a href="/gp/history.html">History</a>
+            <div class="link {{$active=='history' ? 'active' : ''}}">
+                <a href="{{route('doctor.history.index')}}">History</a>
                 <div class="bottom-line"></div>
             </div>
         </div>

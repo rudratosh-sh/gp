@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const tabs = $("#dashboard-tab, #booking-tab, #referral-tab, #profile-tab");
     const openChatModel = $(".openChatModel");
-    const headerUserProfile = $(".login_user");
+    // const headerUserProfile = $(".login_user");
     const eachCard = $(".each-card");
     const openNotificationModal = $("#openNotificationModal");
     const modalContainer = $(".modal-container");
@@ -19,10 +19,10 @@ $(document).ready(function () {
         $(this).addClass("active");
     });
 
-    function handleUserPopup(event) {
-        event.stopPropagation();
-        userPopup.toggle();
-    }
+    // function handleUserPopup(event) {
+    //     event.stopPropagation();
+    //     userPopup.toggle();
+    // }
 
     function handleDocumentClick(event) {
         const target = $(event.target);
@@ -77,7 +77,7 @@ $(document).ready(function () {
     });
 
     openChatModel.on("click", openModalContainer);
-    headerUserProfile.on("click", handleUserPopup);
+    // headerUserProfile.on("click", handleUserPopup);
     $(document).on("click", handleDocumentClick);
     openNotificationModal.on("click", openNotificationModalContainer);
     eachCard.on("click", openConversation);

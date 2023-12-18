@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -34,5 +35,10 @@ class Appointment extends Model
     public function medicareDetail()
     {
         return $this->hasOne(MedicareDetail::class, 'user_id', 'user_id');
+    }
+
+    public function patientVitalValues()
+    {
+        return $this->hasMany(PatientVitalsValues::class, 'user_id', 'user_id');
     }
 }

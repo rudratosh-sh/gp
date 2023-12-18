@@ -145,7 +145,7 @@ if (!function_exists('showDoctorsWithoutMessage')) {
                 ->where('clinic_id', $clinicId)
                 ->select('user_id')
                 ->union(
-                    DB::table('doctor')
+                    DB::table('doctors')
                         ->where('clinic_id', $clinicId)
                         ->select('user_id')
                 );

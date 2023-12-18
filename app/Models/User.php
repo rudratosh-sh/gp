@@ -155,4 +155,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Appointment::class,'user_id');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
 }

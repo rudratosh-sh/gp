@@ -129,4 +129,10 @@ class Clinic extends Model
     {
         return $this->hasMany(ClinicVitals::class, 'clinic_id');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
+
 }

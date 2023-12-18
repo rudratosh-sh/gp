@@ -241,4 +241,51 @@ class StaffController extends Controller
             return redirect()->back()->withErrors($e->validator->errors())->withInput();
         }
     }
+
+    // Display patient profile
+    public function profile()
+    {
+        $currentUser = Auth::user();
+        $profileData = User::where('id', $currentUser->id)->first();
+        $user = Staff::where('user_id', auth()->id())->first();
+        $fields = ['name', 'about_me', 'email', 'mobile'];
+
+        return view('staff.pages.profile', compact('profileData', 'fields','user'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'about_me' => 'nullable|string|max:1000',
+            'email' => 'required|string|email|max:255',
+            'mobile' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|max:2048', // Adjust max file size as needed
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validatedData = $validator->validated();
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $randomName = Str::random(20);
+            $avatarPath = $avatar->storeAs('avatars', $randomName . '.' . $avatar->getClientOriginalExtension(), 'public');
+
+            // Save the public path in the database
+            $user->avatar = '/storage/' . $avatarPath;
+            $user->save();
+
+            unset($validatedData['avatar']);
+        }
+
+        // Update user profile data
+        $user->update($validatedData);
+
+        return redirect()->route('staff.profile.get')->with('success', 'Profile updated successfully.');
+    }
 }

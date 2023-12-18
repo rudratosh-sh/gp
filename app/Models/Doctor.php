@@ -80,4 +80,9 @@ class Doctor extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
 }
