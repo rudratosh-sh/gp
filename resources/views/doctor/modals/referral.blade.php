@@ -4,42 +4,38 @@
     </div>
     <div class="px-36 user-ref">
         <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <p class="text-purple text-30 font-bold mr-15">Sean Rada</p>
-                <p class="text-grey3 text-15 font-thin">
-                    Male
-                    <span class="ml-10">45</span>
-                </p>
-            </div>
+          <div class="flex items-center">
+            <p class="text-purple text-30 font-bold mr-15">{{$user->name}}</p>
+            <p class="text-grey3 text-15 font-thin">
+              {{$medicareDetail->gender}}
+              <span class="ml-10">{{ \Carbon\Carbon::parse($medicareDetail->birthdate)->age . ' Years' }}</span>
+            </p>
+          </div>
         </div>
         <div class="flex items-center mt-16">
-            <p class="text-grey3 text-xs font-thin">
-                Contact:
-                <span class="font-normal">1234567890</span>
-            </p>
-            <p class="text-grey3 text-xs font-thin ml-30">
-                Medicare No. :
-                <span class="font-normal">5336 5336 5336 5336</span>
-            </p>
-            <p class="text-grey3 text-xs font-thin ml-30">
-                Last Visited:
-                <span class="font-normal">24/04/2023</span>
-            </p>
+          <p class="text-grey3 text-xs font-thin">
+            Contact:
+            <span class="font-normal">{{ $appointment->user->country_code . '-' . $appointment->user->mobile }}</span>
+          </p>
+          <p class="text-grey3 text-xs font-thin ml-30">
+            Medicare No. :
+            <span class="font-normal">{{$medicareDetail->medicare_number
+          }}</span>
+          </p>
+          <p class="text-grey3 text-xs font-thin ml-30">
+            Last Visited:
+            <span class="font-normal">{{$appointment->last_visited}}</span>
+          </p>
         </div>
-    </div>
+      </div>
     <div class="details-ref px-36 py-20">
-        <p class="text-grey2 text-xs font-normal">Date: August 18, 2022</p>
-        <p class="text-grey2 text-xs font-normal mt-16">
-            To
-            @isset($date)
-            <p class="text-grey2 text-xs font-normal">Date: {{ $date }}</p>
-        @endisset
-
-        @isset($ATTN)
+        <p class="text-grey2 text-xs font-normal">Date: {{ date('l jS F Y', strtotime($appointment->refLetter->date)) }}
+        </p>
+        @isset($appointment->refLetter->refer_to)
             <p class="text-grey2 text-xs font-normal mt-16">
                 To
                 <br />
-                {{ $ATTN }}
+                {{ $appointment->refLetter->refer_to }}
             </p>
         @endisset
 
@@ -63,10 +59,10 @@
         </p>
         <p class="text-grey2 text-xs font-bold mt-16">
             Subject
-            <span class="font-normal">Letter of Medical Necessity</span>
+            <span class="font-normal">{{$appointment->refLetter->subject}}</span>
         </p>
-        <p class="text-grey2 text-xs font-normal mt-16">
-            To Whome It May Concern / Dear Dr,
+        <p class="text-grey2 text-xs font-normal text-justify">
+            {{$appointment->refLetter->content}}
         </p>
         <!-- Rest of the content... -->
     </div>

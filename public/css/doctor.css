@@ -5753,7 +5753,18 @@
     border-style: none;
   }
 
-  .right-ref {
+  .right-note-ajax {
+    display: flex;
+    gap: 2px;
+    background:#38BDD4;
+    border-radius: 8px;
+    opacity: 1;
+    padding: 6px;
+    align-items: center;
+    border-style: none;
+  }
+
+  .right-ref , .right-ref-ajax {
     display: flex;
     gap: 2px;
     background:#38BDD4;
@@ -6021,6 +6032,17 @@
   .model-content::-webkit-scrollbar, .model-content-other::-webkit-scrollbar, .model-content-note::-webkit-scrollbar, .model-content-activity::-webkit-scrollbar {
     display: none;
   }
+
+  .right-other-ajax {
+    display: flex;
+    gap: 2px;
+    background: #38BDD4;
+    border-radius: 8px;
+    opacity: 1;
+    padding: 6px;
+    align-items: center;
+    border-style: none;
+}
 
   .model-content-note{
     position: absolute;

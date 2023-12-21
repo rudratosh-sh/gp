@@ -6,7 +6,7 @@ $(document).ready(function () {
     let date = new Date();
     let openCard = $(".open-card");
     let rightMessagesBtn = $(".right-messages");
-    let headerUserProfile = $(".login_user");
+    let headerUserProfile = $(".login_users");
     let openNotificationModal = $("#openNotificationModal");
 
     currentMonth.text(
@@ -443,16 +443,19 @@ function getHistory(selectedDate) {
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="card-right-video">
-                                Join in: <span class="right-video-time">${convertToAMPM(
-                                    appointment.appointment_date_time
-                                )}</span>
-                            </div>
-                            <button class="right-video-camera">
-                                <img src="../assets/images/video-camera-alt.svg" alt="video-camera" style="width: 24px; height: 16px;" />
-                                <div class="right-video-start">Join Now</div>
-                            </button>
-                            <button class="right-messages openChatModel">
+                            <button class="right-other-ajax">
+                                    <img src="/assets/images/description_black_24dp.svg" alt="video-camera" style="width: 24px; height: 16px">
+                                    <div class="right-video-start">Other</div>
+                                </button>
+                                <button class="right-note-ajax">
+                                    <img src="/assets/images/history_edu_black_24dp.svg" alt="video-camera" style="width: 24px; height: 16px">
+                                    <div class="right-video-start">Note</div>
+                                </button>
+                                <button class="right-ref-ajax">
+                                    <img src="/assets/images/email_black_24dp.svg" alt="video-camera" style="width: 24px; height: 16px">
+                                    <div class="right-video-start">Referral Letter</div>
+                                </button>
+                            <button class="right-messages openChatModel" >
                                         <img src="../assets/images/messages.svg" alt="message"
                                             style="width: 28px;height: 28px;margin: 0 20px;">
                                     </button>
@@ -467,7 +470,279 @@ function getHistory(selectedDate) {
                                     </button>                        </div>
                     </div>
                 `);
+                // Append modal content
+                const otherInfoModalContent = `
+                <div class="detail-card hide model-content-other">
+                    <div class="title-ref">
+                        <p class="text-grey2 text-22 font-bold">Other Information</p>
+                    </div>
+                    <div class="px-36 user-ref">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <p class="text-purple text-30 font-bold mr-15">${
+                                    appointment.user.name
+                                }</p>
+                                <p class="text-grey3 text-15 font-thin">
+                                    ${appointment.medicare_detail.gender}
+                                    <span class="ml-10">${Math.abs(
+                                        new Date(
+                                            new Date() -
+                                                new Date(
+                                                    appointment.medicare_detail.birthdate
+                                                )
+                                        ).getUTCFullYear() - 1970
+                                    )}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-16">
+                            <p class="text-grey3 text-xs font-thin">
+                                Contact:
+                                <span class="font-normal">${
+                                    appointment.user.country_code +
+                                    "-" +
+                                    appointment.user.mobile
+                                }</span>
+                            </p>
+                            <p class="text-grey3 text-xs font-thin ml-30">
+                                Medicare No. :
+                                <span class="font-normal">${
+                                    appointment.medicare_detail.medicare_number
+                                }</span>
+                            </p>
+                            <p class="text-grey3 text-xs font-thin ml-30">
+                                Last Visited:
+                                <span class="font-normal">${
+                                    appointment.last_visited
+                                }</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="details-note">
+                        <p class="text-grey2 text-18 font-normal mt-16">Presenting Complaints</p>
+                        <p class="text-grey2 text-base font-thin mt-8">${
+                            appointment.otherInfo &&
+                            appointment.otherInfo.presenting_complaints
+                                ? appointment.otherInfo.presenting_complaints
+                                : ""
+                        }</p>
+                        <p class="text-grey2 text-18 font-normal mt-16">Relevant History</p>
+                        <p class="text-grey2 text-base font-thin mt-8">${
+                            appointment.otherInfo &&
+                            appointment.otherInfo.relevant_history
+                                ? appointment.otherInfo.relevant_history
+                                : ""
+                        }</p>
+                        <p class="text-grey2 text-18 font-normal mt-16">Examination</p>
+                        <p class="text-grey2 text-base font-thin mt-8">${
+                            appointment.otherInfo &&
+                            appointment.otherInfo.examination
+                                ? appointment.otherInfo.examination
+                                : ""
+                        }</p>
+                        <p class="text-grey2 text-18 font-normal mt-16">Recommendation</p>
+                        <p class="text-grey2 text-base font-thin mt-8">${
+                            appointment.otherInfo &&
+                            appointment.otherInfo.recommendation
+                                ? appointment.otherInfo.recommendation
+                                : ""
+                        }</p>
+                        <p class="text-grey2 text-18 font-normal mt-16">Followup</p>
+                        <p class="text-grey2 text-base font-thin mt-8">${
+                            appointment.otherInfo &&
+                            appointment.otherInfo.followup
+                                ? appointment.otherInfo.followup
+                                : ""
+                        }</p>
+                        <p class="text-grey2 text-18 font-normal mt-16">Personalization Framework</p>
+                        <p class="text-grey2 text-base font-thin mt-8">${
+                            appointment.otherInfo &&
+                            appointment.otherInfo.personalization_framework
+                                ? appointment.otherInfo
+                                      .personalization_framework
+                                : ""
+                        }</p>
+                    </div>
+                </div>
+            `;
+
+                const noteModalContent = `
+            <div class="detail-card hide model-content-note">
+                <div class="title-ref">
+                    <p class="text-grey2 text-22 font-bold">Other Information</p>
+                </div>
+                <div class="px-36 user-ref">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <p class="text-purple text-30 font-bold mr-15">${
+                                appointment.user.name
+                            }</p>
+                            <p class="text-grey3 text-15 font-thin">
+                                ${appointment.medicare_detail.gender}
+                                <span class="ml-10">${Math.abs(
+                                    new Date(
+                                        new Date() -
+                                            new Date(
+                                                appointment.medicare_detail.birthdate
+                                            )
+                                    ).getUTCFullYear() - 1970
+                                )}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center mt-16">
+                        <p class="text-grey3 text-xs font-thin">
+                            Contact:
+                            <span class="font-normal">${
+                                appointment.user.country_code +
+                                "-" +
+                                appointment.user.mobile
+                            }</span>
+                        </p>
+                        <p class="text-grey3 text-xs font-thin ml-30">
+                            Medicare No. :
+                            <span class="font-normal">${
+                                appointment.medicare_detail.medicare_number
+                            }</span>
+                        </p>
+                        <p class="text-grey3 text-xs font-thin ml-30">
+                            Last Visited:
+                            <span class="font-normal">${
+                                appointment.last_visited
+                            }</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="details-note">
+                    <p class="text-grey2 text-18 font-normal mt-16">Presenting Complaints</p>
+                    <p class="text-grey2 text-base font-thin mt-8">${
+                        appointment.notes &&
+                        appointment.notes.presenting_complaints
+                            ? appointment.notes.presenting_complaints
+                            : ""
+                    }</p>
+                    <p class="text-grey2 text-18 font-normal mt-16">Relevant History</p>
+                    <p class="text-grey2 text-base font-thin mt-8">${
+                        appointment.notes && appointment.notes.relevant_history
+                            ? appointment.notes.relevant_history
+                            : ""
+                    }</p>
+                    <p class="text-grey2 text-18 font-normal mt-16">Examination</p>
+                    <p class="text-grey2 text-base font-thin mt-8">${
+                        appointment.notes && appointment.notes.examination
+                            ? appointment.notes.examination
+                            : ""
+                    }</p>
+                    <p class="text-grey2 text-18 font-normal mt-16">Recommendation</p>
+                    <p class="text-grey2 text-base font-thin mt-8">${
+                        appointment.notes && appointment.notes.recommendation
+                            ? appointment.notes.recommendation
+                            : ""
+                    }</p>
+                    <p class="text-grey2 text-18 font-normal mt-16">Followup</p>
+                    <p class="text-grey2 text-base font-thin mt-8">${
+                        appointment.notes && appointment.notes.followup
+                            ? appointment.notes.followup
+                            : ""
+                    }</p>
+                    <p class="text-grey2 text-18 font-normal mt-16">Personalization Framework</p>
+                    <p class="text-grey2 text-base font-thin mt-8">${
+                        appointment.notes &&
+                        appointment.notes.personalization_framework
+                            ? appointment.notes.personalization_framework
+                            : ""
+                    }</p>
+                </div>
+            </div>
+        `;
+
+                const refeModalContent = `
+            <div class="detail-card hide model-content">
+                <div class="title-ref">
+                    <p class="text-grey2 text-22 font-bold">Other Information</p>
+                </div>
+                <div class="px-36 user-ref">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <p class="text-purple text-30 font-bold mr-15">${
+                                appointment.user.name
+                            }</p>
+                            <p class="text-grey3 text-15 font-thin">
+                                ${appointment.medicare_detail.gender}
+                                <span class="ml-10">${Math.abs(
+                                    new Date(
+                                        new Date() -
+                                            new Date(
+                                                appointment.medicare_detail.birthdate
+                                            )
+                                    ).getUTCFullYear() - 1970
+                                )}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center mt-16">
+                        <p class="text-grey3 text-xs font-thin">
+                            Contact:
+                            <span class="font-normal">${
+                                appointment.user.country_code +
+                                "-" +
+                                appointment.user.mobile
+                            }</span>
+                        </p>
+                        <p class="text-grey3 text-xs font-thin ml-30">
+                            Medicare No. :
+                            <span class="font-normal">${
+                                appointment.medicare_detail.medicare_number
+                            }</span>
+                        </p>
+                        <p class="text-grey3 text-xs font-thin ml-30">
+                            Last Visited:
+                            <span class="font-normal">${
+                                appointment.last_visited
+                            }</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="details-ref px-36 py-20">
+        <p class="text-grey2 text-xs font-normal">Date:
+        ${$.datepicker.formatDate('DD d MM yy', new Date(appointment.ref_letter.date))}
+        </p>
+            <p class="text-grey2 text-xs font-normal mt-16">
+                To
+                <br />
+                ${
+                    appointment.ref_letter && appointment.ref_letter.refer_to
+                        ? appointment.ref_letter.refer_to
+                        : ""
+                }
+            </p>
+        <p class="text-grey2 text-xs font-bold mt-16">
+            Subject
+            <span class="font-normal">${
+                appointment.ref_letter && appointment.ref_letter.subject
+                    ? appointment.ref_letter.subject
+                    : ""
+            }
+            </span>
+        </p>
+        <p class="text-grey2 text-xs font-normal text-justify">
+        ${
+            appointment.ref_letter && appointment.ref_letter.content
+                ? appointment.ref_letter.content
+                : ""
+        }
+        </p>
+    </div>
+            </div>
+        `;
+
+                // Append modal content to the body or an appropriate container
+                $("body").append(otherInfoModalContent);
+                $("body").append(noteModalContent);
+                $("body").append(refeModalContent);
+                $("body").append('<div class="backdrop close"></div>');
             });
+            // Setup the modal functionality after appending modal content
         },
         error: function (error) {
             console.error("Error fetching appointments:", error);
@@ -477,19 +752,16 @@ function getHistory(selectedDate) {
 
 $(document).ready(function () {
     function setupModal(btnClass, contentClass) {
-        const btns = $(`button.${btnClass}`);
-        const modelBackdrop = $(".backdrop");
-        const modelContent = $(`.${contentClass}`);
-
-        btns.each(function () {
-            $(this).on("click", function () {
-                modelBackdrop.addClass("backdrop-open");
-                modelContent.removeClass("hide");
-            });
+        $(document).on("click", `button.${btnClass}`, function () {
+            const modelBackdrop = $(".backdrop");
+            const modelContent = $(`.${contentClass}`);
+            modelBackdrop.addClass("backdrop-open");
+            modelContent.removeClass("hide");
         });
 
-        const closeBtn = $("div.close");
-        closeBtn.on("click", function () {
+        $(document).on("click", "div.close", function () {
+            const modelBackdrop = $(".backdrop");
+            const modelContent = $(`.${contentClass}`);
             modelBackdrop.removeClass("backdrop-open");
             modelContent.addClass("hide");
         });
@@ -508,8 +780,29 @@ $(document).ready(function () {
         modalContainer.css("display", "block");
     }
 
-    const rightMessagesBtn = $(".right-messages-btn");
-    rightMessagesBtn.each(function () {
-        $(this).on("click", openModalContainer);
+    $(document).on(
+        "click",
+        ".right-messages-btn , .right-messages",
+        openModalContainer
+    );
+
+    $(document).on("click", ".right-other-ajax", function () {
+        const modelBackdrop = $(".backdrop");
+        const modelContent = $(".model-content-other");
+        modelBackdrop.addClass("backdrop-open");
+        modelContent.removeClass("hide");
+    });
+
+    $(document).on("click", ".right-note-ajax", function () {
+        const modelBackdrop = $(".backdrop");
+        const modelContent = $(".model-content-note");
+        modelBackdrop.addClass("backdrop-open");
+        modelContent.removeClass("hide");
+    });
+    $(document).on("click", ".right-ref-ajax", function () {
+        const modelBackdrop = $(".backdrop");
+        const modelContent = $(".model-content");
+        modelBackdrop.addClass("backdrop-open");
+        modelContent.removeClass("hide");
     });
 });

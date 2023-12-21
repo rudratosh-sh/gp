@@ -23,6 +23,12 @@ use App\Models\Note;
 use App\Models\Attachment;
 use App\Models\OtherInfo;
 use App\Models\ReferralLetter;
+use App\Models\Medication;
+use App\Models\Route;
+use App\Models\Prescription;
+use App\Models\Doctor;
+use Illuminate\Support\Str;
+
 
 class DoctorController extends Controller
 {
@@ -100,7 +106,7 @@ class DoctorController extends Controller
             ->where('doctor_id', auth()->id())
             ->get();
 
-        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'notes', 'otherInfo', 'refLetter');
 
         if (auth()->check()) {
             $user = auth()->user();
@@ -116,7 +122,7 @@ class DoctorController extends Controller
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
             ->where('doctor_id', auth()->id())
             ->get();
-        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'notes', 'otherInfo', 'refLetter');
         return response()->json([
             'appointments' => $appointments
         ]);
@@ -389,5 +395,123 @@ class DoctorController extends Controller
         }
         $message = $refLetter->wasRecentlyCreated ? 'Referral Letter created successfully.' : 'Referral Letter updated successfully.';
         return back()->with('success', $message);
+    }
+
+    public function createPrescription(Request $request, $userId)
+    {
+        $userId = Crypt::decrypt($userId);
+        $doctor = $request->session()->get('doctor');
+        $appointment = Appointment::where('user_id', $userId)
+            ->first();
+
+        $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'prescription');
+
+        if ($appointment->prescription !== null && $appointment->prescription->attachments !== null) {
+            $attachmentIds = json_decode($appointment->prescription->attachments, true);
+            $attachments = Attachment::whereIn('id', $attachmentIds)->get();
+        } else {
+            $attachments = collect();
+        }
+
+        if (auth()->check()) {
+            $user = auth()->user();
+        } else {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+        return view('doctor.pages.create-prescription', ['user' => $doctor, 'appointment' => $appointment, 'attachments' => $attachments]);
+    }
+
+    public function createPrescriptionPost(Request $request)
+    {
+        $userId = decrypt($request->input('pres_user_id'));
+        $clinicId = decrypt($request->input('pres_clinic_id'));
+        $doctorId = decrypt($request->input('pres_doctor_id'));
+
+        $prescriptions = [];
+        $data = $request->all();
+        $data['user_id'] = $userId;
+        $data['clinic_id'] = $clinicId;
+        $data['doctor_id'] = $doctorId;
+
+        foreach ($data['medication_id'] as $key => $value) {
+            $prescription = new Prescription();
+
+            $prescription->medication_id = $data['medication_id'][$key];
+            $prescription->route_id = $data['route_id'][$key];
+            $prescription->clinic_id = $data['clinic_id'];
+            $prescription->user_id = $data['user_id'];
+            $prescription->doctor_id = $data['doctor_id'];
+            $prescription->quantity = $data['quantity'][$key];
+            $prescription->remarks = $data['remarks'][$key];
+            $prescription->dosage = $data['dosage'][$key];
+            $prescriptions[] = $prescription;
+        }
+        foreach ($prescriptions as $prescription) {
+            $prescription->save();
+        }
+        return redirect()->back()->with('success', 'Prescriptions saved successfully.');
+    }
+
+    public function searchMedications(Request $request)
+    {
+        $query = $request->input('query');
+
+        $medications = Medication::where('name', 'like', '%' . $query . '%')->get(['name', 'id']);
+
+        return response()->json($medications);
+    }
+
+    public function searchRoutes(Request $request)
+    {
+        $query = $request->input('query');
+
+        $routes = Route::where('name', 'like', '%' . $query . '%')->get(['name', 'id']);
+
+        return response()->json($routes);
+    }
+
+    public function profile(Request $request)
+    {
+        $currentUser = Auth::user();
+        $profileData = User::where('id', $currentUser->id)->first();
+        $user = Doctor::where('user_id', auth()->id())->first();
+        $fields = ['name', 'about_me', 'email', 'mobile'];
+        $doctor = $request->session()->get('doctor');
+
+        return view('doctor.pages.profile', ['user' => $doctor, 'profileData' => $profileData, 'fields' => $fields]);
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'about_me' => 'nullable|string|max:1000',
+            'email' => 'required|string|email|max:255',
+            'mobile' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|max:2048', // Adjust max file size as needed
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validatedData = $validator->validated();
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $randomName = Str::random(20);
+            $avatarPath = $avatar->storeAs('avatars', $randomName . '.' . $avatar->getClientOriginalExtension(), 'public');
+
+            // Save the public path in the database
+            $user->avatar = '/storage/' . $avatarPath;
+            $user->save();
+
+            unset($validatedData['avatar']);
+        }
+        $user->update($validatedData);
+
+        return redirect()->route('doctor.profile.get')->with('success', 'Profile updated successfully.');
     }
 }

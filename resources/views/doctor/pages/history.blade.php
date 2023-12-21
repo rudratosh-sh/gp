@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout',['active'=>'history'])
+@extends('doctor.layouts.doctor-layout', ['active' => 'history'])
 
 @section('content')
     <style>
@@ -7,7 +7,6 @@
             width: 45px;
         }
     </style>
-
     <div class="content">
         <!-- Appointment Calender Start-->
         <div style="margin-top: 20px;">
@@ -82,7 +81,19 @@
                             'vitals' => $appointment->patientVitalValues,
                             'medicareDetail' => $appointment->medicareDetail,
                             'user' => $appointment->user,
-                            'appointment'=>$appointment
+                            'appointment' => $appointment,
+                        ])
+                        @include('doctor.modals.note', [
+                            'vitals' => $appointment->patientVitalValues,
+                            'medicareDetail' => $appointment->medicareDetail,
+                            'user' => $appointment->user,
+                            'appointment' => $appointment,
+                        ])
+                        @include('doctor.modals.referral', [
+                            'vitals' => $appointment->patientVitalValues,
+                            'medicareDetail' => $appointment->medicareDetail,
+                            'user' => $appointment->user,
+                            'appointment' => $appointment,
                         ])
                         <!-- Other Info MODAL end-->
                         <div class="backdrop close"></div>
@@ -98,7 +109,8 @@
                                 @endif
                                 <div>
                                     <div class="card-right-name">
-                                        <a style="all: unset;cursor:pointer" href="{{ route('doctor.patient.details.get', ['userId' => encrypt($appointment->user->id)]) }}">{{ $appointment->user->name }}</a>
+                                        <a style="all: unset;cursor:pointer"
+                                            href="{{ route('doctor.patient.details.get', ['userId' => encrypt($appointment->user->id)]) }}">{{ $appointment->user->name }}</a>
                                         <!-- Assuming user's name exists in the appointment -->
                                     </div>
                                     <div class="card-right-details">
@@ -108,7 +120,8 @@
                                             {{ \Carbon\Carbon::parse($appointment->medicareDetail->birthdate)->age . ' Years' }}
                                         </div>
                                         <!-- Example: Display user's age -->
-                                        <div>{{ $appointment->user->country_code . '-' . $appointment->user->mobile }}</div>
+                                        <div>{{ $appointment->user->country_code . '-' . $appointment->user->mobile }}
+                                        </div>
                                         <!-- Example: Display user's phone -->
                                     </div>
                                 </div>
@@ -152,5 +165,7 @@
         <!-- Appointment list end -->
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <script src="{{ asset('/js/doctor/history.js') }}"></script>
 @endsection

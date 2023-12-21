@@ -45,8 +45,7 @@
         </div>
 
         <div class="user_profile_popup" style="position: absolute; top: 0; margin-top: 4.2rem">
-            <span onclick="navigateToPage('profile.html')">My Profile</span>
-            <span onclick="navigateToPage('/gp/signin.html')">Logout</span>
-        </div>
+            <a href="{{route('doctor.profile.get')}}" style="all:unset;cursor: pointer;"> <span>My Profile</span></a>
+            <a href="{{route('logout')}}" style="all:unset;cursor: pointer;"> <span>Logout</span></a>        </div>
     </div>
 </header>

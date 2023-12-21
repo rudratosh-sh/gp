@@ -1,9 +1,51 @@
 @extends('doctor.layouts.doctor-layout', ['active' => 'history'])
 @section('content')
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         .right-hr {
             border-right: 1px solid black;
             width: 45px;
+        }
+
+        .autocomplete-wrapper {
+            position: relative;
+        }
+
+        .autocomplete-input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            /* border-radius: 5px; */
+        }
+
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 15 0px;
+            /* Adjust width as needed */
+        }
+
+        .ui-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .ui-menu-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .ui-state-active {
+            border: none !important;
+            background: transparent !important;
         }
     </style>
     <div class="content">
@@ -141,7 +183,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <img width="24px" height="24px" src="/assets/images/create-letter.svg" alt="" />
-                            <p class="text-grey2 text-20 font-bold ml-10">Create Referral Letter</p>
+                            <p class="text-grey2 text-20 font-bold ml-10">Create prescription</p>
                         </div>
                         <div class="flex items-center">
                             <a class="save-btn" href="/gp/patient-details.html">Cancel</a>
@@ -158,44 +200,63 @@
                                 </p>
                                 <img width="140px" height="72px" src="/assets/images/logo.png" alt="" />
                             </div>
-                            <input class="input input-border text-grey2 text-20 font-normal" name="refer_to" type="text" value="{{ optional($appointment->refLetter)->refer_to }}"
-                                placeholder="Refer To" />
-                            <input class="input input-border text-grey2 text-20 font-thin" name="subject" type="text" value="{{ optional($appointment->refLetter)->subject }}"
-                                placeholder="Subject" />
-                            <textarea class="input text-grey2 text-20 font-thin mb-14" name="content" id="" cols="30" rows="18"
-                                placeholder="Type Letter">{{ optional($appointment->refLetter)->content }}</textarea>
-                            <input type="hidden" value="{{ encrypt($appointment->user->id) }}" name="ref_user_id" />
-                            <input type="hidden" value="{{ encrypt($appointment->clinic_id) }}" name="ref_clinic_id" />
-                            <input type="hidden" value="{{ encrypt($appointment->doctor_id) }}" name="ref_doctor_id" />
-
-                            <div id="attachmentList" class="mt-36 flx flex-col row-gap-10">
-                                @if (count($attachments) > 0)
-                                    @foreach ($attachments as $attach)
-                                        <div class="attachment-wrap"><span
-                                                class="text-grey2 font-semibold text-16">{{ $attach->name }}</span>
+                            <div class="pres-wrapper">
+                                <p class="pres-title">New Prescription</p>
+                                <div class="pres-table">
+                                    <div class="pres-header">
+                                        <div class="pres-header-wrapper1">
+                                            <p>Medication</p>
                                         </div>
+                                        <div class="pres-header-wrapper2">
+                                            <p>Route</p>
+                                        </div>
+                                        <div class="pres-header-wrapper3">
+                                            <p>Dosage</p>
+                                        </div>
+                                        <div class="pres-header-wrapper4">
+                                            <p>Total Quantity</p>
+                                        </div>
+                                        <div class="pres-header-wrapper5">
+                                            <p>Remarks</p>
+                                        </div>
+                                    </div>
+                                    <div class="pres-divider"></div>
+                                    <div class="press-wrap">
+                                        <div class="pres-body">
+                                            <div class="pres-body-wrapper1 autocomplete-wrapper">
+                                                <input type="text" required class="medication autocomplete-input"
+                                                    name="medication_name[]">
+                                                <input type="hidden" class="medication_id" name="medication_id[]">
+                                            </div>
+                                            <div class="pres-body-wrapper2 autocomplete-wrapper">
+                                                <input type="text" required class="route autocomplete-input"
+                                                    name="route_name[]">
+                                                <input type="hidden" class="route_id" name="route_id[]">
+                                            </div>
+                                            <div class="pres-body-wrapper3">
+                                                <input type="text" required name="dosage[]" class="dosage">
+                                            </div>
+                                            <div class="pres-body-wrapper4"><input type="text" required
+                                                    name="quantity[]" class="total-quantity"></div>
+                                            <div class="pres-body-wrapper5"><input name="remarks[]" required
+                                                    type="text"></div>
+                                            <div class="pres-body-wrapper6">
+                                                <img src="/assets/cross.png" alt="cross" class="delete-row">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pres-divider"></div>
+                                    <div class="pres-butto">
+                                        <button style="all:unset;color:#fff;cursor: pointer;" type="button"
+                                            class="add-medication-btn">Add Medication</button>
+                                    </div>
+                                </div>
                             </div>
-                            @endforeach
-                            @endif
-                        </div>
-
-                        <div class="flex items-center justify-between mt-36">
-                            <p class="text-grey2 text-20 font-thin">
-                                {{ $user->name }}
-                                <br />
-                                {Signature}
-                                <br />
-                                {Dr. Physician name}
-                            </p>
-                            <!-- Attachment button -->
-                            <div>
-                                <input style="visibility: hidden;" type="file" id="attachmentInput"
-                                    accept=".pdf, .doc, .docx, .jpg, .png" name="attachments[]" multiple />
-                                <label for="attachmentInput">
-                                    <img style="cursor: pointer;" width="45px" height="58px"
-                                        src="/assets/images/attachment.png" alt="" />
-                                </label>
-                            </div>
+                            <input type="hidden" value="{{ encrypt($appointment->user->id) }}" name="pres_user_id" />
+                            <input type="hidden" value="{{ encrypt($appointment->clinic_id) }}"
+                                name="pres_clinic_id" />
+                            <input type="hidden" value="{{ encrypt($appointment->doctor_id) }}"
+                                name="pres_doctor_id" />
                         </div>
                     </div>
                 </form>
@@ -203,7 +264,7 @@
         </section>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $(document).ready(function() {
             // Event listener for file input change
@@ -230,6 +291,63 @@
                     $('#attachmentList').append(attachmentWrap);
                 });
             });
+        });
+
+        function initializeAutocomplete(element, sourceRoute, hiddenInput) {
+            element.autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: sourceRoute,
+                        dataType: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function(data) {
+                            response(data.map(item => ({
+                                label: item.name,
+                                value: item.id
+                            })));
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    $(this).val(ui.item.label); // Display the name in the input
+                    $(hiddenInput).val(ui.item.value); // Store the ID in the hidden input
+                    return false;
+                }
+            });
+        }
+
+        // Initialize autocomplete for the initial rows
+        initializeAutocomplete($(".medication"), "{{ route('medication.autocomplete') }}", ".medication_id");
+        initializeAutocomplete($(".route"), "{{ route('route.autocomplete') }}", ".route_id");
+
+        // Add new row on clicking 'Add Medication' button
+        $('.add-medication-btn').click(function() {
+            var newRow = $('.pres-body:first').clone();
+            newRow.find('input').val('').attr('required', true); // Set required for all inputs in the new row
+            newRow.find('.medication_id, .route_id').val(''); // Clear hidden inputs for IDs
+            newRow.appendTo('.press-wrap');
+            initializeAutocomplete(newRow.find('.medication'), "{{ route('medication.autocomplete') }}",
+                ".medication_id");
+            initializeAutocomplete(newRow.find('.route'), "{{ route('route.autocomplete') }}", ".route_id");
+        });
+
+
+        // Delete row on clicking cross icon
+        $(document).on('click', '.delete-row', function() {
+            var row = $(this).closest('.pres-body');
+            if (row.index() !== 0) { // Check if the row is not the first one
+                row.remove();
+            }
+        });
+
+        $(document).on('input', '.total-quantity , .dosage', function() {
+            var value = $(this).val();
+            if (!/^[1-9]\d*$/.test(value)) { // Validates if the input is a positive integer greater than zero
+                $(this).val(''); // Clears the input if the condition is not met
+            }
         });
     </script>
 @endsection

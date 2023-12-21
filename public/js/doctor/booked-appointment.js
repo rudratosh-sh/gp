@@ -6,7 +6,7 @@ $(document).ready(function () {
     let date = new Date();
     let openCard = $(".open-card");
     let rightMessagesBtn = $(".right-messages");
-    let headerUserProfile = $(".login_user");
+    let headerUserProfile = $(".login_users");
     let openNotificationModal = $("#openNotificationModal");
 
     currentMonth.text(

@@ -90,6 +90,14 @@ Route::middleware(['check.user.role:doctor'])->group(function () {
 
     Route::get('/doctor/createRefLetter/{userId}', [DoctorController::class, 'createRefLetter'])->name('doctor.create.ref-letter.get');
     Route::post('/doctor/createRefLetterPost', [DoctorController::class, 'createRefLetterPost'])->name('doctor.create.ref-letter.post');
+
+    Route::get('/doctor/createPrescription/{userId}', [DoctorController::class, 'createPrescription'])->name('doctor.create.prescription.get');
+    Route::post('/doctor/createPrescriptionPost', [DoctorController::class, 'createPrescriptionPost'])->name('doctor.create.prescription.post');
+    Route::get('/medications/search', [DoctorController::class, 'searchMedications'])->name('medication.autocomplete');
+    Route::get('/routes/search', [DoctorController::class, 'searchRoutes'])->name('route.autocomplete');
+
+    Route::get('/doctor/profile', [DoctorController::class, 'profile'])->name('doctor.profile.get');
+    Route::post('/doctor/profile/update', [DoctorController::class, 'profileUpdate'])->name('doctor.profile.update');
 });
 
 /**Staff**/

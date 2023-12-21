@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+// use Prescription;
 
 class Appointment extends Model
 {
@@ -55,5 +56,10 @@ class Appointment extends Model
     public function refLetter()
     {
         return $this->hasOne(ReferralLetter::class, 'user_id', 'user_id');
+    }
+
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class, 'user_id', 'user_id');
     }
 }

@@ -5,65 +5,58 @@
     <div class="px-36 user-ref">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
-                <p class="text-purple text-30 font-bold mr-15">Sean Rada</p>
+                <p class="text-purple text-30 font-bold mr-15">{{ $user->name }}</p>
                 <p class="text-grey3 text-15 font-thin">
-                    Male
-                    <span class="ml-10">45</span>
+                    {{ $medicareDetail->gender }}
+                    <span class="ml-10">{{ \Carbon\Carbon::parse($medicareDetail->birthdate)->age . ' Years' }}</span>
                 </p>
             </div>
         </div>
         <div class="flex items-center mt-16">
-            @isset($contact)
-                <p class="text-grey3 text-xs font-thin">
-                    Contact:
-                    <span class="font-normal">{{ $contact }}</span>
-                </p>
-            @endisset
-
-            @isset($medicareNo)
-                <p class="text-grey3 text-xs font-thin ml-30">
-                    Medicare No. :
-                    <span class="font-normal">{{ $medicareNo }}</span>
-                </p>
-            @endisset
-
-            @isset($lastVisited)
-                <p class="text-grey3 text-xs font-thin ml-30">
-                    Last Visited:
-                    <span class="font-normal">{{ $lastVisited }}</span>
-                </p>
-            @endisset
+            <p class="text-grey3 text-xs font-thin">
+                Contact:
+                <span
+                    class="font-normal">{{ $appointment->user->country_code . '-' . $appointment->user->mobile }}</span>
+            </p>
+            <p class="text-grey3 text-xs font-thin ml-30">
+                Medicare No. :
+                <span class="font-normal">{{ $medicareDetail->medicare_number }}</span>
+            </p>
+            <p class="text-grey3 text-xs font-thin ml-30">
+                Last Visited:
+                <span class="font-normal">{{ $appointment->last_visited }}</span>
+            </p>
         </div>
     </div>
     <div class="details-note">
         <p class="text-grey2 text-18 font-normal mt-16">Presenting Complaints</p>
-        @isset($presentingComplaints)
-            <p class="text-grey2 text-base font-thin mt-8">{{ $presentingComplaints }}</p>
+        @isset($appointment->notes->presenting_complaints)
+            <p class="text-grey2 text-base font-thin mt-8">{{ $appointment->notes->presenting_complaints }}</p>
         @endisset
 
         <p class="text-grey2 text-18 font-normal mt-16">Relevant History</p>
-        @isset($relevantHistory)
-            <p class="text-grey2 text-base font-thin mt-8">{{ $relevantHistory }}</p>
+        @isset($appointment->notes->relevant_history)
+            <p class="text-grey2 text-base font-thin mt-8">{{ $appointment->notes->relevant_history }}</p>
         @endisset
 
         <p class="text-grey2 text-18 font-normal mt-16">Examination</p>
-        @isset($examination)
-            <p class="text-grey2 text-base font-thin mt-8">{{ $examination }}</p>
+        @isset($appointment->notes->examination)
+            <p class="text-grey2 text-base font-thin mt-8">{{ $appointment->notes->examination }}</p>
         @endisset
 
         <p class="text-grey2 text-18 font-normal mt-16">Recommendation</p>
-        @isset($recommendation)
-            <p class="text-grey2 text-base font-thin mt-8">{{ $recommendation }}</p>
+        @isset($appointment->notes->recommendation)
+            <p class="text-grey2 text-base font-thin mt-8">{{ $appointment->notes->recommendation }}</p>
         @endisset
 
         <p class="text-grey2 text-18 font-normal mt-16">Followup</p>
-        @isset($followup)
-            <p class="text-grey2 text-base font-thin mt-8">{{ $followup }}</p>
+        @isset($appointment->notes->followup)
+            <p class="text-grey2 text-base font-thin mt-8">{{ $appointment->notes->followup }}</p>
         @endisset
 
         <p class="text-grey2 text-18 font-normal mt-16">Personalization Framework</p>
-        @isset($personalizationFramework)
-            <p class="text-grey2 text-base font-thin mt-8">{{ $personalizationFramework }}</p>
+        @isset($appointment->notes->personalization_framework)
+            <p class="text-grey2 text-base font-thin mt-8">{{ $appointment->notes->personalization_framework }}</p>
         @endisset
     </div>
 </div>
