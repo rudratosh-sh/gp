@@ -19,6 +19,7 @@ use Google\Cloud\Speech\V1\RecognitionConfig;
 use Google\Cloud\Speech\V1\SpeechClient;
 use Illuminate\Support\Facades\Log;
 use App\Models\Message;
+use App\Models\Appointment;
 
 class PatientController extends Controller
 {
@@ -488,6 +489,13 @@ class PatientController extends Controller
             // Handle the error gracefully or return an error response
             return response()->json(['error' => 'An error occurred while processing speech.']);
         }
+    }
+
+    public function getReferal()
+    {
+        $appointments = Appointment::all();
+        $appointments->load('doctor', 'clinic', 'user','refLetter');
+        return view('patient.dashboard.ref', compact('appointments'));
     }
 
     // public function verifyCard(Request $request)

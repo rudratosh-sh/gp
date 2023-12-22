@@ -1,4 +1,4 @@
-@extends('patient.layouts.public')
+@extends('patient.layouts.public',['page_title'=>'List of Schedule'])
 
 @section('content')
     <style>
@@ -89,12 +89,13 @@
         <div class="space_container">
             <!-- SIDE BAR -->
             <ul class="sidebar">
-                <li id="dashboard-tab"><a class="a-tab-inactive"href="{{ route('appointment.schedule.list') }}">Dashboard</a>
+                <li id="dashboard-tab"><a style="all:unset" class="a-tab-inactive"href="{{ route('appointment.schedule.list') }}">Dashboard</a>
                 </li>
-                <li class="active" id="booking-tab"><a class="a-tab-active" href="{{ route('appointment.index.get') }}">Booking
+                <li class="active" id="booking-tab"><a style="all:unset" class="a-tab-active" href="{{ route('appointment.index.get') }}">Booking
                         Appointment</a></li>
-                <li id="referral-tab"><a class="a-tab-inactive" href="#">Referral Letter</a></li>
-                <li id="profile-tab"><a class="a-tab-inactive" href="#">My Profile</a></li>
+                <li id="referral-tab"><a  style="all:unset" class="a-tab-inactive" href="{{ route('referal.index.get') }}">Referral Letter</a>
+                </li>
+                <li id="profile-tab"><a style="all:unset" class="a-tab-inactive" href="{{ route('patient.profile.get') }}">My Profile</a></li>
             </ul>
             <!-- Main Content -->
             <div class="dis_flx">

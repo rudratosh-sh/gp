@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout')
+@extends('doctor.layouts.doctor-layout',['page_title'=>'Patient Profile'])
 @section('content')
     <div class="internal-page profile-page">
         <section class="profile">

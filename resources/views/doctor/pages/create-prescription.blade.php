@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout', ['active' => 'history'])
+@extends('doctor.layouts.doctor-layout', ['active' => 'history','page_title'=>'Create A Prescription'])
 @section('content')
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>

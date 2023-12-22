@@ -67,8 +67,10 @@ Route::middleware(['check.user.role:patient'])->group(function () {
     Route::get('/conversation/{userId}', [MessageController::class, 'getConversation'])->name('messages.getConversation');
     Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
     Route::post('/messages/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
-});
 
+    Route::get('/patient/referal', [PatientController::class, 'getReferal'])->name('referal.index.get');
+
+});
 
 /**Doctor**/
 Route::middleware(['check.user.role:doctor'])->group(function () {

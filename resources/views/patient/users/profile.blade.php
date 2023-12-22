@@ -1,6 +1,6 @@
 @extends('patient.layouts.public')
 @section('content')
-    <style>
+    {{-- <style>
         .a-tab-active {
             color: white;
             border: none;
@@ -12,7 +12,7 @@
             border: none;
             text-decoration: none;
         }
-    </style>
+    </style> --}}
     <div class="container">
         <!-- HEADER -->
         @include('patient.includes.header')
@@ -20,14 +20,13 @@
         <div class="space_container" style="padding: 0px">
             <!-- SIDE BAR -->
             <ul class="sidebar">
-                <li id="dashboard-tab"><a class="a-tab-inactive"href="{{ route('appointment.schedule.list') }}">Dashboard</a>
-                </li>
-                <li  id="booking-tab"><a class="a-tab-inactive" href="{{ route('appointment.index.get') }}">Booking
+                <li id="dashboard-tab"><a style="all:unset"
+                        class="a-tab-inactive"href="{{ route('appointment.schedule.list') }}">Dashboard</a></li>
+                <li id="booking-tab"><a style="all:unset" class="a-tab-inactive" href="{{ route('appointment.index.get') }}">Booking
                         Appointment</a></li>
-                <li id="referral-tab"><a class="a-tab-inactive" href="#">Referral Letter</a></li>
-                <li id="profile-tab" class="active"><a class="a-tab-active" href="{{route('patient.profile.get')}}">My Profile</a></li>
+                <li id="referral-tab"><a style="all:unset" class="a-tab-active" href="{{route('referal.index.get')}}">Referral Letter</a></li>
+                <li class="active"  id="profile-tab"><a style="all:unset" class="a-tab-inactive" href="{{ route('patient.profile.get') }}">My Profile</a></li>
             </ul>
-
             <!-- Main Content -->
             <div class="dis_flx" style="padding: 0px;padding-top: 70px;">
                 <div class="booking_container" style="padding: 0px">

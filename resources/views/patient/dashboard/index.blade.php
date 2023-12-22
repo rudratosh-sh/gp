@@ -1,4 +1,4 @@
-@extends('patient.layouts.public')
+@extends('patient.layouts.public',['page_title'=>'Dashboard'])
 
 @section('content')
     <div class="container">

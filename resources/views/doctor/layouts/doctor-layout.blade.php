@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Your Title Here</title>
+    <title>{{$page_title}}</title>
     <link href="{{ asset('css/doctor.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">

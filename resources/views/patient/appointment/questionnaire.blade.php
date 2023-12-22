@@ -1,4 +1,4 @@
-@extends('patient.layouts.public')
+@extends('patient.layouts.public',['page_title'=>'Answer Questions'])
 
 @section('content')
     <div class="container">
@@ -8,10 +8,10 @@
         <div class="space_container">
             <!-- SIDE BAR -->
             <ul class="sidebar">
-                <li class="tab-option" id="dashboard-tab">Dashboard</li>
-                <li class="tab-option active" id="booking-tab">Booking Appointment</li>
-                <li class="tab-option" id="referral-tab">Referral Letter</li>
-                <li class="tab-option" id="profile-tab">My Profile</li>
+                <li id="dashboard-tab"><a style="all:unset"  class="a-tab-inactive"href="{{route('appointment.schedule.list')}}">Dashboard</a></li>
+                <li class="active" id="booking-tab"><a style="all:unset" class="a-tab-active" href="{{route('appointment.index.get')}}">Booking Appointment</a></li>
+                <li id="referral-tab"><a style="all:unset" class="a-tab-inactive" href="{{route('referal.index.get')}}">Referral Letter</a></li>
+                <li id="profile-tab"><a  style="all:unset" class="a-tab-inactive" href="{{ route('patient.profile.get') }}">My Profile</a></li>
             </ul>
             <!-- Main Content -->
             <div class="dis_flx">

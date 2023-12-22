@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout',['active'=>'appointment'])
+@extends('doctor.layouts.doctor-layout',['active'=>'appointment','page_title'=>'Book An Appointment'])
 
 @section('content')
     <style>

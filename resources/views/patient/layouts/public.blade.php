@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>GP Web App</title>
+    <title>{{$page_title}}</title>
     {{-- <link href="{{ asset('css/public.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" /> --}}
     <link href="{{ asset('css/patient.css') }}" rel="stylesheet">

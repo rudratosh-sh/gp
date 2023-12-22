@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout', ['active' => 'history'])
+@extends('doctor.layouts.doctor-layout', ['active' => 'history','page_title'=>'Patient Details'])
 @section('content')
     <style>
         .right-hr {
