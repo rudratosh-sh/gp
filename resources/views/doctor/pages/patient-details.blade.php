@@ -18,9 +18,11 @@
                         <p class="text-grey2 text-22 font-bold ml-10">Patient Details</p>
                     </div>
                     <div class="flex">
-                        <div onclick="navigateToPage('/gp/create-prescription.html')"
-                            class="flex items-center justify-center patient-detail-btn-green">
-                            <p class="text-white text-base">Create Prescription</p>
+                        <div class="flex items-center justify-center patient-detail-btn-green">
+                            <a style="all:unset;cursor: pointer;"
+                                href="{{ route('doctor.create.prescription.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                <p class="text-white text-base">Create Prescription</p>
+                            </a>
                         </div>
                         <div class="flex items-center justify-center patient-detail-btn ml-10">
                             <a style="all:unset;cursor: pointer;"

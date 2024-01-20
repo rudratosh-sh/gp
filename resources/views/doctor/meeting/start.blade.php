@@ -107,9 +107,39 @@
                     <div class="">
                         <div class="flx_space_btw">
                             <div class="flex items-center">
-                                <img class="pointer" width="40px" height="40px"
-                                    src="/assets/images/arrow-left-purple.svg" alt="" />
+                                <a href="{{ route('doctor.dashboard.get') }}">
+                                    <img class="pointer" width="40px" height="40px"
+                                        src="/assets/images/arrow-left-purple.svg" alt="">
+                                </a>
                                 <p class="text-grey2 text-22 font-bold ml-10">Patient Details > Video call</p>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex">
+                                    <div class="flex items-center justify-center patient-detail-btn-green">
+                                        <a style="all:unset;cursor: pointer;"
+                                            href="{{ route('doctor.create.prescription.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                            <p class="text-white text-base">Create Prescription</p>
+                                        </a>
+                                    </div>
+                                    <div class="flex items-center justify-center patient-detail-btn ml-10">
+                                        <a style="all:unset;cursor: pointer;"
+                                            href="{{ route('doctor.create.other-info.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                            <p class="text-white text-base">Create Other</p>
+                                        </a>
+                                    </div>
+                                    <div class="flex i  tems-center justify-center patient-detail-btn ml-10">
+                                        <a style="all:unset;cursor: pointer;"
+                                            href="{{ route('doctor.create.note.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                            <p class="text-white text-base">Create Note</p>
+                                        </a>
+                                    </div>
+                                    <div class="flex items-center justify-center patient-detail-btn ml-10">
+                                        <a style="all:unset;cursor: pointer;"
+                                            href="{{ route('doctor.create.ref-letter.get', ['userId' => encrypt($appointment->user->id)]) }}">
+                                            <p class="text-white text-base">Create Referral Later</p>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="video-call-wrapper mt-11">

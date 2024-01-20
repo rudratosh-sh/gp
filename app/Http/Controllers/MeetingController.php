@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Crypt;
 class MeetingController extends Controller
 {
 
-    public function createMeeting(Request $request,$meetingId,$role)
+    public function createMeeting(Request $request, $meetingId, $role, $appointmentId)
     {
         $en_role = Crypt::encrypt($role);
         $de_role = $role;
@@ -31,13 +31,13 @@ class MeetingController extends Controller
         $roomName = $response->json("roomName");
 
         if ($response->status() === 200) {
-            return redirect("/".$de_role."/validateMeeting/{$roomName}/{$en_role}");
+            return redirect("/" . $de_role . "/validateMeeting/{$roomName}/{$en_role}/{$appointmentId}");
         } else {
             return redirect()->back()->with('error', 'Meeing Link Expired');
         }
     }
 
-    public function validateMeeting(Request $request, $meetingId,$role)
+    public function validateMeeting(Request $request, $meetingId, $role, $appointmentId)
     {
         $en_role = $role;
         $de_role = Crypt::decrypt($role);
@@ -49,13 +49,13 @@ class MeetingController extends Controller
 
         $roomName = $response->json("roomName");
         if ($response->status() === 200) {
-            return redirect("/{$de_role}/meeting/{$meetingId}/{$en_role}"); // We will update this soon
+            return redirect("/{$de_role}/meeting/{$meetingId}/{$en_role}/{$appointmentId}"); // We will update this soon
         } else {
             return redirect()->back()->with('error', 'Meeing Link Expired! Invalid Meeting ID');
         }
     }
 
-    public function startMeeting(Request $request,$meetingId,$role)
+    public function startMeeting(Request $request, $meetingId, $role, $appointmentId)
     {
         $en_role = $role;
         $de_role = Crypt::decrypt($role);
@@ -70,6 +70,21 @@ class MeetingController extends Controller
         $locations = Clinic::with(['bannerImage', 'profileIcon'])->get();
         $doctors = Doctor::with('user')->get();
         $role = Crypt::decrypt($role);
-        return view($de_role.'.meeting.start', ['user' => $user, 'locations' => $locations, 'doctors' => $doctors,'METERED_DOMAIN'=>$METERED_DOMAIN,'MEETING_ID'=>$meetingId]);
+
+        $appointment = Appointment::where('id', $appointmentId)
+            ->where('doctor_id', auth()->id())
+            ->first();
+        $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'meeting');
+        return view(
+            $de_role . '.meeting.start',
+            [
+                'user' => $user,
+                'locations' => $locations,
+                'doctors' => $doctors,
+                'METERED_DOMAIN' => $METERED_DOMAIN,
+                'MEETING_ID' => $meetingId,
+                'appointment' => $appointment
+            ]
+        );
     }
 }

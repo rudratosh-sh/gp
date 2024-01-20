@@ -450,7 +450,7 @@ function getAppointments(selectedDate) {
                             </div>
                             <button class="right-video-camera">
                                 <img src="../assets/images/video-camera-alt.svg" alt="video-camera" style="width: 24px; height: 16px;" />
-                                <div class="right-video-start"><a href="/doctor/createMeeting/${appointment.meeting.meeting_id}/doctor"
+                                <div class="right-video-start"><a href="/doctor/createMeeting/${appointment.meeting.meeting_id}/doctor/${appointment.id}"
                                 style="text-decoration: none; color: inherit; cursor: pointer;" onclick="location.reload();">Join Now</a></div>
                             </button>
                             <button class="right-messages openChatModel">

@@ -1,5 +1,4 @@
 @extends('staff.layouts.staff-layout')
-
 @section('content')
     <style>
         .right-hr {
@@ -7,7 +6,6 @@
             width: 45px;
         }
     </style>
-
     <div class="content">
         <!-- Appointment Calender Start-->
         <div style="margin-top: 20px;">
@@ -113,7 +111,7 @@
                                 <button class="right-video-camera">
                                     <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
                                         style="width: 24px;height: 16px;" />
-                                    <div class="right-video-start"><a href="{{ route('meeting.create.get', ['meetingId' => $appointment->meeting->meeting_id,'role'=>'doctor']) }}"
+                                    <div class="right-video-start"><a href="{{ route('meeting.create.get', ['meetingId' => $appointment->meeting->meeting_id,'role'=>'doctor','appointmentId'=>$appointment->id]) }}"
                                         style="text-decoration: none; color: inherit; cursor: pointer;">Join Now</a></div>
                                 </button>
                                 <button class="right-messages">

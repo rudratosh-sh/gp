@@ -74,9 +74,9 @@ Route::middleware(['check.user.role:patient'])->group(function () {
 
     Route::get('/patient/referal', [PatientController::class, 'getReferal'])->name('referal.index.get');
 
-    Route::get("/patient/createMeeting/{meetingId}/{role}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
-    Route::get("/patient/meeting/{meetingId}/{role}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
-    Route::get("/patient/validateMeeting/{meetingId}/{role}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
+    Route::get("/patient/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
+    Route::get("/patient/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
+    Route::get("/patient/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
 
 /**Doctor**/
 Route::middleware(['check.user.role:doctor'])->group(function () {
@@ -107,9 +107,9 @@ Route::middleware(['check.user.role:doctor'])->group(function () {
     Route::get('/doctor/profile', [DoctorController::class, 'profile'])->name('doctor.profile.get');
     Route::post('/doctor/profile/update', [DoctorController::class, 'profileUpdate'])->name('doctor.profile.update');
 
-    Route::get("/doctor/createMeeting/{meetingId}/{role}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
-    Route::get("/doctor/meeting/{meetingId}/{role}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
-    Route::get("/doctor/validateMeeting/{meetingId}/{role}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
+    Route::get("/doctor/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
+    Route::get("/doctor/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
+    Route::get("/doctor/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
 });
 
 /**Staff**/
