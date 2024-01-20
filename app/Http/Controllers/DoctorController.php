@@ -105,9 +105,7 @@ class DoctorController extends Controller
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
             ->where('doctor_id', auth()->id())
             ->get();
-
         $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'notes', 'otherInfo', 'refLetter');
-
         if (auth()->check()) {
             $user = auth()->user();
         } else {

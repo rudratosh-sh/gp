@@ -62,4 +62,9 @@ class Appointment extends Model
     {
         return $this->hasOne(Prescription::class, 'user_id', 'user_id');
     }
+
+    public function meeting()
+    {
+        return $this->hasOne(Meeting::class);
+    }
 }

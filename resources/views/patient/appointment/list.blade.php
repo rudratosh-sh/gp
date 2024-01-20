@@ -1,17 +1,21 @@
-@extends('patient.layouts.public',['page_title'=>'List of Appointment'])
+@extends('patient.layouts.public', ['page_title' => 'List of Appointment'])
 @section('content')
     <style>
         /* .a-tab-active {
-            color: white;
-            border: none;
-            text-decoration: none;
-        }
+                        color: white;
+                        border: none;
+                        text-decoration: none;
+                    }
 
-        .a-tab-inactive {
-            color: #000;
-            border: none;
-            text-decoration: none;
-        } */
+                    .a-tab-inactive {
+                        color: #000;
+                        border: none;
+                        text-decoration: none;
+                    } */
+        .p_join_pg8 {
+            margin-left: 26px;
+            margin-top: -31px;
+        }
     </style>
     <div class="container">
         <!-- HEADER -->
@@ -20,10 +24,14 @@
         <div class="space_container">
             <!-- SIDE BAR -->
             <ul class="sidebar">
-                <li  class="active" id="dashboard-tab"><a  style="all:unset" class="a-tab-active"href="{{route('appointment.schedule.list')}}">Dashboard</a></li>
-                <li  id="booking-tab"><a style="all:unset" class="a-tab-inactive" href="{{route('appointment.index.get')}}">Booking Appointment</a></li>
-                <li id="referral-tab"><a style="all:unset" class="a-tab-inactive" href="{{route('referal.index.get')}}">Referral Letter</a></li>
-                <li id="profile-tab"><a  style="all:unset"class="a-tab-inactive" href="{{ route('patient.profile.get') }}">My Profile</a></li>
+                <li class="active" id="dashboard-tab"><a style="all:unset"
+                        class="a-tab-active"href="{{ route('appointment.schedule.list') }}">Dashboard</a></li>
+                <li id="booking-tab"><a style="all:unset" class="a-tab-inactive"
+                        href="{{ route('appointment.index.get') }}">Booking Appointment</a></li>
+                <li id="referral-tab"><a style="all:unset" class="a-tab-inactive"
+                        href="{{ route('referal.index.get') }}">Referral Letter</a></li>
+                <li id="profile-tab"><a style="all:unset"class="a-tab-inactive" href="{{ route('patient.profile.get') }}">My
+                        Profile</a></li>
             </ul>
             <!-- Main Content -->
             <div class="dis_flx">
@@ -51,9 +59,9 @@
                                     <div class="center_section_pg8">
                                         <div class="center_content_pg8">
                                             <span class="btn_bt_pg8">Booking Video Call Consultation</span>
-                                            <div class="flx items-center column-gap-10 " >
+                                            <div class="flx items-center column-gap-10 ">
                                                 <div class="box_message_img_pg8" style="cursor: pointer; "></div>
-                                                <p class="direction_pg8" style="cursor: pointer;" >2 Messages</p>
+                                                <p class="direction_pg8" style="cursor: pointer;">2 Messages</p>
                                                 <p class="direction_pg8">7km</p>
                                             </div>
                                         </div>
@@ -76,9 +84,12 @@
                                                     </p>
                                                 </div>
                                                 <div class="meet_icon_join_pg8">
-                                                    <img src="{{ asset('assets/images/paper-plane.svg') }}" alt=""
-                                                        class="meet-icon_pg8">
-                                                    <p class="p_join_pg8">Join Meet</p>
+                                                    <a href="{{ route('meeting.create.get', ['meetingId' => $appointment->meeting->meeting_id,'role'=>'patient']) }}"
+                                                        style="text-decoration: none; color: inherit; cursor: pointer;">
+                                                        <img src="{{ asset('assets/images/paper-plane.svg') }}"
+                                                            alt="" class="meet-icon_pg8">
+                                                        <p class="p_join_pg8">Join Meet</p>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\Events\AppointmentCreated;
 use App\Events\NotificationBroadcast;
 use App\Models\Notification;
+use Illuminate\Support\Str;
+use App\Models\Meeting;
 
 class AppointmentController extends Controller
 {
@@ -51,69 +53,50 @@ class AppointmentController extends Controller
 
     public function searchClinicsDoctors(Request $request)
     {
-        // Retrieve the selected location and specialist
         $locationId = $request->input('location');
         $specialistId = $request->input('specialist');
-
-        // Fetch clinics based on the selected location
         $clinics = Clinic::where('id', $locationId)
-            ->with(['bannerImage', 'profileIcon']) // Load banner image and profile icon relationships
+            ->with(['bannerImage', 'profileIcon'])
             ->get();
 
-        // Fetch doctors based on the selected specialist
         $doctors = Doctor::where('user_id', $specialistId)
-            ->with(['clinic', 'user', 'clinic.bannerImage', 'clinic.profileIcon']) // Load necessary relationships
+            ->with(['clinic', 'user', 'clinic.bannerImage', 'clinic.profileIcon'])
             ->get();
 
-        // If no doctors are found for the selected specialist, fetch doctors based on the clinic's location
         if ($doctors->isEmpty()) {
             $doctors = Doctor::whereHas('clinic', function ($query) use ($locationId) {
                 $query->where('id', $locationId);
             })
-                ->with(['user', 'clinic.bannerImage', 'clinic.profileIcon']) // Load necessary relationships
+                ->with(['user', 'clinic.bannerImage', 'clinic.profileIcon'])
                 ->get();
         }
-
-        // Return the search results as JSON
         return response()->json(['clinics' => $clinics, 'doctors' => $doctors]);
     }
 
     public function questionnaire($doctorId, $bookingType)
     {
-        // Fetch the doctor information using the $doctorId
         $doctor = Doctor::where('user_id', $doctorId)->first();
-
         if (!$doctor) {
-            // Handle the case where the doctor is not found
             abort(404);
         }
-
-        // Fetch all clinics associated with this doctor
         $clinics = Clinic::whereHas('doctors', function ($query) use ($doctor) {
             $query->where('id', $doctor->id);
         })->get();
-
-        // Fetch all questions with section_id = 1
         $questions = Question::where('section_id', 1)->get();
-
         return view('patient.appointment.questionnaire', compact('clinics', 'doctor', 'questions', 'bookingType'));
     }
 
     public function questionnaireStore(Request $request, $bookingType)
     {
-        // Retrieve data from the form submission
         $doctorId = $request->input('doctor_id');
-        $answers = $request->input('answers'); // Retrieve all question answers as an array
-
-        // Store the data in Laravel's session
+        $answers = $request->input('answers');
         $userData = [
             'doctor_id' => $doctorId,
-            'answers' => $answers, // Store the answers array in the session
+            'answers' => $answers,
             'booking_type' => $bookingType
         ];
 
         $request->session()->put('user_data', $userData);
-        // Redirect to the schedule page
         return redirect()->route('appointment.schedule')->with($userData, $userData);
     }
 
@@ -136,36 +119,24 @@ class AppointmentController extends Controller
         return view('patient.appointment.schedule', ['userData' => $userData, 'data' => $data]);
     }
 
-
-    // Create
     public function storeAppointment(Request $request)
     {
-        // Validate the request data (you can customize validation rules)
         $validatedData = $request->validate([
-            'selectedTime' => 'required', // Assuming 'selectedTime' contains the time in 12-hour format, e.g., "09:00 AM"
-            'selectedDate' => 'required', // Assuming 'selectedDate' contains the date in the format, e.g., "2023-09-23"
+            'selectedTime' => 'required',
+            'selectedDate' => 'required',
             'selectedDetails' => 'nullable|string',
         ]);
-
-        // Get the authenticated user (assuming you are using Laravel's built-in authentication)
         $user = Auth::user();
 
-        // Get the 'doctor_id' from the session data
         $doctorId = $request->session()->get('user_data.doctor_id');
+        $booking_type = $request->session()->get('user_data.booking_type');
         if (!$doctorId) {
-            // Flash an error message to the session
             return Redirect::route('appointment.schedule')->withErrors(['error' => 'Doctor not found']);
         }
-        // Retrieve the Doctor model based on the doctor_id
         $doctor = Doctor::where('user_id', $doctorId)->first();
-
-        // You can extract the 'clinic_id' from the relationship if it's available in your session data
-        $clinicId = $doctor->clinic_id; // Replace this with the actual clinic_id
-
-        // Use the extracted 'selectedTime' and 'selectedDate' to create the 'appointment_date_time' and 'slot' fields
+        $clinicId = $doctor->clinic_id;
         $appointmentDateTime = date('Y-m-d H:i:s', strtotime($validatedData['selectedDate'] . ' ' . $validatedData['selectedTime']));
 
-        // Create a new appointment record
         $appointment = Appointment::create([
             'clinic_id' => $clinicId,
             'doctor_id' => $doctorId,
@@ -173,12 +144,20 @@ class AppointmentController extends Controller
             'appointment_date_time' => $appointmentDateTime,
             'slot' => $validatedData['selectedDate'],
             'details' => $validatedData['selectedDetails'],
+            'booking_type' => $booking_type
         ]);
 
         if ($appointment) {
-            $receiverId = $request->input('receiver_id'); // Replace this with your receiver ID retrieval logic
+            if ($booking_type == 'video') {
+                $meeting = new Meeting();
+                $meeting->meeting_id = Str::uuid();
+                $meeting->appointment_id = $appointment->id;
+                $meeting->save();
+            }
+
+            $receiverId = $request->input('receiver_id');
             $notificationData = [
-                'sender_id' => Auth::id(), // The ID of the user triggering the notification
+                'sender_id' => Auth::id(),
                 'receiver_id' => $doctorId,
                 'message' => "  has been scheduled an appointment for  ",
                 'title' => 'New Appointment Scheduled',
@@ -186,40 +165,30 @@ class AppointmentController extends Controller
                 'notifiable_id' => $doctorId,
             ];
         }
-        // Return a response (you can customize the response format)
         return Redirect::route('dashboard.index.get')->with('success', 'Appointment created successfully');
     }
 
-    // Read (List)
     public function getAppointments()
     {
-        // Get a list of all appointments
-        $appointments = Appointment::all();
-        // Load related data (e.g., doctor and clinic details) if necessary
-        // You can eager load relationships to avoid N+1 query issues
-        $appointments->load('doctor', 'clinic', 'user');
-
-        // Return the Blade view with the appointments data
+        $appointments = Appointment::where('user_id', auth()->user()->id)->get();
+        $appointments->load('doctor', 'clinic', 'user','meeting');
         return view('patient.appointment.list', compact('appointments'));
     }
 
-    // Read (Show)
     public function showAppointment($id)
     {
-        // Find the appointment by ID
         $appointment = Appointment::findOrFail($id);
-
-        // Return a response (you can customize the response format)
+        $user = Auth::user();
+        if ($appointment->user_id !== $user->id) {
+            return response()->json(['data' => null]);
+        }
+        $appointment->load('doctor', 'clinic', 'user');
         return response()->json(['data' => $appointment]);
     }
 
-    // Update
     public function updateAppointment(Request $request, $id)
     {
-        // Find the appointment by ID
         $appointment = Appointment::findOrFail($id);
-
-        // Validate the request data (you can customize validation rules)
         $validatedData = $request->validate([
             'clinic_id' => 'required|integer',
             'doctor_id' => 'required|integer',
@@ -228,24 +197,14 @@ class AppointmentController extends Controller
             'slot' => 'required|string',
             'details' => 'nullable|string',
         ]);
-
-        // Update the appointment record
         $appointment->update($validatedData);
-
-        // Return a response (you can customize the response format)
         return response()->json(['message' => 'Appointment updated', 'data' => $appointment]);
     }
 
-    // Delete
     public function destroyAppointment($id)
     {
-        // Find the appointment by ID
         $appointment = Appointment::findOrFail($id);
-
-        // Delete the appointment record
         $appointment->delete();
-
-        // Return a response (you can customize the response format)
         return response()->json(['message' => 'Appointment deleted']);
     }
 

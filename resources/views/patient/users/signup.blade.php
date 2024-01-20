@@ -70,9 +70,7 @@
                             <div class="flx_pg1">
                                 <div class="country-code-container_pg1">
                                     <select class="country-code-select_pg1" name="country_code">
-                                        <option value="+91">+91 (IND)</option>
-                                        <option value="+91">+91</option>
-                                        <option value="+44">+44</option>
+                                        <option value="+61">+61(Aus)</option>
                                         <!-- Add more country code options here -->
                                     </select>
                                 </div>

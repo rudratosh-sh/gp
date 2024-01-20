@@ -9,6 +9,9 @@ use App\Models\Staff;
 use App\Models\Doctor;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Config;
+use GuzzleHttp\Client;
 
 if (!function_exists('showNotifications')) {
     function showNotifications()
@@ -236,3 +239,45 @@ if (!function_exists('showUsersWithoutMessage')) {
         }
     }
 }
+
+function sendSms($text, $phone_number) {
+    try {
+        $url = 'https://cellcast.com.au/api/v3/send-sms'; // API URL
+        $fields = [
+            'sms_text' => $text, // SMS text
+            'numbers' => $phone_number // Array of phone numbers
+        ];
+
+        // Get the API key from Laravel config
+        $appKey = 'CELLCAST67dee1de8e7db90bbf21b40f01674116';
+
+        $response = Http::withHeaders([
+            'APPKEY' => $appKey,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post($url, $fields);
+
+        if ($response->failed()) {
+            return json_encode([
+                "status" => $response->status(),
+                "msg" => "Something went wrong, please try again",
+                "result" => $response->json()
+            ]);
+        }
+
+        return json_encode([
+            "status" => $response->status(),
+            "msg" => "SMS sent successfully",
+            "result" => $response->json()
+        ]);
+    } catch (\Exception $e) {
+        return json_encode([
+            "status" => 400,
+            "msg" => "Something went wrong, please try again.",
+            "result" => []
+        ]);
+    }
+}
+
+
+

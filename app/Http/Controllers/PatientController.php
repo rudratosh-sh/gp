@@ -29,52 +29,44 @@ class PatientController extends Controller
         return view('patient.users.signup');
     }
 
-    // Handle user registration
     public function signUp(Request $request)
     {
-        // Validate the form data
         $request->validate([
             'first_name' => 'required',
             'middle_name' => 'nullable',
             'last_name' => 'required',
             'mobile' => 'required|unique:users,mobile',
             'password' => 'required|min:6',
-            'country_code' => 'required', // Validate the country code as well
+            'country_code' => 'required'
         ]);
+        $dummyOtp =  str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        // Generate a dummy OTP (you can replace this with your actual OTP logic)
-        $dummyOtp = '123456';
+        $message = "Hello " . $request->first_name . ",\nThank you for registering with Super GP Application! Your OTP for verification is: " . $dummyOtp . ".
+         Use this OTP to complete your registration. If you didn't request this OTP, contact support. Best regards, SGP Application Team";
 
-        // Store user data in session
+        sendSms($message,$request->mobile);
         $userData = [
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'name' => $request->first_name . ' ' . $request->middle_name . ' ' . $request->last_name,
             'country' => $request->country_code,
-            'mobile' => $request->mobile, // Include the country code
+            'mobile' => ltrim($request->mobile, '0'), // Include the country code
             'password' => Hash::make($request->password),
             'role' => 'user',
             'otp' => $dummyOtp, // Store the dummy OTP in the session
             'status' => 0, // Set user status to pending until OTP is verified
         ];
 
-        // Create a new user in the database
         $user = User::create($userData);
-
-        // Attach the "patient" role to the user
         $patientRole = Role::where('slug', 'patient')->first();
         $user->customRoles()->attach($patientRole);
 
-        // Update user status to 'active' or 'verified'
         $user->status = 1; // Update the status as needed
         $user->save();
 
-        // Log in the user
         Auth::login($user);
-
         $userData['user'] = $user;
-
         $request->session()->put('user_data', $userData);
 
         // After creating the user in your `signUp` method
@@ -494,7 +486,7 @@ class PatientController extends Controller
     public function getReferal()
     {
         $appointments = Appointment::all();
-        $appointments->load('doctor', 'clinic', 'user','refLetter');
+        $appointments->load('doctor', 'clinic', 'user', 'refLetter');
         return view('patient.dashboard.ref', compact('appointments'));
     }
 

@@ -44,3 +44,12 @@ Broadcast::channel('private-user.{id}', function ($user, $id) {
         return $pusher->socket_auth(request()->channel_name, request()->socket_id);
     }
 });
+
+Broadcast::channel('video-call-channel', function ($user) {
+    // Logic to determine if the user is authorized to subscribe to the channel
+    return true; // Modify as per your authorization logic
+});
+
+Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});

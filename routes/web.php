@@ -8,6 +8,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AppointmentController;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\VideoCallController;
+use App\Http\Controllers\MeetingController;
+use App\Models\Meeting;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,7 +58,7 @@ Route::middleware(['check.user.role:patient'])->group(function () {
     Route::get('/patient', [AppointmentController::class, 'getAppointments'])->name('appointment.patient');
     Route::get('/patient/appointment', [AppointmentController::class, 'index'])->name('appointment.index.get');
     Route::post('/patient/search-clinics-doctors', [AppointmentController::class, 'searchClinicsDoctors'])->name('search.clinics.doctors');
-    Route::get('/patient/booking/{doctorId}/{bookingType}', [AppointmentController::class, 'questionnaire'])->name('appointment.questionnaire');
+    Route::get('/patient/booking/{doctorId}/{bookingType}', [AppointmentController::class, 'Book a Visit'])->name('appointment.questionnaire');
     Route::post('/patient/questionnaire/{bookingType}', [AppointmentController::class, 'questionnaireStore'])->name('appointment.questionnaire.store');
     Route::get('/patient/schedule', [AppointmentController::class, 'schedule'])->name('appointment.schedule');
     Route::post('/patient/scheduleStore', [AppointmentController::class, 'storeAppointment'])->name('appointment.schedule.store');
@@ -70,7 +74,9 @@ Route::middleware(['check.user.role:patient'])->group(function () {
 
     Route::get('/patient/referal', [PatientController::class, 'getReferal'])->name('referal.index.get');
 
-});
+    Route::get("/patient/createMeeting/{meetingId}/{role}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
+    Route::get("/patient/meeting/{meetingId}/{role}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
+    Route::get("/patient/validateMeeting/{meetingId}/{role}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
 
 /**Doctor**/
 Route::middleware(['check.user.role:doctor'])->group(function () {
@@ -100,6 +106,10 @@ Route::middleware(['check.user.role:doctor'])->group(function () {
 
     Route::get('/doctor/profile', [DoctorController::class, 'profile'])->name('doctor.profile.get');
     Route::post('/doctor/profile/update', [DoctorController::class, 'profileUpdate'])->name('doctor.profile.update');
+
+    Route::get("/doctor/createMeeting/{meetingId}/{role}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
+    Route::get("/doctor/meeting/{meetingId}/{role}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
+    Route::get("/doctor/validateMeeting/{meetingId}/{role}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
 });
 
 /**Staff**/
@@ -131,3 +141,26 @@ Route::get('/test-google-credentials', function () {
 });
 
 Route::post('/speech-to-text', [PatientController::class, 'convertSpeechToText']);
+
+Route::get('/video', [VideoCallController::class, 'index'])->name('video');
+Route::post('/signal', [VideoCallController::class, 'handleSignal'])->name('signal');
+Route::post('/subscribe-channel', [VideoCallController::class, 'subscribeChannel'])->name('subscribe-channel');
+Route::post('/offer-answer', 'VideoCallController@handleOfferAnswer')->name('offer-answer');
+Route::post('/ice-candidate', 'VideoCallController@handleICECandidate')->name('ice-candidate');
+
+// Route::post("/createMeeting", [MeetingController::class, 'createMeeting'])->name("createMeeting");
+
+// Route::post("/validateMeeting", [MeetingController::class, 'validateMeeting'])->name("validateMeeting");
+
+// Route::get("/meeting/{meetingId}", function ($meetingId) {
+
+//     $METERED_DOMAIN = env('METERED_DOMAIN');
+//     return view('meeting', [
+//         'METERED_DOMAIN' => $METERED_DOMAIN,
+//         'MEETING_ID' => $meetingId
+//     ]);
+// });
+
+// Route::get('/video-start', function () {
+//     return view('video-start');
+});

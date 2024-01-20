@@ -196,7 +196,7 @@
                     <div class="right-section">
                         <button class="button1">Get Referral</button>
                         <a class="button2" href="booking/${doctor.user_id}/visit">Book a Visit</a>
-                        <a class="button3" href="booking/${doctor.user_id}">video</a>
+                        <a class="button3" href="booking/${doctor.user_id}/video">video</a>
                     </div>
                 </div>
             `;
