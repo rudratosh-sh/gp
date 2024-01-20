@@ -113,7 +113,8 @@
                                 <button class="right-video-camera">
                                     <img src="../assets/images/video-camera-alt.svg" alt="video-camera"
                                         style="width: 24px;height: 16px;" />
-                                    <div class="right-video-start">Join Now</div>
+                                    <div class="right-video-start"><a href="{{ route('meeting.create.get', ['meetingId' => $appointment->meeting->meeting_id,'role'=>'doctor']) }}"
+                                        style="text-decoration: none; color: inherit; cursor: pointer;">Join Now</a></div>
                                 </button>
                                 <button class="right-messages">
                                     <img src="../assets/images/messages.svg" alt="message"

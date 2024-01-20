@@ -78,7 +78,7 @@ class DoctorController extends Controller
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
             ->where('doctor_id', auth()->id())
             ->get();
-        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail','meeting');
 
         if (auth()->check()) {
             $user = auth()->user();
@@ -95,7 +95,7 @@ class DoctorController extends Controller
             ->where('doctor_id', auth()->id())
             ->get();
 
-        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail','meeting');
         return response()->json(['appointments' => $appointments]);
     }
 
