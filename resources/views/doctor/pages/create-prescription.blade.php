@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout', ['active' => 'history','page_title'=>'Create A Prescription'])
+@extends('doctor.layouts.doctor-layout', ['active' => 'history', 'page_title' => 'Create A Prescription'])
 @section('content')
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
@@ -230,16 +230,18 @@
                                             </div>
                                             <div class="pres-body-wrapper2 autocomplete-wrapper">
                                                 <input type="text" required class="route autocomplete-input"
-                                                    name="route_name[]">
+                                                    name="route_name[]" readonly>
                                                 <input type="hidden" class="route_id" name="route_id[]">
                                             </div>
                                             <div class="pres-body-wrapper3">
-                                                <input type="text" required name="dosage[]" class="dosage">
+                                                <input type="text" readonly required name="dosage[]" class="dosage">
                                             </div>
-                                            <div class="pres-body-wrapper4"><input type="text" required
-                                                    name="quantity[]" class="total-quantity"></div>
-                                            <div class="pres-body-wrapper5"><input name="remarks[]" required
-                                                    type="text"></div>
+                                            <div class="pres-body-wrapper4">
+                                                <input type="text" required name="quantity[]" class="total-quantity">
+                                            </div>
+                                            <div class="pres-body-wrapper5">
+                                                <input name="remarks[]" required type="text">
+                                            </div>
                                             <div class="pres-body-wrapper6">
                                                 <img src="/assets/cross.png" alt="cross" class="delete-row">
                                             </div>
@@ -266,6 +268,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
+        function handleAutocompleteSelection(selectedElement, row) {
+            row.find('.medication').val(selectedElement.label);
+            row.find('.medication_id').val(selectedElement.value);
+
+            // Set dosage and route based on selected medication
+            row.find('.dosage').val(selectedElement.dosage); // Assuming the medication response has a 'dosage' property
+            row.find('.route').val(selectedElement.route); // Assuming the medication response has a 'route' property
+        }
+
         $(document).ready(function() {
             // Event listener for file input change
             $('#attachmentInput').on('change', function() {
@@ -293,7 +304,7 @@
             });
         });
 
-        function initializeAutocomplete(element, sourceRoute, hiddenInput) {
+        function initializeAutocomplete(element, sourceRoute, hiddenInput, row) {
             element.autocomplete({
                 source: function(request, response) {
                     $.ajax({
@@ -304,8 +315,11 @@
                         },
                         success: function(data) {
                             response(data.map(item => ({
-                                label: item.name,
-                                value: item.id
+                                label: item
+                                    .drug_name + item.dosage, // Change to the appropriate property for medication name
+                                value: item.id,
+                                dosage: item.dosage, // Add property for dosage
+                                route: item.route // Add property for route
                             })));
                         }
                     });
@@ -314,26 +328,32 @@
                 select: function(event, ui) {
                     $(this).val(ui.item.label); // Display the name in the input
                     $(hiddenInput).val(ui.item.value); // Store the ID in the hidden input
+
+                    // Handle autocomplete selection
+                    handleAutocompleteSelection(ui.item, row);
+
                     return false;
                 }
             });
         }
 
         // Initialize autocomplete for the initial rows
-        initializeAutocomplete($(".medication"), "{{ route('medication.autocomplete') }}", ".medication_id");
-        initializeAutocomplete($(".route"), "{{ route('route.autocomplete') }}", ".route_id");
+        initializeAutocomplete($(".medication"), "{{ route('medication.autocomplete') }}", ".medication_id", $(
+            ".pres-body:first"));
+        initializeAutocomplete($(".route"), "{{ route('route.autocomplete') }}", ".route_id", $(".pres-body:first"));
 
         // Add new row on clicking 'Add Medication' button
         $('.add-medication-btn').click(function() {
             var newRow = $('.pres-body:first').clone();
             newRow.find('input').val('').attr('required', true); // Set required for all inputs in the new row
             newRow.find('.medication_id, .route_id').val(''); // Clear hidden inputs for IDs
+            newRow.find('.medication').prop('readonly', false); // Make medication input writable for the new row
             newRow.appendTo('.press-wrap');
             initializeAutocomplete(newRow.find('.medication'), "{{ route('medication.autocomplete') }}",
-                ".medication_id");
-            initializeAutocomplete(newRow.find('.route'), "{{ route('route.autocomplete') }}", ".route_id");
+                ".medication_id", newRow);
+            initializeAutocomplete(newRow.find('.route'), "{{ route('route.autocomplete') }}", ".route_id",
+                newRow);
         });
-
 
         // Delete row on clicking cross icon
         $(document).on('click', '.delete-row', function() {
@@ -343,6 +363,7 @@
             }
         });
 
+        // Input validation for total quantity and dosage
         $(document).on('input', '.total-quantity , .dosage', function() {
             var value = $(this).val();
             if (!/^[1-9]\d*$/.test(value)) { // Validates if the input is a positive integer greater than zero

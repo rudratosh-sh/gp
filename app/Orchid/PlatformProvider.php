@@ -77,42 +77,59 @@ class PlatformProvider extends OrchidServiceProvider
                 ->permission('platform.systems.specialities.view')
                 ->divider(),
 
-            // Format menu item
-            Menu::make(__('Formats'))
-                ->icon('bs.building')
-                ->route('platform.systems.formats')
-                ->title(__('Questionnaire Modules'))
-                ->permission('platform.systems.formats.view'),
+            // // Format menu item
+            // Menu::make(__('Formats'))
+            //     ->icon('bs.building')
+            //     ->route('platform.systems.formats')
+            //     ->title(__('Questionnaire Modules'))
+            //     ->permission('platform.systems.formats.view'),
+
+            // // Questionnaire menu item
+            // Menu::make(__('Questionnaires'))
+            //     ->icon('bs.building')
+            //     ->route('platform.systems.questionnaires')
+            //     ->permission('platform.systems.questionnaires.view'),
+
+            // // Section menu item
+            // Menu::make(__('Sections'))
+            //     ->icon('bs.building')
+            //     ->route('platform.systems.sections')
+            //     ->permission('platform.systems.sections.view'),
+
+            // // Question menu item
+            // Menu::make(__('Questions'))
+            //     ->icon('bs.building')
+            //     ->route('platform.systems.questions')
+            //     ->permission('platform.systems.questions.view'),
+
+            // // Answer option menu item
+            // Menu::make(__('Answer Options'))
+            //     ->icon('bs.building')
+            //     ->route('platform.systems.answerOptions')
+            //     ->permission('platform.systems.answerOptions.view'),
+
+            // // User response menu item
+            // Menu::make(__('User Responses'))
+            //     ->icon('bs.building')
+            //     ->route('platform.systems.userResponses')
+            //     ->permission('platform.systems.userResponses.view'),
 
             // Questionnaire menu item
-            Menu::make(__('Questionnaires'))
+            Menu::make(__('Question Type V2'))
                 ->icon('bs.building')
-                ->route('platform.systems.questionnaires')
-                ->permission('platform.systems.questionnaires.view'),
+                ->route('platform.systems.questionTypeV2')
+                ->permission('platform.systems.questionTypeV2.view'),
 
-            // Section menu item
-            Menu::make(__('Sections'))
+            // Quiz menu item
+            Menu::make(__('Quiz V2'))
                 ->icon('bs.building')
-                ->route('platform.systems.sections')
-                ->permission('platform.systems.sections.view'),
+                ->route('platform.systems.quizV2')
+                ->permission('platform.systems.quizV2.view'),
 
-            // Question menu item
-            Menu::make(__('Questions'))
+                Menu::make(__('Question V2'))
                 ->icon('bs.building')
-                ->route('platform.systems.questions')
-                ->permission('platform.systems.questions.view'),
-
-            // Answer option menu item
-            Menu::make(__('Answer Options'))
-                ->icon('bs.building')
-                ->route('platform.systems.answerOptions')
-                ->permission('platform.systems.answerOptions.view'),
-
-            // User response menu item
-            Menu::make(__('User Responses'))
-                ->icon('bs.building')
-                ->route('platform.systems.userResponses')
-                ->permission('platform.systems.userResponses.view'),
+                ->route('platform.systems.questionV2')
+                ->permission('platform.systems.questionV2.view'),
         ];
     }
 
@@ -142,12 +159,12 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.doctors.edit', __('Edit Doctors'))
                 ->addPermission('platform.systems.doctors.delete', __('Delete Doctors')),
 
-             // Staff permissions
-             ItemPermission::group(__('Staffs'))
-             ->addPermission('platform.systems.staffs.view', __('View Staffs'))
-             ->addPermission('platform.systems.staffs.create', __('Create Staffs'))
-             ->addPermission('platform.systems.staffs.edit', __('Edit Staffs'))
-             ->addPermission('platform.systems.staffs.delete', __('Delete Staffs')),
+            // Staff permissions
+            ItemPermission::group(__('Staffs'))
+                ->addPermission('platform.systems.staffs.view', __('View Staffs'))
+                ->addPermission('platform.systems.staffs.create', __('Create Staffs'))
+                ->addPermission('platform.systems.staffs.edit', __('Edit Staffs'))
+                ->addPermission('platform.systems.staffs.delete', __('Delete Staffs')),
 
             // Speciality permissions
             ItemPermission::group(__('Specialities'))
@@ -197,6 +214,28 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.userResponses.create', __('Create User Responses'))
                 ->addPermission('platform.systems.userResponses.edit', __('Edit User Responses'))
                 ->addPermission('platform.systems.userResponses.delete', __('Delete User Responses')),
+
+            // Questionnaire permissions
+            ItemPermission::group(__('Question Type'))
+                ->addPermission('platform.systems.questionTypeV2.view', __('View Question Type'))
+                ->addPermission('platform.systems.questionTypeV2.create', __('Create Question Type'))
+                ->addPermission('platform.systems.questionTypeV2.edit', __('Edit Question Type'))
+                ->addPermission('platform.systems.questionTypeV2.delete', __('Delete Question Type')),
+
+            // Questionnaire permissions
+            ItemPermission::group(__('Quiz'))
+                ->addPermission('platform.systems.quizV2.view', __('View Quiz'))
+                ->addPermission('platform.systems.quizV2.create', __('Create Quiz'))
+                ->addPermission('platform.systems.quizV2.edit', __('Edit Quiz'))
+                ->addPermission('platform.systems.quizV2.delete', __('Delete Quiz')),
+
+            // Question v2 permissions
+            ItemPermission::group(__('Questions V2'))
+                ->addPermission('platform.systems.questionV2.view', __('View questionV2'))
+                ->addPermission('platform.systems.questionV2.create', __('Create questionV2'))
+                ->addPermission('platform.systems.questionV2.edit', __('Edit questionV2'))
+                ->addPermission('platform.systems.questionV2.delete', __('Delete questionV2'))
+
         ];
     }
 }

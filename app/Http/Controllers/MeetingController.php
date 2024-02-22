@@ -23,17 +23,20 @@ class MeetingController extends Controller
 
         $METERED_DOMAIN = env('METERED_DOMAIN');
         $METERED_SECRET_KEY = env('METERED_SECRET_KEY');
-        // Contain the logic to create a new meeting
-        $response = Http::post("https://{$METERED_DOMAIN}/api/v1/room?secretKey={$METERED_SECRET_KEY}", [
-            'autoJoin' => true,
-            // 'roomName' =>$meetingId
-        ]);
-        $roomName = $response->json("roomName");
 
-        if ($response->status() === 200) {
-            return redirect("/" . $de_role . "/validateMeeting/{$roomName}/{$en_role}/{$appointmentId}");
+        $existingRoom = Http::get("https://{$METERED_DOMAIN}/api/v1/room/{$meetingId}?secretKey={$METERED_SECRET_KEY}");
+        if ($existingRoom->status() != 200) {
+            $response = Http::post("https://{$METERED_DOMAIN}/api/v1/room?secretKey={$METERED_SECRET_KEY}", [
+                'autoJoin' => true,
+                'roomName' => $meetingId
+            ]);
+            if ($response->status() === 200) {
+                return redirect("/" . $de_role . "/validateMeeting/{$meetingId}/{$en_role}/{$appointmentId}");
+            } else {
+                return redirect()->back()->with('error', 'Meeing Link Expired');
+            }
         } else {
-            return redirect()->back()->with('error', 'Meeing Link Expired');
+            return redirect("/" . $de_role . "/validateMeeting/{$meetingId}/{$en_role}/{$appointmentId}");
         }
     }
 
@@ -59,12 +62,12 @@ class MeetingController extends Controller
     {
         $en_role = $role;
         $de_role = Crypt::decrypt($role);
-
         if (auth()->check()) {
             $user = auth()->user();
         } else {
             abort(Response::HTTP_FORBIDDEN);
         }
+
         $user = auth()->user();
         $METERED_DOMAIN = env('METERED_DOMAIN');
         $locations = Clinic::with(['bannerImage', 'profileIcon'])->get();
@@ -72,9 +75,13 @@ class MeetingController extends Controller
         $role = Crypt::decrypt($role);
 
         $appointment = Appointment::where('id', $appointmentId)
-            ->where('doctor_id', auth()->id())
             ->first();
         $appointment->load('doctor', 'clinic', 'user', 'medicareDetail', 'meeting');
+
+        //update meeting information
+        Meeting::where('meeting_id', $meetingId)->update([
+            'start_time' => date('Y-m-d H:i:s')
+        ]);
         return view(
             $de_role . '.meeting.start',
             [

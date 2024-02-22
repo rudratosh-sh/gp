@@ -84,7 +84,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="meet_icon_join_pg8">
-                                                    <a href="{{ route('meeting.create.get', ['meetingId' => $appointment->meeting->meeting_id,'role'=>'patient']) }}"
+                                                    <a href="{{ route('patient.meeting.create.get', ['meetingId' => $appointment->meeting->meeting_id,'role'=>'patient','appointmentId'=>$appointment->id]) }}"
                                                         style="text-decoration: none; color: inherit; cursor: pointer;">
                                                         <img src="{{ asset('assets/images/paper-plane.svg') }}"
                                                             alt="" class="meet-icon_pg8">

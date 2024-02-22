@@ -20,6 +20,7 @@ use Google\Cloud\Speech\V1\SpeechClient;
 use Illuminate\Support\Facades\Log;
 use App\Models\Message;
 use App\Models\Appointment;
+use App\Models\PrescriptionV2;
 
 class PatientController extends Controller
 {
@@ -44,7 +45,7 @@ class PatientController extends Controller
         $message = "Hello " . $request->first_name . ",\nThank you for registering with Super GP Application! Your OTP for verification is: " . $dummyOtp . ".
          Use this OTP to complete your registration. If you didn't request this OTP, contact support. Best regards, SGP Application Team";
 
-        sendSms($message,$request->mobile);
+        sendSms($message, $request->mobile);
         $userData = [
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -353,8 +354,10 @@ class PatientController extends Controller
         $profileData = User::where('id', $user->id)->with('medicareDetail')->first();
         $fields = ['name', 'about_me', 'medicare_number', 'email', 'mobile', 'address'];
 
-        return view('patient.users.profile', compact('profileData', 'fields'));
+        $prescriptions = PrescriptionV2::with(['medication', 'clinic', 'doctor'])->where('user_id', $user->id)->get();
+        return view('patient.users.profile', compact('profileData', 'fields', 'prescriptions'));
     }
+
 
     public function profileUpdate(Request $request)
     {

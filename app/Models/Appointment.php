@@ -60,7 +60,7 @@ class Appointment extends Model
 
     public function prescription()
     {
-        return $this->hasOne(Prescription::class, 'user_id', 'user_id');
+        return $this->hasOne(PrescriptionV2::class, 'user_id', 'user_id');
     }
 
     public function meeting()

@@ -32,7 +32,7 @@ class QuestionnaireListLayout extends Table
                         ->route('platform.systems.questionnaires.edit', $questionnaire->id)
                         ->icon('bs.pencil');
                 }),
-            
+
                 TD::make('title', __('Description'))
                 ->sort()
                 ->filter(Input::make())

@@ -103,21 +103,6 @@ class DoctorEditScreen extends Screen
                         ->can('platform.systems.doctors.edit')
                         ->method('save')
                 ),
-
-            // Layout::rows([
-            //     Input::make('doctor.name')
-            //         ->title('Name')
-            //         ->required(),
-
-            //     Input::make('doctor.speciality')
-            //         ->title('Speciality')
-            //         ->required(),
-
-            //     Input::make('doctor.price')
-            //         ->title('Price')
-            //         ->type('number')
-            //         ->required(),
-            // ]),
         ];
     }
 

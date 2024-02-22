@@ -11,7 +11,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VideoCallController;
 use App\Http\Controllers\MeetingController;
 use App\Models\Meeting;
-
+use App\Models\Doctor;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -58,7 +58,7 @@ Route::middleware(['check.user.role:patient'])->group(function () {
     Route::get('/patient', [AppointmentController::class, 'getAppointments'])->name('appointment.patient');
     Route::get('/patient/appointment', [AppointmentController::class, 'index'])->name('appointment.index.get');
     Route::post('/patient/search-clinics-doctors', [AppointmentController::class, 'searchClinicsDoctors'])->name('search.clinics.doctors');
-    Route::get('/patient/booking/{doctorId}/{bookingType}', [AppointmentController::class, 'Book a Visit'])->name('appointment.questionnaire');
+    Route::get('/patient/booking/{doctorId}/{bookingType}', [AppointmentController::class, 'questionnaire'])->name('appointment.questionnaire');
     Route::post('/patient/questionnaire/{bookingType}', [AppointmentController::class, 'questionnaireStore'])->name('appointment.questionnaire.store');
     Route::get('/patient/schedule', [AppointmentController::class, 'schedule'])->name('appointment.schedule');
     Route::post('/patient/scheduleStore', [AppointmentController::class, 'storeAppointment'])->name('appointment.schedule.store');
@@ -74,9 +74,9 @@ Route::middleware(['check.user.role:patient'])->group(function () {
 
     Route::get('/patient/referal', [PatientController::class, 'getReferal'])->name('referal.index.get');
 
-    Route::get("/patient/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
-    Route::get("/patient/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
-    Route::get("/patient/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
+    Route::get("/patient/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('patient.meeting.create.get');
+    Route::get("/patient/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('patient.meeting.start.get');
+    Route::get("/patient/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("patient.meeting.validate.get");
 
 /**Doctor**/
 Route::middleware(['check.user.role:doctor'])->group(function () {
@@ -107,9 +107,9 @@ Route::middleware(['check.user.role:doctor'])->group(function () {
     Route::get('/doctor/profile', [DoctorController::class, 'profile'])->name('doctor.profile.get');
     Route::post('/doctor/profile/update', [DoctorController::class, 'profileUpdate'])->name('doctor.profile.update');
 
-    Route::get("/doctor/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('meeting.create.get');
-    Route::get("/doctor/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('meeting.start.get');
-    Route::get("/doctor/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("meeting.validate.get");
+    Route::get("/doctor/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('doctor.meeting.create.get');
+    Route::get("/doctor/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('doctor.meeting.start.get');
+    Route::get("/doctor/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("doctor.meeting.validate.get");
 });
 
 /**Staff**/
@@ -122,6 +122,10 @@ Route::middleware(['check.user.role:staff'])->group(function () {
     Route::post('/staff/save-patient-vitals/{userId}', [StaffController::class, 'savePatientVitals'])->name('staff.save.patient.vitals');
     Route::get('/staff/profile', [StaffController::class, 'profile'])->name('staff.profile.get');
     Route::post('/staff/profile/update', [StaffController::class, 'profileUpdate'])->name('staff.profile.update');
+
+    Route::get("/staff/createMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'createMeeting'])->name('staff.meeting.create.get');
+    Route::get("/staff/meeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'startMeeting'])->name('staff.meeting.start.get');
+    Route::get("/staff/validateMeeting/{meetingId}/{role}/{appointmentId}", [MeetingController::class, 'validateMeeting'])->name("staff.meeting.validate.get");
 });
 
 
@@ -164,3 +168,9 @@ Route::post('/ice-candidate', 'VideoCallController@handleICECandidate')->name('i
 // Route::get('/video-start', function () {
 //     return view('video-start');
 });
+Route::get('/get-doctors/{clinicId}', function ($clinicId) {
+    // Fetch doctors based on the clinic ID
+    $doctors = Doctor::where('clinic_id', $clinicId)->with('user')->get();
+    return response()->json($doctors);
+});
+

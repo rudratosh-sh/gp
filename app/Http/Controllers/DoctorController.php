@@ -23,9 +23,9 @@ use App\Models\Note;
 use App\Models\Attachment;
 use App\Models\OtherInfo;
 use App\Models\ReferralLetter;
-use App\Models\Medication;
+use App\Models\MedicationV2;
 use App\Models\Route;
-use App\Models\Prescription;
+use App\Models\PrescriptionV2;
 use App\Models\Doctor;
 use Illuminate\Support\Str;
 
@@ -78,7 +78,7 @@ class DoctorController extends Controller
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', date('Y-m-d'))
             ->where('doctor_id', auth()->id())
             ->get();
-        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail','meeting');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'meeting');
 
         if (auth()->check()) {
             $user = auth()->user();
@@ -94,10 +94,14 @@ class DoctorController extends Controller
         $appointments = Appointment::where(DB::raw('DATE(appointment_date_time)'), '=', $selectedDate)
             ->where('doctor_id', auth()->id())
             ->get();
-
-        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail','meeting');
+        $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'meeting');
+        $appointments->transform(function ($appointment) {
+            $appointment->encrypted_user_id = encrypt($appointment->user->id);
+            return $appointment;
+        });
         return response()->json(['appointments' => $appointments]);
     }
+
 
     public function history(Request $request)
     {
@@ -121,9 +125,11 @@ class DoctorController extends Controller
             ->where('doctor_id', auth()->id())
             ->get();
         $appointments->load('doctor', 'clinic', 'user', 'medicareDetail', 'patientVitalValues', 'notes', 'otherInfo', 'refLetter');
-        return response()->json([
-            'appointments' => $appointments
-        ]);
+        $appointments->transform(function ($appointment) {
+            $appointment->encrypted_user_id = encrypt($appointment->user->id);
+            return $appointment;
+        });
+        return response()->json(['appointments' => $appointments]);
     }
 
     public function getPatientDetails(Request $request, $userId)
@@ -425,36 +431,39 @@ class DoctorController extends Controller
         $clinicId = decrypt($request->input('pres_clinic_id'));
         $doctorId = decrypt($request->input('pres_doctor_id'));
 
-        $prescriptions = [];
         $data = $request->all();
         $data['user_id'] = $userId;
         $data['clinic_id'] = $clinicId;
         $data['doctor_id'] = $doctorId;
 
+        $prescriptions = [];
+
         foreach ($data['medication_id'] as $key => $value) {
-            $prescription = new Prescription();
+            $prescription = new PrescriptionV2();
 
             $prescription->medication_id = $data['medication_id'][$key];
-            $prescription->route_id = $data['route_id'][$key];
+            // $prescription->route_id = $data['route_id'][$key];
             $prescription->clinic_id = $data['clinic_id'];
             $prescription->user_id = $data['user_id'];
             $prescription->doctor_id = $data['doctor_id'];
             $prescription->quantity = $data['quantity'][$key];
             $prescription->remarks = $data['remarks'][$key];
-            $prescription->dosage = $data['dosage'][$key];
+            // $prescription->dosage = $data['dosage'][$key];
+
+            $prescription->save();
             $prescriptions[] = $prescription;
         }
-        foreach ($prescriptions as $prescription) {
-            $prescription->save();
-        }
+
+        // You can choose to return a response or redirect as needed
         return redirect()->back()->with('success', 'Prescriptions saved successfully.');
     }
+
 
     public function searchMedications(Request $request)
     {
         $query = $request->input('query');
 
-        $medications = Medication::where('name', 'like', '%' . $query . '%')->get(['name', 'id']);
+        $medications = MedicationV2::where('drug_name', 'like', '%' . $query . '%')->get(['id', 'drug_name', 'dosage', 'route']);
 
         return response()->json($medications);
     }
@@ -476,8 +485,17 @@ class DoctorController extends Controller
         $fields = ['name', 'about_me', 'email', 'mobile'];
         $doctor = $request->session()->get('doctor');
 
-        return view('doctor.pages.profile', ['user' => $doctor, 'profileData' => $profileData, 'fields' => $fields]);
+        // Fetch prescription data using PrescriptionV2 model with relationships
+        $prescriptions = PrescriptionV2::with(['medication', 'clinic', 'doctor', 'user'])->where('doctor_id', auth()->id())->get();
+
+        return view('doctor.pages.profile', [
+            'user' => $doctor,
+            'profileData' => $profileData,
+            'fields' => $fields,
+            'prescriptions' => $prescriptions, // Pass prescription data to the view
+        ]);
     }
+
 
     public function profileUpdate(Request $request)
     {

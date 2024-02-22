@@ -29,6 +29,13 @@ use App\Orchid\Screens\UserResponse\UserResponseListScreen;
 use App\Orchid\Screens\Staff\StaffEditScreen;
 use App\Orchid\Screens\Staff\StaffListScreen;
 
+use App\Orchid\Screens\QuestionTypeV2\QuestionTypeV2EditScreen;
+use App\Orchid\Screens\QuestionTypeV2\QuestionTypeV2ListScreen;
+
+use App\Orchid\Screens\QuizV2\QuizV2EditScreen;
+use App\Orchid\Screens\QuizV2\QuizV2ListScreen;
+use App\Orchid\Screens\QuestionV2\QuestionV2EditScreen;
+use App\Orchid\Screens\QuestionV2\questionV2ListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -307,3 +314,68 @@ Route::screen('staffs', StaffListScreen::class)
     ->breadcrumbs(fn (Trail $trail) => $trail
         ->parent('platform.index')
         ->push(__('Staffs'), route('platform.systems.staffs')));
+
+
+// Platform > System > Question Type V2 > Question Type
+Route::screen('questionTypeV2/{questionTypeV2}/edit', QuestionTypeV2EditScreen::class)
+    ->name('platform.systems.questionTypeV2.edit')
+    ->breadcrumbs(fn (Trail $trail, $questionTypeV2) => $trail
+        ->parent('platform.systems.questionTypeV2')
+        ->push($questionTypeV2->id, route('platform.systems.questionTypeV2.edit', $questionTypeV2)));
+
+// Platform > System > Question Type V2  > Create
+Route::screen('questionTypeV2/create', QuestionTypeV2EditScreen::class)
+    ->name('platform.systems.questionTypeV2.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.systems.questionTypeV2')
+        ->push(__('Create'), route('platform.systems.questionTypeV2.create')));
+
+// Platform > System > Question Type V2
+Route::screen('questionTypeV2', QuestionTypeV2ListScreen::class)
+    ->name('platform.systems.questionTypeV2')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Question Type'), route('platform.systems.questionTypeV2')));
+
+// Platform > System > Quiz V2 > Quiz Edit
+Route::screen('quizV2/{quizV2}/edit', QuizV2EditScreen::class)
+    ->name('platform.systems.quizV2.edit')
+    ->breadcrumbs(fn (Trail $trail, $quizV2) => $trail
+        ->parent('platform.systems.quizV2')
+        ->push($quizV2->exists ? 'Edit Quiz' : 'Create Quiz', route('platform.systems.quizV2.edit', $quizV2))
+    );
+
+// Platform > System > Quiz V2 > Create
+Route::screen('quizV2/create', QuizV2EditScreen::class)
+    ->name('platform.systems.quizV2.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.systems.quizV2')
+        ->push(__('Create'), route('platform.systems.quizV2.create')));
+
+// Platform > System > Quiz V2
+Route::screen('quizV2', QuizV2ListScreen::class)
+    ->name('platform.systems.quizV2')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Quiz V2'), route('platform.systems.quizV2')));
+
+// Platform > System > Question  V2 > Question
+Route::screen('questionV2/{questionV2}/edit', QuestionV2EditScreen::class)
+    ->name('platform.systems.questionV2.edit')
+    ->breadcrumbs(fn (Trail $trail, $questionV2) => $trail
+        ->parent('platform.systems.questionV2')
+        ->push($questionV2->id, route('platform.systems.questionV2.edit', $questionV2)));
+
+// Platform > System > QuestionV2  > Create
+Route::screen('questionV2/create', QuestionV2EditScreen::class)
+    ->name('platform.systems.questionV2.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.systems.questionV2')
+        ->push(__('Create'), route('platform.systems.questionV2.create')));
+
+// Platform > System > Question V2
+Route::screen('questionV2', QuestionV2ListScreen::class)
+    ->name('platform.systems.questionV2')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Question V2'), route('platform.systems.questionV2')));

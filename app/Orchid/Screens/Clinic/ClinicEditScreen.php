@@ -106,38 +106,6 @@ class ClinicEditScreen extends Screen
                         ->can('platform.systems.clinics.edit')
                         ->method('save')
                 ),
-
-            // Add Google Autocomplete input fields
-            // Layout::rows([
-            //     // Input::make('clinic.location')
-            //     //     ->title('Location')
-            //     //     ->required()
-            //     //     ->id('clinic-location'),
-
-            //     // Input::make('clinic.latitude')
-            //     //     ->title('Latitude')
-            //     //     ->readonly()
-            //     //     ->id('clinic-latitude'),
-
-            //     // Input::make('clinic.longitude')
-            //     //     ->title('Longitude')
-            //     //     ->readonly()
-            //     //     ->id('clinic-longitude'),
-
-            //     // Add the Banner Image Upload Field
-            //     // Upload::make('clinic.banner_image')
-            //     //     ->title(__('Banner Image'))
-            //     //     ->maxFiles(1) // Allow only one file to be uploaded
-            //     //     ->acceptedFiles('image/*') // Accept only image files
-            //     //     ->placeholder(__('Upload Clinic Banner Image')),
-
-            //     // // Add the Profile Icon Upload Field
-            //     // Upload::make('clinic.profile_icon')
-            //     //     ->title(__('Profile Icon'))
-            //     //     ->maxFiles(1) // Allow only one file to be uploaded
-            //     //     ->acceptedFiles('image/*') // Accept only image files
-            //     //     ->placeholder(__('Upload Clinic Profile Icon')),
-            // ]),
         ];
     }
 

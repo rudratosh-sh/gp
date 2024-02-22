@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Doctor extends Model
 {
     use AsSource, Filterable;
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -88,5 +89,10 @@ class Doctor extends Model
     public function referralLetters()
     {
         return $this->hasMany(ReferralLetter::class);
+    }
+
+    public function quizzes()
+    {
+        return $this->belongsToMany(QuizV2::class, 'doctor_quiz', 'doctor_id', 'quiz_id');
     }
 }

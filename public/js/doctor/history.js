@@ -424,9 +424,10 @@ function getHistory(selectedDate) {
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <img src="${imageSrc}" alt="${imageAlt}" style="height: 24px; width: 24px;" />
                             <div>
-                                <div onclick="navigateToPage('/gp/patient-details.html')" class="card-right-name">${
-                                    appointment.user.name
-                                }</div>
+
+                                <div  class="card-right-name"><a style="all: unset;cursor:pointer" href="/doctor/patientDetails/${appointment.encrypted_user_id}" class="card-right-name">
+                                ${appointment.user.name}
+                            </a></div>
                                 <div class="card-right-details">
                                     <div>${
                                         appointment.medicare_detail.gender

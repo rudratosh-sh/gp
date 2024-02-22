@@ -116,13 +116,10 @@ class QuestionnaireEditScreen extends Screen
             'questionnaire.name' => 'required|string|max:255',
             'questionnaire.format_id' => 'required',
             'questionnaire.description' => 'required',
-            // Add validation rules for other fields here
         ]);
 
         $questionnaire->fill($data['questionnaire']);
-
         $questionnaire->save();
-
         Toast::info(__('Questionnaire was saved.'));
 
         return redirect()->route('platform.systems.questionnaires');

@@ -15,6 +15,8 @@ use App\Models\Speciality;
 
 class DoctorEditLayout extends Rows
 {
+
+    protected $target = 'doctor';
     /**
      * The screen's layout elements.
      *

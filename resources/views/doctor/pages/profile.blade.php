@@ -1,4 +1,4 @@
-@extends('doctor.layouts.doctor-layout',['page_title'=>'Patient Profile'])
+@extends('doctor.layouts.doctor-layout', ['page_title' => 'Patient Profile'])
 @section('content')
     <div class="internal-page profile-page">
         <section class="profile">
@@ -96,6 +96,10 @@
 
                 reader.readAsDataURL(input.files[0]); // Read the image file as a data URL.
             }
+        }
+
+        function goBack() {
+            window.history.back();
         }
     </script>
 @endsection

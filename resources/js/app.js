@@ -197,6 +197,8 @@ jquery("#joinMeetingBtn").on("click", async function () {
         jquery("#video-" + remoteTrackItem.participantSessionId)[0].pause();
       }
 
+      console.log(remoteTrackItem.participantSessionId,'participantSessionId')
+      console.log(activeSpeakerId,'activeSpeakerId')
       if (remoteTrackItem.participantSessionId === activeSpeakerId) {
         jquery("#activeSpeakerVideo")[0].srcObject = null;
         jquery("#activeSpeakerVideo")[0].pause();
@@ -213,11 +215,13 @@ jquery("#joinMeetingBtn").on("click", async function () {
 
 
   meeting.on("activeSpeaker", function(activeSpeaker) {
+    console.log('herwerwrwerwerw')
     setActiveSpeaker(activeSpeaker);
   });
 
   function setActiveSpeaker(activeSpeaker) {
 
+    console.log(activeSpeaker,'activeSpeaker')
     if (activeSpeakerId  != activeSpeaker.participantSessionId) {
       jquery(`#participant-${activeSpeakerId}`).show();
     }
