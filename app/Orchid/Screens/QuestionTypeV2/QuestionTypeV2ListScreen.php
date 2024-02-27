@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Screens\questionTypeV2;
+namespace App\Orchid\Screens\QuestionTypeV2;
 
 use App\Models\questionTypeV2;
 use App\Orchid\Layouts\questionTypeV2\questionTypeV2ListLayout;
@@ -14,7 +14,7 @@ use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 use Illuminate\Support\Facades\Log;
 
-class questionTypeV2ListScreen extends Screen
+class QuestionTypeV2ListScreen extends Screen
 {
     /**
      * Fetch data to be displayed on the screen.

@@ -36,7 +36,7 @@ class QuizV2EditScreen extends Screen
     {
         $id = $request->route('quizV2'); // Retrieve the 'quizV2' parameter from the route
 
-        if ($id->quiz_id) {
+        if ($id &&  $id->quiz_id) {
             $this->quizV2 = QuizV2::find($id->quiz_id);
         } else {
             $this->quizV2 = $quizV2 ?? new QuizV2();

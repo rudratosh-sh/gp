@@ -35,7 +35,7 @@ use App\Orchid\Screens\QuestionTypeV2\QuestionTypeV2ListScreen;
 use App\Orchid\Screens\QuizV2\QuizV2EditScreen;
 use App\Orchid\Screens\QuizV2\QuizV2ListScreen;
 use App\Orchid\Screens\QuestionV2\QuestionV2EditScreen;
-use App\Orchid\Screens\QuestionV2\questionV2ListScreen;
+use App\Orchid\Screens\QuestionV2\QuestionV2ListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 

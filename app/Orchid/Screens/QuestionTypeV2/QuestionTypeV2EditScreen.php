@@ -15,7 +15,7 @@ use Orchid\Support\Facades\Toast;
 use Orchid\Support\Color;
 use Orchid\Screen\Fields\Input;
 
-class questionTypeV2EditScreen extends Screen
+class QuestionTypeV2EditScreen extends Screen
 {
     /**
      * @var questionTypeV2
